@@ -31,6 +31,7 @@
       ],
       "settings": {
         "remote.autoForwardPortsSource": "process",
+        "fstarVSCodeAssistant.c2pulse": true,
         "fstarVSCodeAssistant.verifyOnSave": true,
         "files.watcherExclude": {
           "**/_build/**": true

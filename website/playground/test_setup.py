@@ -34,6 +34,11 @@ class SetupTests(unittest.TestCase):
             self.assertTrue((directory / "Makefile").is_file())
             config = json.loads((directory / ".fst.config.json").read_text())
             self.assertIn("--cache_checked_modules", config["options"])
+        pal_config = json.loads((self.workspace / "pal/pal.config.json").read_text())
+        self.assertEqual(pal_config["files"], "multiply.c")
+        self.assertEqual(pal_config["options"], ["--outdir", "_build/pulse"])
+        pal_fstar = json.loads((self.workspace / "pal/.fst.config.json").read_text())
+        self.assertIn(str(self.workspace / "pal/_build/pulse"), pal_fstar["include_dirs"])
         self.assertTrue((self.workspace / "tutorials/Part1.GettingOffTheGround.fst").is_file())
         self.assertTrue((self.workspace / "tutorials/pulse/PulseTutorial.Intro.fst").is_file())
         self.assertTrue((self.workspace / ".vscode/tasks.json").is_file())
@@ -44,11 +49,15 @@ class SetupTests(unittest.TestCase):
         config = self.workspace / "functional/.fst.config.json"
         source.write_text("learner's source edits\n")
         config.write_text('{"options":["--fuel","2"]}\n')
+        pal_config = self.workspace / "pal/pal.config.json"
+        custom_pal = {"files": ["other.c"], "options": ["--outdir", "_build/custom"]}
+        pal_config.write_text(json.dumps(custom_pal))
         missing = self.workspace / "pal/multiply.c"
         missing.unlink()
         self.setup_workspace()
         self.assertEqual(source.read_text(), "learner's source edits\n")
         self.assertEqual(json.loads(config.read_text())["options"], ["--fuel", "2"])
+        self.assertEqual(json.loads(pal_config.read_text()), custom_pal)
         self.assertTrue(missing.is_file())
 
 

@@ -9,5 +9,5 @@ for cache in /opt/opam /opt/nuget; do
     fi
 done
 
-python3 /opt/playground/setup.py "$workspace"
+python3 "$(dirname "$0")/setup.py" "$workspace"
 make -C "$workspace" doctor

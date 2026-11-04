@@ -89,6 +89,31 @@ then open port **8001** using **Open in Browser**, not Simple Browser.
 This serves the static book, not the legacy PHP-backed web verifier.
 Source verification happens in the editor or terminal.
 
+## PAL in the editor
+
+The devcontainer enables `fstarVSCodeAssistant.c2pulse`. Setup creates
+`pal/pal.config.json`, selecting `multiply.c` and writing generated Pulse files
+to `_build/pulse`, alongside the existing F* project configuration. The assistant
+uses `pal` on `PATH`; the native `test.c` harness is not translated.
+C files keep their normal C language mode and C/C++ tooling.
+
+Open `pal/multiply.c`, run **F*: Verify all** from the Command Palette once
+to activate the assistant, then save the file. The published assistant
+(0.25.4) auto-activates for F* files, but not C files alone. After activation,
+saving runs PAL and verifies its generated modules; diagnostics and verification
+status are mapped back to the C source. Unsaved C edits are not translated.
+Use the Command Palette for F* commands in C files: the extension's default
+F* keyboard shortcuts apply only in F* language mode.
+
+For an existing Codespace, pull the latest repository changes and run
+`python3 setup.py` from this directory. Add
+`"fstarVSCodeAssistant.c2pulse": true` through **Preferences: Open Workspace
+Settings (JSON)**, then run **Developer: Reload Window** before activating
+the assistant. This setting is supported even though version 0.25.4 does not
+list it in the Settings UI. Alternatively, rebuild the container to apply
+the updated devcontainer defaults; the prebuilt verification toolchain is reused.
+Setup preserves existing source files and editor configurations.
+
 ## Toolchain pins
 
 The Dockerfile is the source of truth for versions and download checksums:

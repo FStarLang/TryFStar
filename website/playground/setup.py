@@ -51,6 +51,12 @@ def main():
         includes = []
         if project == "pal":
             includes.append(str(Path(os.environ.get("PAL_ROOT", "/opt/pal")) / "pulse"))
+            pal_config = destination / "pal.config.json"
+            if not pal_config.exists():
+                pal_config.write_text(json.dumps({
+                    "files": "multiply.c",
+                    "options": ["--outdir", "_build/pulse"],
+                }, indent=2) + "\n")
         if project == "pal-csharp":
             includes.append(str(Path(os.environ.get("PAL_CS_ROOT", "/opt/pal-csharp")) / "pulse"))
             copy_new(HERE / project / "Sort.csproj", destination / "Sort.csproj")
