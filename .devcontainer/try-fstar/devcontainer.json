@@ -1,6 +1,9 @@
 {
   "name": "Try F*: Pulse, PAL, and PAL-CSharp",
   "image": "ghcr.io/fstarlang/tryfstar@sha256:d01f1072e574f5d0a302f618f62b5bf7009bec8935201ffaaee49d184910df04",
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
   "remoteUser": "vscode",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/website/playground",
   "hostRequirements": {
@@ -9,7 +12,7 @@
     "storage": "32gb"
   },
   "postCreateCommand": "sh post-create.sh",
-  "postStartCommand": "python3 preview.py --background",
+  "postAttachCommand": "python3 preview.py --background",
   "waitFor": "postCreateCommand",
   "forwardPorts": [8000],
   "portsAttributes": {

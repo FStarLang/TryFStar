@@ -23,6 +23,10 @@ book in an editor preview beside your code. Edit the matching files under
 `tutorials/`, such as `Part1.GettingOffTheGround.fst` or
 `pulse/PulseTutorial.Intro.fst`. If you close the preview, right-click port
 **8000** in the **Ports** panel and choose **Preview in Editor**.
+In Codespaces, this documentation-only port is made public before the server
+starts listening: private-port sign-in redirects cannot load inside Simple
+Browser. The server serves only `website/tutorial/book/`, never editable
+projects or the rest of the checkout. Other forwarded ports remain unchanged.
 
 The image's examples are verified during its build. Startup copies editable
 sources, checks tool availability, and preserves existing edits; it does not
@@ -43,6 +47,8 @@ sources and solutions you want to retain before deleting a Codespace.
 Tutorial exercises intentionally include holes and expected errors.
 Existing Codespaces need the latest `main` and **Codespaces: Rebuild Container**
 to pick up the automatic preview configuration; the prebuilt image is unchanged.
+Rebuilding also installs the small GitHub CLI feature used to configure the
+documentation port; it does not compile the verification toolchains.
 
 For local use, clone this repository in VS Code and select
 **Dev Containers: Reopen in Container**. Docker is required; the image targets
