@@ -1,9 +1,6 @@
 {
   "name": "Try F*: Pulse, PAL, and PAL-CSharp",
-  "build": {
-    "dockerfile": "Dockerfile",
-    "context": "../../website"
-  },
+  "image": "ghcr.io/fstarlang/tryfstar@sha256:d01f1072e574f5d0a302f618f62b5bf7009bec8935201ffaaee49d184910df04",
   "remoteUser": "vscode",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/website/playground",
   "hostRequirements": {
@@ -11,7 +8,7 @@
     "memory": "8gb",
     "storage": "32gb"
   },
-  "postCreateCommand": "sudo chown -R $(id -u):$(id -g) /opt/opam /opt/nuget && python3 /opt/playground/setup.py \"${containerWorkspaceFolder}\" && make check",
+  "postCreateCommand": "sh post-create.sh",
   "waitFor": "postCreateCommand",
   "forwardPorts": [8000],
   "portsAttributes": {

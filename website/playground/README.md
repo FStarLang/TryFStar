@@ -1,8 +1,9 @@
 # Try F*
 
 An editable playground for the examples on the F* website. The named
-devcontainer in `.devcontainer/try-fstar/` installs F*, Pulse, PAL, PAL-CSharp,
-their verified support libraries, and the C, OCaml, F#, and .NET toolchains.
+devcontainer in `.devcontainer/try-fstar/` pulls a prebuilt image with F*, Pulse,
+PAL, PAL-CSharp, their verified support libraries, and the C, OCaml, F#, and
+.NET toolchains.
 It uses a binary F* release, not a local build of this repository.
 
 ## Open the environment
@@ -14,11 +15,14 @@ extension must be installed locally. This image targets Linux x86-64.
 In GitHub, use the [browser launch link](https://codespaces.new/FStarLang/TryFStar?quickstart=1&devcontainer_path=.devcontainer%2Ftry-fstar%2Fdevcontainer.json),
 or **Code > Codespaces > New with options**, and select the same devcontainer
 configuration. Choose at least 4 cores, 8 GB RAM, and 32 GB disk.
-The initial image build downloads and compiles the toolchains and translators.
-Subsequent starts reuse the image.
+The initial launch downloads the image; it does not compile the toolchains
+or translators. Subsequent starts reuse the image. Its immutable registry
+digest is pinned in `devcontainer.json`.
 
 Setup opens this directory, copies editable source and test files from the
-website examples, copies the tutorial sources, and runs `make check`. Existing
+website examples, copies the tutorial sources, and runs `make doctor`. The image
+has already passed `make check`; run it yourself to repeat the verification,
+extraction, compilation, and runtime checks in your editable workspace. Existing
 files are never overwritten, including your edits. VS Code includes the F*
 assistant, C/C++, C#, F#, and build tasks for each project.
 Copied sources initially appear as untracked files. Commit the sources and
@@ -90,6 +94,10 @@ binary toolchain. The .NET and Rust base images are pinned by digest, F*'s
 archive is checked against SHA-256, and translator source is pinned by commit.
 Ubuntu, opam, and NuGet package repositories are not snapshotted.
 
+The published image captures the installed toolchain without resolving those
+repositories again on each Codespace launch. Startup only adjusts tool-cache
+ownership when the runtime UID/GID differs from the image's `vscode` user.
+
 To reproduce the image and run its preloaded examples without network access,
 from the repository root:
 
@@ -98,4 +106,6 @@ docker build -t try-fstar -f .devcontainer/try-fstar/Dockerfile website
 docker run --rm --network none try-fstar make check
 ```
 
+For publishing replacement images and updating the pinned digest, see
+[Maintaining the image](../../README.md#maintaining-the-image).
 No hosted Codespace is created by these commands.

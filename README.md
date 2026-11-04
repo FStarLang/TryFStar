@@ -5,10 +5,10 @@ Try F*, Pulse, PAL, and PAL-CSharp in a working browser-based environment.
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/FStarLang/TryFStar?quickstart=1&devcontainer_path=.devcontainer%2Ftry-fstar%2Fdevcontainer.json)
 
 Choose **Try F*: Pulse, PAL, and PAL-CSharp** if prompted. The configuration
-requests at least 4 cores, 8 GB RAM, and 32 GB disk. Your first launch builds
-the toolchains and translators, which takes several minutes; it is not an
-instant-start image. GitHub Codespaces usage is subject to your account's
-quota and billing settings.
+requests at least 4 cores, 8 GB RAM, and 32 GB disk. It downloads a prebuilt,
+digest-pinned image instead of compiling the toolchains and translators.
+The first image download is substantial; subsequent starts reuse it.
+GitHub Codespaces usage is subject to your account's quota and billing settings.
 
 The browser opens VS Code in `website/playground/`, with:
 
@@ -18,7 +18,9 @@ The browser opens VS Code in `website/playground/`, with:
 - Extraction to C, OCaml, and F#, with native compilation and execution.
 - F* and Pulse tutorial sources, exercises, solutions, and the static book.
 
-Setup checks the examples automatically and preserves existing edits.
+The image's examples are verified during its build. Startup copies editable
+sources, checks tool availability, and preserves existing edits; it does not
+repeat the full verification and compilation matrix.
 In the terminal:
 
 ```sh
@@ -41,6 +43,19 @@ Linux x86-64.
 See [the playground guide](website/playground/README.md) for precise
 guarantees, pinned versions, tutorial compatibility notes, and Docker commands.
 The [F* website](https://fstar-lang.org/) provides the broader introduction.
+
+## Maintaining the image
+
+[Publish playground image](https://github.com/FStarLang/TryFStar/actions/workflows/container.yml)
+rebuilds and checks the image when toolchain inputs change, or on manual dispatch.
+Normal rebuilds use a GitHub Actions layer cache and publish to
+`ghcr.io/fstarlang/tryfstar`.
+
+After a successful build, copy the immutable reference from the run summary
+into `.devcontainer/try-fstar/devcontainer.json`. Verify an anonymous
+`docker pull` succeeds before committing the new pin. For the first publication,
+the package may need to be made public in its GitHub package settings.
+Moving the `latest` tag does not change existing Codespaces or this pinned setup.
 
 ## License
 
