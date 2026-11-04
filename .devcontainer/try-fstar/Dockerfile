@@ -69,6 +69,7 @@ RUN git init -q /opt/pal-csharp \
     && git -C /opt/pal-csharp fetch -q --depth 1 origin "${PAL_CSHARP_REV}" \
     && git -C /opt/pal-csharp checkout -q --detach FETCH_HEAD \
     && dotnet build /opt/pal-csharp/src/Pal.Tool/Pal.Tool.csproj -c Release --verbosity minimal \
+    && dotnet build /opt/pal-csharp/src/Pal.Analyzers/Pal.Analyzers.csproj -c Release --verbosity minimal \
     && make -C /opt/pal-csharp/pulse FSTAR_EXE=/opt/fstar/bin/fstar.exe -j2
 
 RUN printf '#!/bin/sh\nexec dotnet /opt/pal-csharp/src/Pal.Tool/bin/Release/net10.0/palcs.dll "$@"\n' \

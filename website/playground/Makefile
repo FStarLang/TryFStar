@@ -29,7 +29,7 @@ extract:
 	$(MAKE) -C pulse extract
 
 check: doctor
-	python3 -m unittest -q test_setup.py test_preview.py
+	python3 -m unittest -q test_setup.py test_preview.py test_pal_csharp.py
 	@set -e; for project in $(PROJECTS); do $(MAKE) -C "$$project" check; done
 	$(MAKE) tutorial-check
 

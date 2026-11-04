@@ -36,7 +36,10 @@ def main():
         tutorials = Path("/opt/playground-seed/tutorials")
     if not tutorials.is_dir():
         raise FileNotFoundError(f"Tutorial source directory is missing: {tutorials}")
-    for name in ("Makefile", "setup.py", "test_setup.py", "preview.py", "test_preview.py", "README.md"):
+    for name in (
+        "Makefile", "setup.py", "test_setup.py", "test_pal_csharp.py",
+        "preview.py", "test_preview.py", "README.md", "TryFStar.sln",
+    ):
         copy_new(HERE / name, workspace / name)
     copy_new(HERE / ".vscode/tasks.json", workspace / ".vscode/tasks.json")
     copy_new(HERE / "tutorial-compat/pulse-intro.patch",
@@ -60,6 +63,7 @@ def main():
         if project == "pal-csharp":
             includes.append(str(Path(os.environ.get("PAL_CS_ROOT", "/opt/pal-csharp")) / "pulse"))
             copy_new(HERE / project / "Sort.csproj", destination / "Sort.csproj")
+            copy_new(HERE / project / "Pal.Editor.csproj", destination / "Pal.Editor.csproj")
             copy_new(HERE / project / "Directory.Build.props", destination / "Directory.Build.props")
         if includes:
             includes += [str(Path(include) / "_cache") for include in includes]

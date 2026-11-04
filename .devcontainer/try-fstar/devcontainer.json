@@ -33,8 +33,12 @@
         "remote.autoForwardPortsSource": "process",
         "fstarVSCodeAssistant.c2pulse": true,
         "fstarVSCodeAssistant.verifyOnSave": true,
+        "dotnet.defaultSolution": "TryFStar.sln",
         "files.watcherExclude": {
-          "**/_build/**": true
+          "**/_build/**": false,
+          "**/_build/cache/**": true,
+          "**/_build/obj/**": true,
+          "**/_build/bin/**": true
         },
         "terminal.integrated.defaultProfile.linux": "bash"
       }

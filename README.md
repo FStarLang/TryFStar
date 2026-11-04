@@ -31,6 +31,11 @@ projects or the rest of the checkout. Other forwarded ports remain unchanged.
 The image's examples are verified during its build. Startup copies editable
 sources, checks tool availability, and preserves existing edits; it does not
 repeat the full verification and compilation matrix.
+The current image predates PAL-CSharp's editor analyzer; startup builds just
+that small component once from cached packages, taking about five seconds.
+The C# editor then shows translation diagnostics as you type. Run
+**Tasks: Run Task > PAL-CSharp: verify C# proofs** for proof diagnostics mapped
+back to the C# source; proof checking is explicit, not automatic on save.
 In the terminal:
 
 ```sh

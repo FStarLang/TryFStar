@@ -31,6 +31,18 @@
       "problemMatcher": []
     },
     {
+      "label": "PAL-CSharp: verify C# proofs",
+      "type": "process",
+      "command": "make",
+      "args": ["-C", "pal-csharp", "verify"],
+      "problemMatcher": {
+        "base": "$msCompile",
+        "owner": "pal-csharp",
+        "fileLocation": ["relative", "${workspaceFolder}/pal-csharp"],
+        "applyTo": "closedDocuments"
+      }
+    },
+    {
       "label": "PAL-CSharp: verify and run C#",
       "type": "process",
       "command": "make",

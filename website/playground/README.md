@@ -16,7 +16,9 @@ In GitHub, use the [browser launch link](https://codespaces.new/FStarLang/TryFSt
 or **Code > Codespaces > New with options**, and select the same devcontainer
 configuration. Choose at least 4 cores, 8 GB RAM, and 32 GB disk.
 The initial launch downloads the image; it does not compile the toolchains
-or translators. Subsequent starts reuse the image. Its immutable registry
+or translator executables. With the current older image pin, setup builds only
+the small PAL-CSharp editor analyzer once per container, using cached packages
+(about five seconds). Subsequent starts reuse it. The image's immutable registry
 digest is pinned in `devcontainer.json`.
 
 Setup opens this directory, copies editable source and test files from the
@@ -113,6 +115,43 @@ the assistant. This setting is supported even though version 0.25.4 does not
 list it in the Settings UI. Alternatively, rebuild the container to apply
 the updated devcontainer defaults; the prebuilt verification toolchain is reused.
 Setup preserves existing source files and editor configurations.
+
+## PAL-CSharp in the editor
+
+Open `pal-csharp/InsertionSortSorted.cs` in its normal C# language mode.
+The Microsoft C# extension loads `TryFStar.sln` and `Pal.Editor.csproj`,
+which use PAL-CSharp's own Roslyn analyzer. Translation and specification
+diagnostics appear as you type, including errors inside attribute strings.
+The ordinary `Test.cs` runtime harness is deliberately excluded from this
+editor project; `Sort.csproj` still compiles and runs it as stock C#.
+
+Save your changes, then use **Tasks: Run Task > PAL-CSharp: verify C# proofs**,
+or run:
+
+```sh
+make -C pal-csharp verify
+```
+
+This translates the annotated C#, checks every generated module with F*, and
+runs `palcs report` to map proof failures back to C#. The analyzer reads
+`_build/pulse/verification.txt` and displays those failures as `PALCS0600`
+diagnostics on the original source. A repaired proof clears the previous
+failures when you rerun the task. Unmapped errors remain in the task output,
+and a failed proof still fails the task.
+
+Unlike PAL C, C# does not go through the F* assistant's C frontend: proof
+checking is an explicit task, not automatic verification on save. The live
+analyzer checks translatability, not proofs; proof diagnostics describe the
+last verification run, not unsaved edits. No diagnostics does not by itself
+mean a proof has run.
+
+To update an existing Codespace, pull `main` and run **Codespaces: Rebuild
+Container**. This applies the solution and file-watcher settings: the proof
+report must be watched even though the other build caches are excluded.
+Select `TryFStar.sln` if the C# extension asks which solution to open.
+Setup preserves learner edits and builds the missing analyzer from the
+pinned sources and cached packages; it does not rebuild F* or the translator
+executables. Future source-built images preload the analyzer too.
 
 ## Toolchain pins
 

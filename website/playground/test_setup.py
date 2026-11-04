@@ -42,6 +42,8 @@ class SetupTests(unittest.TestCase):
         self.assertTrue((self.workspace / "tutorials/Part1.GettingOffTheGround.fst").is_file())
         self.assertTrue((self.workspace / "tutorials/pulse/PulseTutorial.Intro.fst").is_file())
         self.assertTrue((self.workspace / ".vscode/tasks.json").is_file())
+        self.assertTrue((self.workspace / "TryFStar.sln").is_file())
+        self.assertTrue((self.workspace / "pal-csharp/Pal.Editor.csproj").is_file())
 
     def test_repeated_setup_preserves_edits_and_restores_missing_sources(self):
         self.setup_workspace()
@@ -52,12 +54,15 @@ class SetupTests(unittest.TestCase):
         pal_config = self.workspace / "pal/pal.config.json"
         custom_pal = {"files": ["other.c"], "options": ["--outdir", "_build/custom"]}
         pal_config.write_text(json.dumps(custom_pal))
+        editor_project = self.workspace / "pal-csharp/Pal.Editor.csproj"
+        editor_project.write_text("learner's project edits\n")
         missing = self.workspace / "pal/multiply.c"
         missing.unlink()
         self.setup_workspace()
         self.assertEqual(source.read_text(), "learner's source edits\n")
         self.assertEqual(json.loads(config.read_text())["options"], ["--fuel", "2"])
         self.assertEqual(json.loads(pal_config.read_text()), custom_pal)
+        self.assertEqual(editor_project.read_text(), "learner's project edits\n")
         self.assertTrue(missing.is_file())
 
 

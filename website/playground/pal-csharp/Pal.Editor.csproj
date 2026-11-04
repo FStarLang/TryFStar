@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <RootNamespace>PalCSharp.Tests</RootNamespace>
+    <PalCsRoot Condition="'$(PalCsRoot)' == ''">$(PAL_CS_ROOT)</PalCsRoot>
+    <PalCsRoot Condition="'$(PalCsRoot)' == ''">/opt/pal-csharp</PalCsRoot>
+    <PalAnalyzerDir>$(PalCsRoot)/src/Pal.Analyzers/bin/Release/netstandard2.0</PalAnalyzerDir>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Pal.Annotations">
+      <HintPath>$(PalCsRoot)/src/Pal.Annotations/bin/Release/net10.0/Pal.Annotations.dll</HintPath>
+    </Reference>
+    <Compile Include="InsertionSortSorted.cs" />
+    <Analyzer Include="$(PalAnalyzerDir)/Pal.Analyzers.dll" />
+    <Analyzer Include="$(PalAnalyzerDir)/Pal.Compiler.dll" />
+    <Analyzer Include="$(PalAnalyzerDir)/Pal.Annotations.dll" />
+    <AdditionalFiles Include="_build/pulse/verification.txt" />
+  </ItemGroup>
+</Project>
