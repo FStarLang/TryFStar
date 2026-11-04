@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Primitive Effect Refinements &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tactics and Metaprogramming with Meta-F*" href="../part5/part5.html" />
+    <link rel="prev" title="Divergence, or Non-Termination" href="part4_div.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="part4.html">Computational Effects</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="part4_background.html">Computation Types to Track Dependences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part4_computation_types_and_tot.html">The Effect of Total Computations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part4_ghost.html">Erasure and the Ghost Effect</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part4_div.html">Divergence, or Non-Termination</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Primitive Effect Refinements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#a-primer-on-floyd-hoare-logic-and-weakest-preconditions">A Primer on Floyd-Hoare Logic and Weakest Preconditions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#operational-semantics">Operational Semantics</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#floyd-hoare-logic">Floyd-Hoare Logic</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#weakest-preconditions">Weakest Preconditions</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#a-sample-program-proof">A Sample Program Proof</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#the-pure-effect-a-dijkstra-monad-for-pure-computations">The <code class="docutils literal notranslate"><span class="pre">PURE</span></code> Effect: A Dijkstra Monad for Pure Computations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pure-and-tot"><code class="docutils literal notranslate"><span class="pre">PURE</span></code> and <code class="docutils literal notranslate"><span class="pre">Tot</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#pure-hoare-triples-for-pure"><code class="docutils literal notranslate"><span class="pre">Pure</span></code>: Hoare Triples for <code class="docutils literal notranslate"><span class="pre">PURE</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#ghost-and-div"><code class="docutils literal notranslate"><span class="pre">GHOST</span></code> and <code class="docutils literal notranslate"><span class="pre">DIV</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-lemma-abbreviation">The <code class="docutils literal notranslate"><span class="pre">Lemma</span></code> abbreviation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pulse/pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="part4.html">Computational Effects</a></li>
+      <li class="breadcrumb-item active">Primitive Effect Refinements</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="primitive-effect-refinements">
+<span id="part4-pure"></span><h1>Primitive Effect Refinements<a class="headerlink" href="#primitive-effect-refinements" title="Link to this heading"></a></h1>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This chapter provides some background on Floyd-Hoare logic and
+weakest-precondition-based verification condition generation. This
+is necessary if you want to understand a bit about how F* infers
+the logical constraints needed to prove the correctness of a
+program. It is also useful background for more advanced material in
+subsequent chapters about defining custom effects in F*, e.g.,
+effects to model state, exceptions, or concurrency.</p>
+</div>
+<p>Refinement types <code class="docutils literal notranslate"><span class="pre">x:t{p}</span></code> <em>refine</em> value types <code class="docutils literal notranslate"><span class="pre">t</span></code> and allow us to
+make more precise assertions about the values in the program. For
+example, when we have <code class="docutils literal notranslate"><span class="pre">v</span> <span class="pre">:</span> <span class="pre">x:int{x</span> <span class="pre">&gt;=</span> <span class="pre">0}</span></code>, then not only we know
+that <code class="docutils literal notranslate"><span class="pre">v</span></code> is an <code class="docutils literal notranslate"><span class="pre">int</span></code>, but also that <code class="docutils literal notranslate"><span class="pre">v</span> <span class="pre">&gt;=</span> <span class="pre">0</span></code>.</p>
+<p>In a similar manner, F* allows refining computation types with
+specifications that describe some aspects of a program’s computational
+behavior. These <em>effect refinements</em> can, in general, be defined by
+the user in a reasoning system of their choosing, e.g., the
+refinements may use separation logic, or they may count computation
+steps.</p>
+<p>However, F* has built-in support for refining the specification of
+pure programs with effect refinements that encode the standard
+reasoning principles of Floyd-Hoare Logic and weakest
+precondition-based calculi. Foreshadowing what’s about to come in this
+chapter, we can write the following specification for the
+<code class="docutils literal notranslate"><span class="pre">factorial</span></code> function:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> factorial (x:int)
+  : Pure int (<span class="k">requires</span> x &gt;= 0) (<span class="k">ensures</span> <span class="k">fun</span> r -&gt; r &gt;= 1)
+  = <span class="k">if</span> x = 0
+    <span class="k">then</span> 1
+    <span class="k">else</span> x * factorial (x - 1)
+</pre></div>
+</div>
+<p>Intuitively, this type states that <code class="docutils literal notranslate"><span class="pre">factorial</span> <span class="pre">x</span></code> is a computation
+defined only when <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">&gt;=</span> <span class="pre">0</span></code> and always terminates returning a value
+<code class="docutils literal notranslate"><span class="pre">r</span> <span class="pre">&gt;=</span> <span class="pre">1</span></code>. In a way, this type is closely related to other, more
+familiar, types we have given to <code class="docutils literal notranslate"><span class="pre">factorial</span></code> so far, e.g., <code class="docutils literal notranslate"><span class="pre">nat</span> <span class="pre">-&gt;</span>
+<span class="pre">pos</span></code>, and, indeed, <code class="docutils literal notranslate"><span class="pre">factorial</span></code> can be used at this type.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> fact (x:nat) : pos = factorial x
+</pre></div>
+</div>
+<p>Actually, in all the code we’ve seen so far, what’s happening under
+the covers is that F* infers a type for a pure program similar to
+<code class="docutils literal notranslate"><span class="pre">Pure</span> <span class="pre">t</span> <span class="pre">pre</span> <span class="pre">post</span></code> and then checks that that type can be subsumed to
+a user-provided specification of the form <code class="docutils literal notranslate"><span class="pre">Tot</span> <span class="pre">t'</span></code>.</p>
+<p>In this chapter, we look into how these <code class="docutils literal notranslate"><span class="pre">Pure</span></code> specifications work,
+starting with a primer on Floyd-Hoare Logic and weakest precondition
+calculi. If the reader is familiar with these, they may safely skip
+the next subsections, though even if you are an expert, it may be of
+interest to see how such program logics can be formalized in F*.</p>
+<section id="a-primer-on-floyd-hoare-logic-and-weakest-preconditions">
+<span id="part4-floyd-hoare"></span><h2>A Primer on Floyd-Hoare Logic and Weakest Preconditions<a class="headerlink" href="#a-primer-on-floyd-hoare-logic-and-weakest-preconditions" title="Link to this heading"></a></h2>
+<p>Floyd-Hoare Logic is a system of specifications and rules to reason
+about the logical properties of programs, introduced by Robert Floyd
+in a paper titled <a class="reference external" href="https://link.springer.com/chapter/10.1007/978-94-011-1793-7_4">Assigning Meaning to Programs</a> and
+by Tony Hoare in <a class="reference external" href="https://dl.acm.org/doi/10.1145/363235.363259">An axiomatic basis for computer programming</a>. The notation used in
+most modern presentations (called Hoare triples) is due to Hoare.  An
+algorithm to compute Hoare triples was developed by Edsger Dijkstra
+<a class="reference external" href="https://www.cs.utexas.edu/users/EWD/ewd04xx/EWD472.PDF">presented first in this paper</a> , using a
+technique called <em>weakest preconditions</em>. All of them received Turing
+Awards for their work on these and other related topics.</p>
+<p>For an introduction to these ideas, we’ll develop a small imperative
+language with global variables, presenting</p>
+<ul class="simple">
+<li><p>An operational semantics for the language, formalized as an
+interpreter.</p></li>
+<li><p>A Floyd-Hoare program logic proven sound with respect to the
+operational semantics.</p></li>
+<li><p>And, finally, an algorithm to compute weakest preconditions proved
+sound against the Floyd-Hoare logic.</p></li>
+</ul>
+<p>Our language has the following abstract syntax:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> var = nat
+
+<span class="k">type</span> expr =
+  | EConst : int -&gt; expr                           <span class="c">// constants: ..., -1, 0, 1, ...</span>
+  | EVar   : var -&gt; expr                           <span class="c">// global variables</span>
+  | EAdd   : expr -&gt; expr -&gt; expr                  <span class="c">// arithmetic: e1 + e2</span>
+  
+<span class="k">type</span> program = 
+  | Assign : var -&gt; expr -&gt; program                <span class="c">// x := e</span>
+  | Seq    : program -&gt; program -&gt; program         <span class="c">// p1; p2</span>
+  | If     : expr -&gt; program -&gt; program -&gt; program <span class="c">// if e then p1 else p2</span>
+  | Repeat : expr -&gt; program -&gt; program            <span class="c">// repeat n { p }</span>
+</pre></div>
+</div>
+<p>Expressions includes integer constants, global variables (represented
+just as natural numbers), and some other forms, e.g., arithmetic
+expressions like addition.</p>
+<p>A program includes:</p>
+<ul class="simple">
+<li><p>Assignments, <code class="docutils literal notranslate"><span class="pre">EAssign</span> <span class="pre">x</span> <span class="pre">e</span></code>, representing the assignment of the
+result of an expression <code class="docutils literal notranslate"><span class="pre">e</span></code> to a global variable <code class="docutils literal notranslate"><span class="pre">x</span></code>, i.e., <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">:=</span> <span class="pre">e</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Seq</span></code>, to compose programs sequentially</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">If</span></code> to compose programs conditionally</p></li>
+<li><p>And <code class="docutils literal notranslate"><span class="pre">Repeat</span> <span class="pre">n</span> <span class="pre">p</span></code>, which represents a construct similar to a
+<code class="docutils literal notranslate"><span class="pre">for</span></code>-loop (or primitive recursion), where the program <code class="docutils literal notranslate"><span class="pre">p</span></code> is
+repeated <code class="docutils literal notranslate"><span class="pre">n</span></code> times, where <code class="docutils literal notranslate"><span class="pre">n</span></code> evaluates to a non-negative
+integer.</p></li>
+</ul>
+<p>Our language does not have <code class="docutils literal notranslate"><span class="pre">while</span></code> loops, whose semantics are a bit
+more subtle to develop. We will look at a semantics for <code class="docutils literal notranslate"><span class="pre">while</span></code> in a
+subsequent chapter.</p>
+<section id="operational-semantics">
+<h3>Operational Semantics<a class="headerlink" href="#operational-semantics" title="Link to this heading"></a></h3>
+<p>Our first step in giving a semantics to programs is to define an
+interpreter for it to run a program while transforming a memory that
+stores the values of the global variables.</p>
+<p>To model this memory, we use the type <code class="docutils literal notranslate"><span class="pre">state</span></code> shown below:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="c">// The state of a program is a map from global variable to integers</span>
+<span class="k">let</span> state = var -&gt; int
+<span class="k">let</span> read (s:state) (i:var) : int = s i
+<span class="k">let</span> write (s:state) (i:var) (v:int)
+  : state
+  = <span class="k">fun</span> j -&gt; <span class="k">if</span> i=j <span class="k">then</span> v <span class="k">else</span> read s j
+</pre></div>
+</div>
+<p>Writing a small evaluator for expressions is easy:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> eval_expr (e:expr) (s:state)
+  : int
+  = <span class="k">match</span> e <span class="k">with</span>
+    | EConst v -&gt;
+      v
+      
+    | EVar x -&gt;
+      read s x
+      
+    | EAdd e1 e2 -&gt;
+      eval_expr e1 s + eval_expr e2 s
+</pre></div>
+</div>
+<p>The interpreter for programs itself takes a bit more work, since
+programs can both read and write the state. To structure our
+interpreter, we’ll introduce a simple state monad <code class="docutils literal notranslate"><span class="pre">st</span> <span class="pre">a</span></code>. We’ve seen
+this construction before in <a class="reference internal" href="../part2/part2_par.html#part2-monad-intro"><span class="std std-ref">a previous chapter</span></a>—so, look there if the state monad is unfamiliar
+to you. Recall that F* has support for monadic let operators: the
+<code class="docutils literal notranslate"><span class="pre">let!</span></code> provides syntactic sugar to convenient compose <code class="docutils literal notranslate"><span class="pre">st</span></code> terms.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> st (a:Type) = state -&gt; (a &amp; state)
+
+<span class="k">let</span> get : st state = <span class="k">fun</span> s -&gt; (s, s)
+
+<span class="k">let</span> put (s:state) : st unit = <span class="k">fun</span> <span class="k">_</span> -&gt; ((), s)
+
+<span class="k">let</span> (<span class="k">let</span>!) #a #b (f:st a) (g: a -&gt; st b) : st b = 
+  <span class="k">fun</span> s -&gt; <span class="k">let</span> v, s&#39; = f s <span class="k">in</span> g v s&#39;
+
+<span class="k">let</span> return #a (x:a) : st a = <span class="k">fun</span> s -&gt; (x, s)
+</pre></div>
+</div>
+<p>Now, the interpreter itself is a total, recursive function <code class="docutils literal notranslate"><span class="pre">run</span></code> which
+interprets a program <code class="docutils literal notranslate"><span class="pre">p</span></code> as a state-passing function of type <code class="docutils literal notranslate"><span class="pre">st</span>
+<span class="pre">unit</span></code>, or <code class="docutils literal notranslate"><span class="pre">state</span> <span class="pre">-&gt;</span> <span class="pre">unit</span> <span class="pre">&amp;</span> <span class="pre">state</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> run (p:program)
+  : <span class="k">Tot</span> (st unit)
+        (<span class="k">decreases</span> %[p;0])
+  = <span class="k">match</span> p <span class="k">with</span>
+    | Assign x e -&gt; 
+      <span class="k">let</span>! s = get <span class="k">in</span>
+      <span class="k">let</span> v = eval_expr e s <span class="k">in</span>
+      put (write s x v)
+
+    | Seq p1 p2 -&gt; 
+      run p1;!
+      run p2
+
+    | If e p1 p2 -&gt;
+      <span class="k">let</span>! s = get <span class="k">in</span>
+      <span class="k">let</span> n = eval_expr e s <span class="k">in</span>
+      <span class="k">if</span> n &lt;&gt; 0 <span class="k">then</span> run p1 <span class="k">else</span> run p2
+      
+    | Repeat e p -&gt;
+      <span class="k">let</span>! s = get <span class="k">in</span>
+      <span class="k">let</span> n = eval_expr e s <span class="k">in</span>
+      <span class="k">if</span> n &lt;= 0 <span class="k">then</span> return ()
+      <span class="k">else</span> run_repeat p n
+
+<span class="k">and</span> run_repeat (p:program) (n:nat)
+  : <span class="k">Tot</span> (st unit)
+        (<span class="k">decreases</span> %[p; 1; n])
+  = <span class="k">if</span> n = 0 <span class="k">then</span> return ()
+    <span class="k">else</span> ( run p ;! run_repeat p (n - 1) )
+</pre></div>
+</div>
+<p>Let’s look at its definition in detail:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Assign</span> <span class="pre">x</span> <span class="pre">e</span></code>: Evaluate <code class="docutils literal notranslate"><span class="pre">e</span></code> in the current state and then
+update the state with a new value of <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Seq</span> <span class="pre">p1</span> <span class="pre">p2</span></code>: Simply run <code class="docutils literal notranslate"><span class="pre">p1</span></code> and then run <code class="docutils literal notranslate"><span class="pre">p2</span></code>, where
+<code class="docutils literal notranslate"><span class="pre">;!</span></code> is syntactic sugar for <code class="docutils literal notranslate"><span class="pre">let!</span> <span class="pre">_</span> <span class="pre">=</span> <span class="pre">run</span> <span class="pre">p1</span> <span class="pre">in</span> <span class="pre">run</span> <span class="pre">p2</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">If</span> <span class="pre">e</span> <span class="pre">p1</span> <span class="pre">p2</span></code>: Evaluate <code class="docutils literal notranslate"><span class="pre">e</span></code> in the current state, branch on
+its result and run either <code class="docutils literal notranslate"><span class="pre">p1</span></code> or <code class="docutils literal notranslate"><span class="pre">p2</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Repeat</span> <span class="pre">e</span> <span class="pre">p</span></code>: Evaluate <code class="docutils literal notranslate"><span class="pre">e</span></code> to <code class="docutils literal notranslate"><span class="pre">n</span></code>, and if <code class="docutils literal notranslate"><span class="pre">n</span></code> is
+greater than zero, call the mutually recursive <code class="docutils literal notranslate"><span class="pre">run_repeat</span> <span class="pre">n</span>
+<span class="pre">p</span></code>. Most of the subtlety here is in convincing F* that this
+mutually recursive function terminates, but this is fairly
+straightforward once you know how—we discussed
+<a class="reference internal" href="../part1/part1_termination.html#part1-mutual-recursion"><span class="std std-ref">termination proofs for mutually recursive functions earlier</span></a>.</p></li>
+</ul>
+</div></blockquote>
+<p>These operational semantics are the ground truth for our programming
+language—it defines how programs execute. Now that we have that
+settled, we can look at how a Floyd-Hoare logic makes it possible to
+reason about programs in a structured way.</p>
+</section>
+<section id="floyd-hoare-logic">
+<h3>Floyd-Hoare Logic<a class="headerlink" href="#floyd-hoare-logic" title="Link to this heading"></a></h3>
+<p>The goal of a Floyd-Hoare logic is to provide a way to reason about a
+program based on the structure of its syntax, rather than reasoning
+directly about its operational semantics. The unit of reasoning is
+called a <em>Hoare triple</em>, a predicate of the form <code class="docutils literal notranslate"><span class="pre">{P}</span> <span class="pre">c</span> <span class="pre">{Q}</span></code>, where
+<code class="docutils literal notranslate"><span class="pre">P</span></code> and <code class="docutils literal notranslate"><span class="pre">Q</span></code> are predicates about the state of the program, and
+<code class="docutils literal notranslate"><span class="pre">c</span></code> is the program itself.</p>
+<p>We can <em>define</em> Hoare triples for our language by interpreting them as
+an assertion about the operational semantics, where <code class="docutils literal notranslate"><span class="pre">triple</span> <span class="pre">p</span> <span class="pre">c</span> <span class="pre">q</span></code>
+represents, formally, the Hoare triple <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">p</span> <span class="pre">}</span> <span class="pre">c</span> <span class="pre">{</span> <span class="pre">q</span> <span class="pre">}</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> triple (pre:state -&gt; prop)
+           (c:program)
+           (post:state -&gt; prop)
+  = <span class="k">forall</span> s0. pre s0 ==&gt; post (snd (run c s0))
+</pre></div>
+</div>
+<p>The predicate <code class="docutils literal notranslate"><span class="pre">triple</span> <span class="pre">p</span> <span class="pre">c</span> <span class="pre">q</span></code> is valid, if when executing <code class="docutils literal notranslate"><span class="pre">c</span></code> in a
+state that satisfies <code class="docutils literal notranslate"><span class="pre">p</span></code> results in a state that satisfies <code class="docutils literal notranslate"><span class="pre">q</span></code>.
+The predicates <code class="docutils literal notranslate"><span class="pre">p</span></code> and <code class="docutils literal notranslate"><span class="pre">q</span></code> are also called precondition and
+postcondition of <code class="docutils literal notranslate"><span class="pre">c</span></code>, respectively.</p>
+<p>For each syntactic construct of our language, we can prove a lemma
+that shows how to build an instance of the <code class="docutils literal notranslate"><span class="pre">triple</span></code> predicate for
+that construct. Then, to build a proof of program, one stitches
+together these lemmas to obtain a <code class="docutils literal notranslate"><span class="pre">triple</span> <span class="pre">p</span> <span class="pre">main</span> <span class="pre">q</span></code>, a statement of
+correctess of the <code class="docutils literal notranslate"><span class="pre">main</span></code> program.</p>
+<section id="assignment">
+<h4>Assignment<a class="headerlink" href="#assignment" title="Link to this heading"></a></h4>
+<p>Our first rule is for reasoning about variable assignment:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> assignment (x:var) (e:expr) (post:state -&gt; prop)
+  : <span class="k">Lemma</span> (triple (<span class="k">fun</span> s0 -&gt; post (write s0 x (eval_expr e s0)))
+                  (Assign x e)
+                  post)
+  = ()
+</pre></div>
+</div>
+<p>This lemma says that <code class="docutils literal notranslate"><span class="pre">post</span></code> holds after executing <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">:=</span> <span class="pre">e</span></code> in the
+initial state <code class="docutils literal notranslate"><span class="pre">s0</span></code>, if <code class="docutils literal notranslate"><span class="pre">post</span></code> holds on the initial state updated
+at <code class="docutils literal notranslate"><span class="pre">x</span></code> with the value of <code class="docutils literal notranslate"><span class="pre">e</span></code>.</p>
+<p>For example, to prove that after executing <code class="docutils literal notranslate"><span class="pre">z</span> <span class="pre">:=</span> <span class="pre">y</span> <span class="pre">+</span> <span class="pre">1</span></code> in <code class="docutils literal notranslate"><span class="pre">s0</span></code>,
+if we expect the value of <code class="docutils literal notranslate"><span class="pre">z</span></code> to be greater than zero`, then the
+assignment rule says that <code class="docutils literal notranslate"><span class="pre">read</span> <span class="pre">s0</span> <span class="pre">y</span> <span class="pre">+</span> <span class="pre">1</span> <span class="pre">&gt;</span> <span class="pre">0</span></code> should hold before the
+assignment, which is what we would expect.</p>
+</section>
+<section id="sequence">
+<h4>Sequence<a class="headerlink" href="#sequence" title="Link to this heading"></a></h4>
+<p>Our next lemma about triples stitches together triples for two
+programs that are sequentially composed:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> sequence (p1 p2:program)
+             (pre pre_mid post:state -&gt; prop)
+  : <span class="k">Lemma</span> 
+    (<span class="k">requires</span> 
+      triple pre p1 pre_mid /\
+      triple pre_mid p2 post)
+    (<span class="k">ensures</span>
+      triple pre (Seq p1 p2) post)
+  = ()
+</pre></div>
+</div>
+<p>The lemma says that if we can derive the Hoare triples of the two
+statements such that postcondition of <code class="docutils literal notranslate"><span class="pre">p1</span></code> matches the precondition
+of <code class="docutils literal notranslate"><span class="pre">p2</span></code>, then we can compose them.</p>
+</section>
+<section id="conditional">
+<h4>Conditional<a class="headerlink" href="#conditional" title="Link to this heading"></a></h4>
+<p>The lemma for conditionals is next:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> conditional (e:expr)
+                (p1 p2:program)
+                (pre post:state -&gt; prop)
+  : <span class="k">Lemma</span> 
+    (<span class="k">requires</span> 
+      triple (<span class="k">fun</span> s -&gt; pre s /\ eval_expr e s =!= 0) p1 post /\
+      triple (<span class="k">fun</span> s -&gt; pre s /\ eval_expr e s == 0)  p2 post)
+    (<span class="k">ensures</span>
+      triple pre (If e p1 p2) post)
+  = ()
+</pre></div>
+</div>
+<p>It says that to derive the postcondition <code class="docutils literal notranslate"><span class="pre">post</span></code> from the <code class="docutils literal notranslate"><span class="pre">If</span> <span class="pre">e</span> <span class="pre">p1</span>
+<span class="pre">p2</span></code>, we should be able to derive it from each of the branches with the
+same precondition <code class="docutils literal notranslate"><span class="pre">pre</span></code>. In addition, since we know that <code class="docutils literal notranslate"><span class="pre">p1</span></code>
+executes only when <code class="docutils literal notranslate"><span class="pre">e</span></code> is non-zero, we can add these facts to the
+preconditions of each branch.</p>
+</section>
+<section id="repeat">
+<h4>Repeat<a class="headerlink" href="#repeat" title="Link to this heading"></a></h4>
+<p>In all the cases so far, these lemmas are proved automated by F* and
+Z3. In the case of repeats, however, we need to do a little more work,
+since an inductive argument is involved.</p>
+<p>The rule for <code class="docutils literal notranslate"><span class="pre">repeat</span></code> requires a <em>loop invariant</em> <code class="docutils literal notranslate"><span class="pre">inv</span></code>.  The loop
+invariant is an assertion that holds before the loop starts, is
+maintained by each iteration of the loop, and is provided as the
+postcondition of the loop.</p>
+<p>The lemma below states that if we can prove that <code class="docutils literal notranslate"><span class="pre">triple</span> <span class="pre">inv</span> <span class="pre">p</span> <span class="pre">inv</span></code>,
+then we can also prove <code class="docutils literal notranslate"><span class="pre">triple</span> <span class="pre">inv</span> <span class="pre">(Repeat</span> <span class="pre">e</span> <span class="pre">p)</span> <span class="pre">inv</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="c">// We need an auxilary lemma to prove it by induction for repeat_n</span>
+<span class="k">let</span> <span class="k">rec</span> repeat_n (p:program) (inv:state -&gt; prop) (n:nat)
+  : <span class="k">Lemma</span>
+    (<span class="k">requires</span> triple inv p inv)
+    (<span class="k">ensures</span> (<span class="k">forall</span> s0. inv s0 ==&gt; inv (snd (run_repeat p n s0))))
+ = <span class="k">if</span> n = 0 <span class="k">then</span> ()
+   <span class="k">else</span> repeat_n p inv (n - 1)
+
+<span class="c">// Then, we use that auxiliary lemma to prove the main</span>
+<span class="c">// rule for reasoning about repeat using an invariant</span>
+<span class="k">let</span> repeat (e:expr) (p:program) (inv:state -&gt; prop)
+  : <span class="k">Lemma</span>
+    (<span class="k">requires</span> triple inv p inv)
+    (<span class="k">ensures</span> triple inv (Repeat e p) inv)
+  = <span class="k">introduce</span> <span class="k">forall</span> s0. inv s0 ==&gt; inv (snd (run (Repeat e p) s0)) <span class="k">with</span>
+    <span class="k">introduce</span> <span class="k">_</span> ==&gt; <span class="k">_</span>  <span class="k">with</span>
+      inv_s0 . (
+        <span class="k">let</span> n = eval_expr e s0 <span class="k">in</span>
+        <span class="k">if</span> n &lt;= 0 <span class="k">then</span> ()
+        <span class="k">else</span> repeat_n p inv n
+    )
+</pre></div>
+</div>
+<p>The auxiliary lemma <code class="docutils literal notranslate"><span class="pre">repeat_n</span></code> proves that <code class="docutils literal notranslate"><span class="pre">run_repeat</span> <span class="pre">p</span> <span class="pre">n</span></code>
+preserves <code class="docutils literal notranslate"><span class="pre">inv</span></code>, if <code class="docutils literal notranslate"><span class="pre">p</span></code> preserves <code class="docutils literal notranslate"><span class="pre">inv</span></code>.</p>
+<p>To call this lemma from the main <code class="docutils literal notranslate"><span class="pre">repeat</span></code> lemma, we need to “get
+our hands on” the initial state <code class="docutils literal notranslate"><span class="pre">s0</span></code>, and the <a class="reference internal" href="../part2/part2_logical_connectives.html#part2-connectives"><span class="std std-ref">syntactic sugar
+to manipulate logical connectives</span></a> makes this
+possible.</p>
+</section>
+<section id="consequence">
+<h4>Consequence<a class="headerlink" href="#consequence" title="Link to this heading"></a></h4>
+<p>The final lemma about our Hoare triples is called the rule of
+consequence. It allows strengthening the precondition and weakening
+the postcondition of a triple.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> consequence (p:program) (pre pre&#39; post post&#39;:state -&gt; prop)
+  : <span class="k">Lemma</span>
+    (<span class="k">requires</span> 
+      triple pre p post /\
+      (<span class="k">forall</span> s. pre&#39; s ==&gt; pre s) /\
+      (<span class="k">forall</span> s. post s ==&gt; post&#39; s))
+    (<span class="k">ensures</span>
+      triple pre&#39; p post&#39;)
+  = ()
+</pre></div>
+</div>
+<p>A precondition of a program is an obligation before the statement
+is executed. So if <code class="docutils literal notranslate"><span class="pre">p</span></code> requires <code class="docutils literal notranslate"><span class="pre">pre</span></code>, we can always strengthen
+the precondition to <code class="docutils literal notranslate"><span class="pre">pre'</span></code>, provided <code class="docutils literal notranslate"><span class="pre">pre'</span> <span class="pre">==&gt;</span> <span class="pre">pre</span></code>, i.e. it is
+logically valid to require more than necessary in the
+precondition. Similarly, postcondition is what a statement
+guarantees. So if <code class="docutils literal notranslate"><span class="pre">p</span></code> guarantees <code class="docutils literal notranslate"><span class="pre">post</span></code>, we can always weaken it
+to guarantee less, i.e. some <code class="docutils literal notranslate"><span class="pre">post'</span></code> where <code class="docutils literal notranslate"><span class="pre">post</span> <span class="pre">==&gt;</span> <span class="pre">post'</span></code>.</p>
+</section>
+</section>
+<section id="weakest-preconditions">
+<h3>Weakest Preconditions<a class="headerlink" href="#weakest-preconditions" title="Link to this heading"></a></h3>
+<p>The rules of Floyd-Hoare logic provide an abstract way to reason about
+programs. However, the rules of the logic are presented
+declaratively. For example, to apply the <code class="docutils literal notranslate"><span class="pre">sequence</span></code> rule, one has
+derive triples for each component in a way that they prove exactly the
+same assertion (<code class="docutils literal notranslate"><span class="pre">pre_mid</span></code>) about the intermediate state. There may
+be many ways to do this, e.g., one could apply the rule of
+consequence to weaken the postcondition of the first component, or to
+strengthen the precondition of the second component.</p>
+<p>Dijkstra’s system of weakest preconditions eliminates such ambiguity
+and provides an <em>algorithm</em> for computing valid Hoare triples,
+provided the invariants of all loops are given. This makes weakest
+preconditions the basis of many program proof tools, since given a
+program annotated with loop invariants, one can simply compute a
+logical formula (called a verification condition) whose validity
+implies the correctness of the program.</p>
+<p>At the core of the approach is a function <code class="docutils literal notranslate"><span class="pre">WP</span> <span class="pre">(c,</span> <span class="pre">Q)</span></code>, which
+computes a unique, weakest precondition <code class="docutils literal notranslate"><span class="pre">P</span></code> for the program <code class="docutils literal notranslate"><span class="pre">c</span></code>
+and postcondition <code class="docutils literal notranslate"><span class="pre">Q</span></code>. The semantics of <code class="docutils literal notranslate"><span class="pre">WP</span></code> is that <code class="docutils literal notranslate"><span class="pre">WP</span> <span class="pre">(c,</span> <span class="pre">Q)</span></code>
+is the weakest precondition that should hold before executing <code class="docutils literal notranslate"><span class="pre">c</span></code>
+for the postcondition <code class="docutils literal notranslate"><span class="pre">Q</span></code> to be valid after executing <code class="docutils literal notranslate"><span class="pre">c</span></code>. Thus,
+the function <code class="docutils literal notranslate"><span class="pre">WP</span></code> assigns meaning to programs as a transformer of
+postconditions <code class="docutils literal notranslate"><span class="pre">Q</span></code> to preconditions <code class="docutils literal notranslate"><span class="pre">WP</span> <span class="pre">(s,</span> <span class="pre">Q)</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">wp</span></code> function for our small imperative language is shown below:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> wp (c:program) (post: state -&gt; prop) 
+  : state -&gt; prop 
+  = <span class="k">match</span> c <span class="k">with</span>
+    | Assign x e -&gt; 
+      <span class="k">fun</span> s0 -&gt; post (write s0 x (eval_expr e s0))
+      
+    | Seq p1 p2 -&gt;
+      wp p1 (wp p2 post)
+
+    | If e p1 p2 -&gt; 
+      <span class="k">fun</span> s0 -&gt; 
+        (eval_expr e s0 =!= 0 ==&gt; wp p1 post s0) /\
+        (eval_expr e s0 == 0  ==&gt; wp p2 post s0)
+      
+    | Repeat e p -&gt;
+      <span class="k">fun</span> s0 -&gt;
+        (<span class="k">exists</span> (inv:state -&gt; prop). 
+          inv s0 /\
+          (<span class="k">forall</span> s. inv s ==&gt; post s) /\
+          (<span class="k">forall</span> s. inv s ==&gt; wp p inv s))
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>The case of <code class="docutils literal notranslate"><span class="pre">Assign</span></code> is identical to the <code class="docutils literal notranslate"><span class="pre">assignment</span></code> lemma
+shown earlier.</p></li>
+<li><p>The case of <code class="docutils literal notranslate"><span class="pre">Seq</span></code> sequentially composes the wp’s. That is, to
+prove the <code class="docutils literal notranslate"><span class="pre">post</span></code> after running <code class="docutils literal notranslate"><span class="pre">p1</span> <span class="pre">;;</span> <span class="pre">p2</span></code> we need to prove <code class="docutils literal notranslate"><span class="pre">wp</span>
+<span class="pre">p2</span> <span class="pre">post</span></code> after running <code class="docutils literal notranslate"><span class="pre">p1</span></code>. It may be helpful to read this case
+as the equivalent form <code class="docutils literal notranslate"><span class="pre">fun</span> <span class="pre">s0</span> <span class="pre">-&gt;</span> <span class="pre">wp</span> <span class="pre">p1</span> <span class="pre">(fun</span> <span class="pre">s1</span> <span class="pre">-&gt;</span> <span class="pre">wp</span> <span class="pre">p2</span> <span class="pre">post</span> <span class="pre">s1)</span>
+<span class="pre">s0</span></code>, where <code class="docutils literal notranslate"><span class="pre">s0</span></code> is the initial state and <code class="docutils literal notranslate"><span class="pre">s1</span></code> is the state that
+results after running just <code class="docutils literal notranslate"><span class="pre">p1</span></code>.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">If</span></code> case computes the WPs for each branch and requires them
+to be proven under the suitable branch condition.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">Repeat</span></code> case is most interesting: it involves an
+existentially quantified invariant <code class="docutils literal notranslate"><span class="pre">inv</span></code>, which is the loop
+invariant. That is, to reason about <code class="docutils literal notranslate"><span class="pre">Repeat</span> <span class="pre">n</span> <span class="pre">p</span></code>, one has to
+somehow find an invariant <code class="docutils literal notranslate"><span class="pre">inv</span></code> that is true initially, and
+implies both the WP of the loop body as well as the final
+postcondition.</p></li>
+</ul>
+<p>The <code class="docutils literal notranslate"><span class="pre">wp</span></code> function is sound in the sense that it computes a
+sufficient precondition, as proven by the following lemma.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> wp_soundness (p:program) (post:state -&gt; prop)
+  : <span class="k">Lemma</span> (triple (wp p post) p post)
+  = <span class="k">match</span> p <span class="k">with</span>
+    | Assign x e -&gt; ()
+    | Seq p1 p2 -&gt;
+      wp_soundness p2 post;
+      wp_soundness p1 (wp p2 post)
+    | If e p1 p2 -&gt;
+      wp_soundness p1 post;
+      wp_soundness p2 post
+    | Repeat e p -&gt;
+      <span class="k">introduce</span> <span class="k">forall</span> s0. wp (Repeat e p) post s0 ==&gt; 
+                      post (snd (run (Repeat e p) s0)) <span class="k">with</span>
+      <span class="k">introduce</span> <span class="k">_</span> ==&gt; <span class="k">_</span> <span class="k">with</span>
+        <span class="k">_</span> . ( 
+          <span class="k">eliminate</span> <span class="k">exists</span> (inv:state -&gt; prop).
+                            inv s0 /\                      
+                            (<span class="k">forall</span> s. inv s ==&gt; post s) /\
+                            (<span class="k">forall</span> s. inv s ==&gt; wp p inv s)
+          <span class="k">returns</span> <span class="k">_</span>
+          <span class="k">with</span> inv_props. (
+            wp_soundness p inv;
+            repeat e p inv
+          )
+      )
+</pre></div>
+</div>
+<p>One could also prove that <code class="docutils literal notranslate"><span class="pre">wp</span></code> computes the weakest precondition,
+i.e., if <code class="docutils literal notranslate"><span class="pre">triple</span> <span class="pre">p</span> <span class="pre">c</span> <span class="pre">q</span></code> then <code class="docutils literal notranslate"><span class="pre">forall</span> <span class="pre">s.</span> <span class="pre">p</span> <span class="pre">s</span> <span class="pre">==&gt;</span> <span class="pre">wp</span> <span class="pre">c</span> <span class="pre">q</span> <span class="pre">s</span></code>, though
+we do not prove that formally here.</p>
+</section>
+<section id="a-sample-program-proof">
+<h3>A Sample Program Proof<a class="headerlink" href="#a-sample-program-proof" title="Link to this heading"></a></h3>
+<p>We now illustrate some sample proofs using our Hoare triples and
+<code class="docutils literal notranslate"><span class="pre">wp</span></code> function. To emphasize that Hoare triples provide an <em>abstract</em>
+way of reasoning about the execution of programs, we define the
+<code class="docutils literal notranslate"><span class="pre">hoare</span> <span class="pre">p</span> <span class="pre">c</span> <span class="pre">q</span></code> an alias for <code class="docutils literal notranslate"><span class="pre">triple</span> <span class="pre">p</span> <span class="pre">c</span> <span class="pre">q</span></code> marked with an attribute
+to ensure that F* and Z3 cannot reason directly about the underlying
+definition of <code class="docutils literal notranslate"><span class="pre">triple</span></code>—that would allow Z3 to find proofs by
+reasoning about the operational semantics directly, which we want to
+avoid , since it would not scale to larger programs. For more about
+the <code class="docutils literal notranslate"><span class="pre">opaque_to_smt</span></code> and <code class="docutils literal notranslate"><span class="pre">reveal_opaque</span></code> construct, please see
+<a class="reference internal" href="../under_the_hood/uth_smt.html#uth-opaque-to-smt"><span class="std std-ref">this section on opaque definitions</span></a>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span>[@@&quot;opaque_to_smt&quot;]
+<span class="k">let</span> hoare p c q = triple p c q
+
+<span class="k">let</span> wp_hoare (p:program) (post:state -&gt; prop)
+  : squash (hoare (wp p post) p post)
+  = reveal_opaque (`%hoare) hoare;
+    wp_soundness p post
+
+<span class="k">let</span> hoare_consequence (#p:program)
+                     (#pre #post:state -&gt; prop)
+                     (pre_annot:state -&gt; prop)
+                     (<span class="k">_</span>: squash (hoare pre p post))
+                     (<span class="k">_</span>: squash (<span class="k">forall</span> s. pre_annot s ==&gt; pre s))
+  : squash (hoare pre_annot p post)
+  = reveal_opaque (`%hoare) hoare
+</pre></div>
+</div>
+<p>The lemmas above are just restatements of the <code class="docutils literal notranslate"><span class="pre">wp_soundness</span></code> and
+<code class="docutils literal notranslate"><span class="pre">consequence</span></code> lemmas that we’ve already proven. Now, these are the
+only two lemmas we have to reason about the <code class="docutils literal notranslate"><span class="pre">hoare</span> <span class="pre">p</span> <span class="pre">c</span> <span class="pre">q</span></code> predicate.</p>
+<p>Next, we define some notation to make it a bit more convenient to
+write programs in our small language.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> ( := ) (x:var) (y:expr) = Assign x y
+
+<span class="k">let</span> add (e1 e2:expr) = EAdd e1 e2
+
+<span class="k">let</span> c (i:int) : expr = EConst i
+
+<span class="k">let</span> v (x:var) : expr = EVar x
+
+<span class="k">let</span> <span class="k">rec</span> prog (p:list program { Cons? p }) 
+  : program 
+  = <span class="k">match</span> p <span class="k">with</span>
+    | [c] -&gt; c
+    | c::cs -&gt; Seq c (prog cs)
+
+<span class="k">let</span> x = 0
+<span class="k">let</span> y = 1
+<span class="k">let</span> z = 2
+</pre></div>
+</div>
+<p>Finally, we can build proofs of some simple, loop-free programs
+automatically by computing their <code class="docutils literal notranslate"><span class="pre">wp</span></code> using <code class="docutils literal notranslate"><span class="pre">wp_hoare</span></code> and
+applying <code class="docutils literal notranslate"><span class="pre">hoare_consequence</span></code> to get F* and Z3 to prove that the
+inferred WP is implied by the annotated precondition.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> swap = prog [ z := v x; x := v y; y := v z]
+<span class="k">let</span> proof_swap (lx ly:int)
+  : squash (hoare (<span class="k">fun</span> s -&gt; read s x = lx /\ read s y = ly) swap
+                  (<span class="k">fun</span> s -&gt; read s x = ly /\ read s y = lx))
+  = hoare_consequence <span class="k">_</span> (wp_hoare swap <span class="k">_</span>) ()
+</pre></div>
+</div>
+<p>This recipe of computing verification conditions using WPs and then
+checking the computed WP against the annotated specification using a
+solver like Z3 is a very common and powerful pattern. In fact, as
+we’ll see below, the methodology that we’ve developed here for our
+small imperative language is exactly what the F* typechecker does (at
+a larger scale and for the whole F* language) when checking an F*
+program.</p>
+</section>
+</section>
+<section id="the-pure-effect-a-dijkstra-monad-for-pure-computations">
+<h2>The <code class="docutils literal notranslate"><span class="pre">PURE</span></code> Effect: A Dijkstra Monad for Pure Computations<a class="headerlink" href="#the-pure-effect-a-dijkstra-monad-for-pure-computations" title="Link to this heading"></a></h2>
+<p>F* provides a weakest precondition calculus for reasoning about pure
+computations. The calculus is based on a <em>Dijkstra Monad</em>, a
+construction first introduced in <a class="reference external" href="https://www.microsoft.com/en-us/research/publication/verifying-higher-order-programs-with-the-dijkstra-monad/">this paper</a>. In
+this chapter, we will learn about Dijkstra Monad and its usage in
+specifying and proving pure programs in F*.</p>
+<p>The first main difference in adapting the Hoare triples and weakest
+precondition computations that we saw earlier to the setting of F*’s
+functional language is that there are no global variables or mutable
+state (we’ll see about how model mutable state in F*’s effect system
+later). Instead, each pure expression in F* <em>returns</em> a value and
+the postconditions that we will manipulate are predicates about these
+values, rather than state predicates.</p>
+<p>To illustrate, we sketch the definition of pure WPs below.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>WP c Q                      = Q c
+WP (let x = e1 in e2) Q     = WP e1 (fun x -&gt; WP e2 Q)
+WP (if e then e1 else e2) Q = (e ==&gt; WP e1 Q) /\ (~e ==&gt; WP e2 Q)
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>The WP of a constant <code class="docutils literal notranslate"><span class="pre">c</span></code> is just the postcondition <code class="docutils literal notranslate"><span class="pre">Q</span></code> applied to <code class="docutils literal notranslate"><span class="pre">c</span></code>.</p></li>
+<li><p>The WP of a <code class="docutils literal notranslate"><span class="pre">let</span></code> binding is a sequential composition of WPs,
+applied to the <em>values</em> returned by each sub-expression</p></li>
+<li><p>The WP of a condition is the WP of each branch, weakened by the
+suitable branch condition, as before.</p></li>
+</ul>
+<p>The F* type system internalizes and generalizes this WP construction
+to apply it to all F* terms. The form this takes is as a computation
+type in F*, <code class="docutils literal notranslate"><span class="pre">PURE</span> <span class="pre">a</span> <span class="pre">wp</span></code>, where in <code class="docutils literal notranslate"><span class="pre">prims.fst</span></code>, <code class="docutils literal notranslate"><span class="pre">PURE</span></code> is defined
+as an F* primitive effect with a signature as shown below–we’ll see
+much more of the <code class="docutils literal notranslate"><span class="pre">new_effect</span></code> syntax as we look at user-defined
+effects in subsequent chapters; for now, just see it as a reserved
+syntax in F* to introduce a computation type constructor.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">new_effect</span> PURE (a:Type) (w:wp a) { ... }
+</pre></div>
+</div>
+<p>where</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> pre = prop
+<span class="k">let</span> post (a:Type) = a -&gt; prop
+<span class="k">let</span> wp (a:Type) = post a -&gt; pre
+</pre></div>
+</div>
+<p>A program <code class="docutils literal notranslate"><span class="pre">e</span></code> of type <code class="docutils literal notranslate"><span class="pre">PURE</span> <span class="pre">a</span> <span class="pre">wp</span></code> is a computation which</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Is defined only when <code class="docutils literal notranslate"><span class="pre">wp</span> <span class="pre">(fun</span> <span class="pre">_</span> <span class="pre">-&gt;</span> <span class="pre">True)</span></code> is valid</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">wp</span> <span class="pre">post</span></code> is valid, then <code class="docutils literal notranslate"><span class="pre">e</span></code> terminates without any side
+effects and returns a value <code class="docutils literal notranslate"><span class="pre">v:a</span></code> satisfying <code class="docutils literal notranslate"><span class="pre">post</span> <span class="pre">v</span></code>.</p></li>
+</ul>
+</div></blockquote>
+<p>Notice that <code class="docutils literal notranslate"><span class="pre">wp</span> <span class="pre">a</span></code> is the type of a function transforming
+postconditions (<code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">Type0</span></code>) to preconditions (<code class="docutils literal notranslate"><span class="pre">Type0</span></code>). <a class="footnote-reference brackets" href="#id3" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> The
+<code class="docutils literal notranslate"><span class="pre">wp</span></code> argument is also called an <em>index</em> of the <code class="docutils literal notranslate"><span class="pre">PURE</span></code> effect. <a class="footnote-reference brackets" href="#id4" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a></p>
+<p>The return operator for <code class="docutils literal notranslate"><span class="pre">wp</span> <span class="pre">a</span></code> is shown below: it is analogous to
+the <code class="docutils literal notranslate"><span class="pre">WP</span> <span class="pre">c</span> <span class="pre">Q</span></code> and <code class="docutils literal notranslate"><span class="pre">WP</span> <span class="pre">x</span> <span class="pre">Q</span></code> rules for variables and constants that
+we showed earlier:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> return_wp (#a:Type) (x:a) : wp a = <span class="k">fun</span> post -&gt; post x
+</pre></div>
+</div>
+<p>The bind operator for <code class="docutils literal notranslate"><span class="pre">wp</span> <span class="pre">a</span></code> is analogous to the rule for sequencing
+WPs, i.e., the rule for <code class="docutils literal notranslate"><span class="pre">WP</span> <span class="pre">(let</span> <span class="pre">x</span> <span class="pre">=</span> <span class="pre">e1</span> <span class="pre">in</span> <span class="pre">e2)</span> <span class="pre">Q</span></code> above:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> bind_wp (#a #b:Type) (wp1:wp a) (wp2:a -&gt; wp b)
+  : wp b
+  = <span class="k">fun</span> post -&gt; wp1 (<span class="k">fun</span> x -&gt; wp2 x post)                
+</pre></div>
+</div>
+<p>Finally, analogous to the WP rule for conditionals, one can write a
+combinator for composing <code class="docutils literal notranslate"><span class="pre">wp</span> <span class="pre">a</span></code> in a branch:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> if_then_else_wp (#a:Type) (b:bool) (wp1 wp2:wp a)
+  : wp a
+  = <span class="k">fun</span> post -&gt; <span class="k">if</span> b <span class="k">then</span> wp1 post <span class="k">else</span> wp2 post
+</pre></div>
+</div>
+<p>This is the essence of the Dijkstra monad construction for pure
+programs: the rule for computing weakest preconditions for a
+computation <em>returning</em> a value <code class="docutils literal notranslate"><span class="pre">x</span></code> is <code class="docutils literal notranslate"><span class="pre">return_wp</span></code>; the rule for
+computing the WP of the sequential composition of terms is the
+sequential composition of WPs using <code class="docutils literal notranslate"><span class="pre">bind_wp</span></code>; the rule for
+computing the WP of a conditional term is the conditional composition
+of WPs using <code class="docutils literal notranslate"><span class="pre">if_then_else_wp</span></code>.</p>
+<p>If fact, if one thinks of pure computations as the identity monad,
+<code class="docutils literal notranslate"><span class="pre">tot</span> <span class="pre">a</span></code> as shown below:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> tot (a:Type) = a
+<span class="k">let</span> return_tot (#a:Type) (x:a) : tot a = x
+<span class="k">let</span> bind_tot (#a #b:Type) (x:tot a) (y:a -&gt; tot b)
+  : tot b
+  = <span class="k">let</span> v = x <span class="k">in</span> y v
+</pre></div>
+</div>
+<p>then the parallel between the <code class="docutils literal notranslate"><span class="pre">tot</span></code> monad and <code class="docutils literal notranslate"><span class="pre">wp</span></code> becomes even
+clearer—the WP analog of <code class="docutils literal notranslate"><span class="pre">return_tot</span></code> is <code class="docutils literal notranslate"><span class="pre">return_wp</span></code> and of
+<code class="docutils literal notranslate"><span class="pre">bind_tot</span></code> is <code class="docutils literal notranslate"><span class="pre">bind_wp</span></code>.</p>
+<p>It turns out that <code class="docutils literal notranslate"><span class="pre">wp</span> <span class="pre">a</span></code> (for monotonic weakest preconditions) is
+itself a monad, as shown below by a proof of the monad laws:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="c">(* A monotonic WP maps stronger postconditions to stronger preconditions *)</span>
+<span class="k">let</span> monotonic (#a:Type) (wp:wp a) =
+  <span class="k">forall</span> (p q:post a). (<span class="k">forall</span> x. p x ==&gt; q x) ==&gt; (wp p ==&gt; wp q)
+
+<span class="k">let</span> mwp (a:Type) = w:wp a { monotonic w }
+
+<span class="c">(* An equivalence relation on WPs *)</span>
+<span class="k">let</span> ( =~= ) (#a:Type) (wp1 wp2:wp a)
+  : prop
+  = <span class="k">forall</span> post. wp1 post &lt;==&gt; wp2 post
+
+<span class="c">(* The three monad laws *)</span>
+<span class="k">let</span> left_identity (a b:Type) (x:a) (wp:a -&gt; mwp a)
+  : <span class="k">Lemma</span> (bind_wp (return_wp x) wp =~= wp x)
+  = ()
+
+<span class="k">let</span> right_identity (a b:Type) (wp:mwp a)
+  : <span class="k">Lemma</span> (wp =~= (bind_wp wp return_wp))
+  = ()
+
+<span class="k">let</span> associativity (a b c:Type) (wp1:mwp a) (wp2:a -&gt; mwp b) (wp3:b -&gt; mwp c)
+  : <span class="k">Lemma</span> (bind_wp wp1 (<span class="k">fun</span> x -&gt; bind_wp (wp2 x) wp3) =~=
+           bind_wp (bind_wp wp1 wp2) wp3)
+  = ()
+</pre></div>
+</div>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id3" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>In F*, <code class="docutils literal notranslate"><span class="pre">post</span> <span class="pre">a</span> <span class="pre">=</span> <span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">prop</span></code> and <code class="docutils literal notranslate"><span class="pre">pre</span> <span class="pre">=</span> <span class="pre">prop</span></code>, i.e., WPs
+use <code class="docutils literal notranslate"><span class="pre">prop</span></code> rather than <code class="docutils literal notranslate"><span class="pre">Type0</span></code>. The type <code class="docutils literal notranslate"><span class="pre">pure_wp</span> <span class="pre">a</span></code>
+is <code class="docutils literal notranslate"><span class="pre">(a</span> <span class="pre">-&gt;</span> <span class="pre">prop)</span> <span class="pre">-&gt;</span> <span class="pre">prop</span></code>.</p>
+</aside>
+<aside class="footnote brackets" id="id4" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">2</a><span class="fn-bracket">]</span></span>
+<p>Dijkstra monads are also related to the continuation
+monad. Continuation monad models <a class="reference external" href="https://en.wikipedia.org/wiki/Continuation-passing_style/">Continuation Passing Style</a>
+programming, where the control is passed to the callee
+explicitly in the form of a continuation. For a result type
+<code class="docutils literal notranslate"><span class="pre">r</span></code>, the continuation monad is defined as follows:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> cont (r:Type) (a:Type) = (a -&gt; r) -&gt; r  <span class="c">// (a -&gt; r) is the continuation</span>
+<span class="k">let</span> return #r (#a:Type) (x:a) : cont r a = <span class="k">fun</span> k -&gt; k x
+<span class="k">let</span> bind #r (#a #b:Type) (f:cont r a) (g:a -&gt; cont r b)
+  : cont r b
+  =  <span class="k">fun</span> k -&gt; f (<span class="k">fun</span> x -&gt; g x k)
+</pre></div>
+</div>
+<p>If we squint a bit, we can see that the <code class="docutils literal notranslate"><span class="pre">wp</span></code> monad we defined
+earlier, is nothing but a continuation into <code class="docutils literal notranslate"><span class="pre">prop</span></code>, i.e.,
+<code class="docutils literal notranslate"><span class="pre">wp</span> <span class="pre">a</span> <span class="pre">=</span> <span class="pre">cont</span> <span class="pre">prop</span> <span class="pre">a</span></code>.</p>
+</aside>
+</aside>
+</section>
+<section id="pure-and-tot">
+<h2><code class="docutils literal notranslate"><span class="pre">PURE</span></code> and <code class="docutils literal notranslate"><span class="pre">Tot</span></code><a class="headerlink" href="#pure-and-tot" title="Link to this heading"></a></h2>
+<p>When typechecking a program, F* computes a weakest precondition which
+characterizes a necessary condition for the program to satisfy all its
+typing constraints. This computed weakest precondition is usually
+hidden from the programmer, but if you annotate your program suitably,
+you can get access to it, as shown in the code snippet below:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> square (n:int) 
+  : PURE nat (as_pure_wp #nat (<span class="k">fun</span> q -&gt; n*n &gt;= 0 /\ q (n * n)))
+  = n * n
+</pre></div>
+</div>
+<p>The type says that <code class="docutils literal notranslate"><span class="pre">square</span> <span class="pre">n</span></code> is a pure function, which for any
+postcondition <code class="docutils literal notranslate"><span class="pre">q:nat</span> <span class="pre">-&gt;</span> <span class="pre">prop</span></code>,</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Is defined only when <code class="docutils literal notranslate"><span class="pre">n</span> <span class="pre">*</span> <span class="pre">n</span> <span class="pre">&gt;=</span> <span class="pre">0</span></code> and when <code class="docutils literal notranslate"><span class="pre">q</span> <span class="pre">(n</span> <span class="pre">*</span> <span class="pre">n)</span></code> is valid</p></li>
+<li><p>And returns a value <code class="docutils literal notranslate"><span class="pre">m:nat</span></code> satisfying <code class="docutils literal notranslate"><span class="pre">q</span> <span class="pre">m</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>Let’s look at another example:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> maybe_incr (b:bool) (x:int)
+  : PURE int (as_pure_wp (if_then_else_wp b
+                                        (bind_wp (return_wp (x + 1)) (<span class="k">fun</span> y -&gt; return_wp y))
+                                        (return_wp x)))
+  = <span class="k">if</span> b
+    <span class="k">then</span> <span class="k">let</span> y = x + 1 <span class="k">in</span> y
+    <span class="k">else</span> x
+</pre></div>
+</div>
+<p>Notice how the <code class="docutils literal notranslate"><span class="pre">wp</span></code> index of <code class="docutils literal notranslate"><span class="pre">PURE</span></code> mirrors the structure of the
+computation itself—it starts with an <code class="docutils literal notranslate"><span class="pre">if_then_else_wp</span></code>, then in
+the first branch, uses a <code class="docutils literal notranslate"><span class="pre">bind_wp</span></code> followed by a return; and in the
+else branch it returns <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<p>As such, the wp-index simply “lifts” the computation into a
+specification in a form amenable to logical reasoning, e.g., using the
+SMT solver. For pure programs this may seem like overkill, since the
+pure term itself can be reasoned about directly, but when the term
+contains non-trivial typing constraints, e.g., such as those that
+arise from refinement type checking, lifting the entire program into a
+single constraint structures and simplifies logical reasoning.</p>
+<p>Of course, one often writes specifications that are more abstract than
+the full logical lifting of the program, as in the example below,
+which says that to prove <code class="docutils literal notranslate"><span class="pre">post</span></code> of the return value, the
+precondition is to prove <code class="docutils literal notranslate"><span class="pre">post</span></code> on all <code class="docutils literal notranslate"><span class="pre">y</span> <span class="pre">&gt;=</span> <span class="pre">x</span></code>. This is a
+valid, although weaker, characterization of the function’s return
+value.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> maybe_incr2 (b:bool) (x:int)
+  : PURE int (as_pure_wp (<span class="k">fun</span> post -&gt; <span class="k">forall</span> (y:int). y &gt;= x ==&gt; post y))
+  = <span class="k">if</span> b
+    <span class="k">then</span> <span class="k">let</span> y = x + 1 <span class="k">in</span> y
+    <span class="k">else</span> x
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">PURE</span></code> computation type comes with a built-in weakening rule. In
+particular, if a term is computed to have type <code class="docutils literal notranslate"><span class="pre">PURE</span> <span class="pre">a</span> <span class="pre">wp_a</span></code> and it is
+annotated to have type <code class="docutils literal notranslate"><span class="pre">PURE</span> <span class="pre">b</span> <span class="pre">wp_b</span></code>, then F* does the following:</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p>It computes a constraint <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">:</span> <span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">Type0</span></code>, which is sufficient
+to prove that <code class="docutils literal notranslate"><span class="pre">a</span></code> is a subtype of <code class="docutils literal notranslate"><span class="pre">b</span></code>, e.g., is <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">=</span> <span class="pre">int</span></code>
+and <code class="docutils literal notranslate"><span class="pre">b</span> <span class="pre">=</span> <span class="pre">nat</span></code>, the constraint <code class="docutils literal notranslate"><span class="pre">p</span></code> is <code class="docutils literal notranslate"><span class="pre">fun</span> <span class="pre">(x:int)</span> <span class="pre">-&gt;</span> <span class="pre">x</span> <span class="pre">&gt;=</span>
+<span class="pre">0</span></code>.</p></li>
+<li><p>Next, it strengthens <code class="docutils literal notranslate"><span class="pre">wp_a</span></code> to assert that the returned value
+validates the subtyping constraints <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">x</span></code>, i.e., it builds
+<code class="docutils literal notranslate"><span class="pre">assert_wp</span> <span class="pre">wp_a</span> <span class="pre">p</span></code>, where</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> assert_wp (#a:Type) (w:wp a) (p: a -&gt; prop) 
+  : wp (x:a{ p x })
+  = <span class="k">fun</span> post -&gt; w (<span class="k">fun</span> (x:a) -&gt; p x /\ post x)
+</pre></div>
+</div>
+</li>
+<li><p>Finally, it produces the verification condition <code class="docutils literal notranslate"><span class="pre">stronger_wp</span> <span class="pre">#b</span>
+<span class="pre">wp_b</span> <span class="pre">(assert_wp</span> <span class="pre">wp_a</span> <span class="pre">p)</span></code>, where <code class="docutils literal notranslate"><span class="pre">stronger_wp</span></code> is defined as
+shown below:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> stronger_wp (#a:Type) (wp1 wp2:wp a) : prop =
+   <span class="k">forall</span> post. wp1 post ==&gt; wp2 post
+</pre></div>
+</div>
+<p>That is, for any postcondition <code class="docutils literal notranslate"><span class="pre">post</span></code>, the precondition <code class="docutils literal notranslate"><span class="pre">wp_b</span>
+<span class="pre">post</span></code> implies the original precondition <code class="docutils literal notranslate"><span class="pre">wp_a</span> <span class="pre">post</span></code> as well as
+the subtyping constraint <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">x</span></code>. This matches the intuition
+about preconditions that we built earlier: it is always sound to
+require more in the precondition.</p>
+</li>
+</ol>
+</div></blockquote>
+<p>Thus, when we have <code class="docutils literal notranslate"><span class="pre">e:PURE</span> <span class="pre">a</span> <span class="pre">wp</span></code> in F*, the <code class="docutils literal notranslate"><span class="pre">wp</span></code> is <em>a</em> predicate
+transformer for <code class="docutils literal notranslate"><span class="pre">e</span></code>, not necessarily the weakest one.</p>
+<p>Of course, even <code class="docutils literal notranslate"><span class="pre">maybe_incr2</span></code> is not particularly idiomatic in
+F*. One would usually annotate a program with a refinement type, such
+as the one below:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> maybe_incr_tot (b:bool) (x:int)
+  : <span class="k">Tot</span> (y:int { y &gt;= x })
+  = <span class="k">if</span> b
+    <span class="k">then</span> <span class="k">let</span> y = x + 1 <span class="k">in</span> y
+    <span class="k">else</span> x
+</pre></div>
+</div>
+<p>Internally to the compiler, F* treats <code class="docutils literal notranslate"><span class="pre">Tot</span> <span class="pre">t</span></code> as the following
+instance of <code class="docutils literal notranslate"><span class="pre">PURE</span></code>:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">Tot</span> t = PURE t (<span class="k">fun</span> post -&gt; <span class="k">forall</span> (x:t). post x)
+</pre></div>
+</div>
+<p>Once <code class="docutils literal notranslate"><span class="pre">Tot</span> <span class="pre">t</span></code> is viewed as just an instance of <code class="docutils literal notranslate"><span class="pre">PURE</span></code>, checking if
+a user annotation <code class="docutils literal notranslate"><span class="pre">Tot</span> <span class="pre">t</span></code> is stronger than the inferred
+specification of a term <code class="docutils literal notranslate"><span class="pre">PURE</span> <span class="pre">a</span> <span class="pre">wp</span></code> is just as explained before.</p>
+<section id="pure-hoare-triples-for-pure">
+<h3><code class="docutils literal notranslate"><span class="pre">Pure</span></code>: Hoare Triples for <code class="docutils literal notranslate"><span class="pre">PURE</span></code><a class="headerlink" href="#pure-hoare-triples-for-pure" title="Link to this heading"></a></h3>
+<p>Although specification are easier to <em>compute</em> using WPs, they are
+more natural to read and write when presented as Hoare triples, with a
+clear separation between precondition and postconditions. Further,
+when specifications written as Hoare triples naturally induce
+monotonic WPs.</p>
+<p>F* provides an effect abbreviation called <code class="docutils literal notranslate"><span class="pre">Pure</span></code> for writing and
+typechecking Hoare-style specifications for pure programs, and is
+defined as shown below in <code class="docutils literal notranslate"><span class="pre">prims.fst</span></code>:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">effect</span> Pure (a:Type) (req:Type0) (ens:a -&gt; Type0) =
+       PURE a (<span class="k">fun</span> post -&gt; req /\ (<span class="k">forall</span> x. ens x ==&gt; post x))
+</pre></div>
+</div>
+<p>The signature of <code class="docutils literal notranslate"><span class="pre">Pure</span></code> is <code class="docutils literal notranslate"><span class="pre">Pure</span> <span class="pre">a</span> <span class="pre">req</span> <span class="pre">ens</span></code>, where <code class="docutils literal notranslate"><span class="pre">req</span></code> is the
+precondition and <code class="docutils literal notranslate"><span class="pre">ens:a</span> <span class="pre">-&gt;</span> <span class="pre">Type0</span></code> is the postcondition. Using
+<code class="docutils literal notranslate"><span class="pre">Pure</span></code>, we can write the <code class="docutils literal notranslate"><span class="pre">factorial</span></code> function we saw at the top of
+this chapter—F* infers a <code class="docutils literal notranslate"><span class="pre">PURE</span> <span class="pre">a</span> <span class="pre">wp</span></code> type for it, and relates it
+to the annotated <code class="docutils literal notranslate"><span class="pre">Pure</span> <span class="pre">int</span> <span class="pre">req</span> <span class="pre">ens</span></code> type, proving that the latter
+has a stronger precondition and weaker postcondition.</p>
+<p>One may wonder when one should write specifications using the notation
+<code class="docutils literal notranslate"><span class="pre">x:a</span> <span class="pre">-&gt;</span> <span class="pre">Pure</span> <span class="pre">b</span> <span class="pre">req</span> <span class="pre">ens</span></code> versus <code class="docutils literal notranslate"><span class="pre">x:a{req}</span> <span class="pre">-&gt;</span> <span class="pre">Tot</span> <span class="pre">(y:b</span> <span class="pre">{</span> <span class="pre">ens</span> <span class="pre">y</span>
+<span class="pre">})</span></code>. The two styles are closely related and choosing between them is
+mostly a matter of taste. As you have seen, until this point in the
+book, we have not used <code class="docutils literal notranslate"><span class="pre">Pure</span> <span class="pre">a</span> <span class="pre">req</span> <span class="pre">ens</span></code> at all. However, when a
+function has many pre and postconditions, it is sometimes more
+convenient to use the <code class="docutils literal notranslate"><span class="pre">Pure</span> <span class="pre">a</span> <span class="pre">req</span> <span class="pre">ens</span></code> notation, rather than
+stuffing all the constraints in refinement types.</p>
+</section>
+</section>
+<section id="ghost-and-div">
+<h2><code class="docutils literal notranslate"><span class="pre">GHOST</span></code> and <code class="docutils literal notranslate"><span class="pre">DIV</span></code><a class="headerlink" href="#ghost-and-div" title="Link to this heading"></a></h2>
+<p>Just as <code class="docutils literal notranslate"><span class="pre">PURE</span></code> is an wp-indexed refinement of <code class="docutils literal notranslate"><span class="pre">Tot</span></code>, F* provides
+two more primitive wp-indexed effects:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">GHOST</span> <span class="pre">(a:Type)</span> <span class="pre">(w:wp</span> <span class="pre">a)</span></code> is a refinement of <code class="docutils literal notranslate"><span class="pre">GTot</span> <span class="pre">a</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DIV</span> <span class="pre">(a:Type)</span> <span class="pre">(w:wp</span> <span class="pre">a)</span></code> is a refinement of <code class="docutils literal notranslate"><span class="pre">Dv</span> <span class="pre">a</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>That is, F* uses the <code class="docutils literal notranslate"><span class="pre">GHOST</span></code> effect to infer total correctness WPs
+for ghost computations, where, internally, <code class="docutils literal notranslate"><span class="pre">GTot</span> <span class="pre">a</span></code> is equivalent to
+<code class="docutils literal notranslate"><span class="pre">GHOST</span> <span class="pre">a</span> <span class="pre">(fun</span> <span class="pre">post</span> <span class="pre">-&gt;</span> <span class="pre">forall</span> <span class="pre">x.</span> <span class="pre">post</span> <span class="pre">x)</span></code></p>
+<p>Likewise, F* uses the <code class="docutils literal notranslate"><span class="pre">DIV</span></code> effect to infer <em>partial correctness</em>
+WPs for potentially non-terminating computations, where, internally,
+<code class="docutils literal notranslate"><span class="pre">Dv</span> <span class="pre">a</span></code> is equivalent to <code class="docutils literal notranslate"><span class="pre">DIV</span> <span class="pre">a</span> <span class="pre">(fun</span> <span class="pre">post</span> <span class="pre">-&gt;</span> <span class="pre">forall</span> <span class="pre">x.</span> <span class="pre">post</span> <span class="pre">x)</span></code>.</p>
+<p>As with <code class="docutils literal notranslate"><span class="pre">Tot</span></code> and <code class="docutils literal notranslate"><span class="pre">PURE</span></code>, F* automatically relates <code class="docutils literal notranslate"><span class="pre">GTot</span></code> and
+<code class="docutils literal notranslate"><span class="pre">GHOST</span></code> computations, and <code class="docutils literal notranslate"><span class="pre">Dv</span></code> and <code class="docutils literal notranslate"><span class="pre">DIV</span></code> computations. Further,
+the effect ordering <code class="docutils literal notranslate"><span class="pre">Tot</span> <span class="pre">&lt;</span> <span class="pre">Dv</span></code> and <code class="docutils literal notranslate"><span class="pre">Tot</span> <span class="pre">&lt;</span> <span class="pre">GTot</span></code> extends to <code class="docutils literal notranslate"><span class="pre">PURE</span>
+<span class="pre">&lt;</span> <span class="pre">DIV</span></code> and <code class="docutils literal notranslate"><span class="pre">PURE</span> <span class="pre">&lt;</span> <span class="pre">GHOST</span></code> as well.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">prims.fst</span></code> library also provides Hoare-triple style
+abbreviations for <code class="docutils literal notranslate"><span class="pre">GHOST</span></code> and <code class="docutils literal notranslate"><span class="pre">DIV</span></code>, i.e.,</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">effect</span> Ghost a req ens = GHOST a (<span class="k">fun</span> post -&gt; req /\ (<span class="k">forall</span> x. ens x /\ post x))
+<span class="k">effect</span> Div a req ens = DIV a (<span class="k">fun</span> post -&gt; req /\ (<span class="k">forall</span> x. ens x /\ post x))
+</pre></div>
+</div>
+<p>These Hoare-style abbreviations are more convenient to use than their
+more primitive WP-based counterparts.</p>
+<p>The tradeoffs of using <code class="docutils literal notranslate"><span class="pre">Ghost</span></code> vs. <code class="docutils literal notranslate"><span class="pre">GTot</span></code> or <code class="docutils literal notranslate"><span class="pre">Div</span></code> vs. <code class="docutils literal notranslate"><span class="pre">Dv</span></code>
+are similar to those for <code class="docutils literal notranslate"><span class="pre">Pure</span></code> vs <code class="docutils literal notranslate"><span class="pre">Tot</span></code>—it’s mostly a matter of
+taste. In fact, there are relatively few occurrences of <code class="docutils literal notranslate"><span class="pre">Pure</span></code>,
+<code class="docutils literal notranslate"><span class="pre">Ghost</span></code>, and <code class="docutils literal notranslate"><span class="pre">Div</span></code> in most F* codebases. However, there is one
+important exception: <code class="docutils literal notranslate"><span class="pre">Lemma</span></code>.</p>
+</section>
+<section id="the-lemma-abbreviation">
+<h2>The <code class="docutils literal notranslate"><span class="pre">Lemma</span></code> abbreviation<a class="headerlink" href="#the-lemma-abbreviation" title="Link to this heading"></a></h2>
+<p>We can finally unveil the definition of the <code class="docutils literal notranslate"><span class="pre">Lemma</span></code> syntax, which we
+introduced as a syntactic shorthand in <a class="reference internal" href="../part1/part1_lemmas.html#part1-lemma-syntax"><span class="std std-ref">an early chapter</span></a>. In fact, <code class="docutils literal notranslate"><span class="pre">Lemma</span></code> is defined in <code class="docutils literal notranslate"><span class="pre">prims.fst</span></code>
+as follows:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">effect</span> <span class="k">Lemma</span> (a: eqtype_u)
+             (pre: Type)
+             (post: (squash pre -&gt; Type))
+             (smt_pats: list pattern) =
+       Pure a pre (<span class="k">fun</span> r -&gt; post ())
+</pre></div>
+</div>
+<p>That is, <code class="docutils literal notranslate"><span class="pre">Lemma</span></code> is an instance of the Hoare-style refinement of
+pure computations <code class="docutils literal notranslate"><span class="pre">Pure</span> <span class="pre">a</span> <span class="pre">req</span> <span class="pre">ens</span></code>.  So, when you write a proof term
+and annotate it as <code class="docutils literal notranslate"><span class="pre">e</span> <span class="pre">:</span> <span class="pre">Lemma</span> <span class="pre">(requires</span> <span class="pre">pre)</span> <span class="pre">(ensures</span> <span class="pre">post)</span></code>, F*
+infers a specification for <code class="docutils literal notranslate"><span class="pre">e</span> <span class="pre">:</span> <span class="pre">PURE</span> <span class="pre">a</span> <span class="pre">wp</span></code>, and then, as with all
+PURE computations, F* tries to check that the annotated <code class="docutils literal notranslate"><span class="pre">Lemma</span></code>
+specification has a stronger WP-specification than the computed
+weakest precondition.</p>
+<p>Of course, F* still includes syntactic sugar for <code class="docutils literal notranslate"><span class="pre">Lemma</span></code>, e.g.,
+<code class="docutils literal notranslate"><span class="pre">Lemma</span> <span class="pre">(requires</span> <span class="pre">pre)</span> <span class="pre">(ensures</span> <span class="pre">post)</span></code> is desugared to <code class="docutils literal notranslate"><span class="pre">Lemma</span> <span class="pre">unit</span>
+<span class="pre">pre</span> <span class="pre">(fun</span> <span class="pre">_</span> <span class="pre">-&gt;</span> <span class="pre">post)</span> <span class="pre">[]</span></code>. The last argument of a lemma, the
+<code class="docutils literal notranslate"><span class="pre">smt_pats</span></code> are used to introduce lemmas to the SMT solver for proof
+automation—a <a class="reference internal" href="../under_the_hood/uth_smt.html#uth-smt"><span class="std std-ref">later chapter</span></a> covers that in detail.</p>
+<p>Finally, notice the type of the <code class="docutils literal notranslate"><span class="pre">post</span></code>, which assumes <code class="docutils literal notranslate"><span class="pre">squash</span> <span class="pre">pre</span></code>
+as an argument–this is what allows the <code class="docutils literal notranslate"><span class="pre">ensures</span></code> clause of a
+<code class="docutils literal notranslate"><span class="pre">Lemma</span></code> to assume what was specified in the <code class="docutils literal notranslate"><span class="pre">`requires</span></code> clause.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="part4_div.html" class="btn btn-neutral float-left" title="Divergence, or Non-Termination" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../part5/part5.html" class="btn btn-neutral float-right" title="Tactics and Metaprogramming with Meta-F*" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

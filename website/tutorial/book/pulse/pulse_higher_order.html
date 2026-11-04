@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Higher Order Functions &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Implication and Universal Quantification" href="pulse_implication_and_forall.html" />
+    <link rel="prev" title="Ghost Computations" href="pulse_ghost.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pulse_getting_started.html">Getting up and running with Codespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ch1.html">Pulse Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ch2.html">Mutable References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_existentials.html">Existential Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_user_defined_predicates.html">User-defined Predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_conditionals.html">Conditionals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_loops.html">Loops &amp; Recursion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_arrays.html">Mutable Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ghost.html">Ghost Computations</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Higher Order Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pulse-computation-types">Pulse Computation Types</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#universes">Universes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#counters">Counters</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_implication_and_forall.html">Implication and Universal Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_linked_list.html">Linked Lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_atomics_and_invariants.html">Atomic Operations and Invariants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_spin_lock.html">Spin Locks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_parallel_increment.html">Parallel Increment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_extraction.html">Extraction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+      <li class="breadcrumb-item active">Higher Order Functions</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="higher-order-functions">
+<span id="pulse-higher-order"></span><h1>Higher Order Functions<a class="headerlink" href="#higher-order-functions" title="Link to this heading"></a></h1>
+<p>Like F*, Pulse is higher order. That is, Pulse functions are first
+class and can be passed to other functions, returned as results, and
+some functions can even be stored in the heap.</p>
+<section id="pulse-computation-types">
+<h2>Pulse Computation Types<a class="headerlink" href="#pulse-computation-types" title="Link to this heading"></a></h2>
+<p>Here’s perhaps the simplest higher-order function: <code class="docutils literal notranslate"><span class="pre">apply</span></code> abstracts
+function application.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> apply (#a:Type0)
+         (#b:a -&gt; Type0)
+         (#pre:a -&gt; slprop)
+         (#post: (x:a -&gt; b x -&gt; slprop))
+         (f: (x:a -&gt; stt (b x) (pre x) (<span class="k">fun</span> y -&gt; post x y)))
+         (x:a)
+<span class="k">requires</span> pre x
+<span class="k">returns</span> y:b x
+<span class="k">ensures</span> post x y
+{
+  f x
+}
+</pre></div>
+</div>
+<p>This function is polymorphic in the argument, result type, pre, and
+post-condition of a function <code class="docutils literal notranslate"><span class="pre">f</span></code>, which it applies to an argument
+<code class="docutils literal notranslate"><span class="pre">x</span></code>. This is the first time we have written the type of a Pulse
+function as an F* type. So far, we have been writing <em>signatures</em> of
+Pulse functions, using the <code class="docutils literal notranslate"><span class="pre">fn/requires/ensures</span></code> notation, but here
+we see that the type of Pulse function is of the form:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span>x:a -&gt; stt b pre (<span class="k">fun</span> y -&gt; post)
+</pre></div>
+</div>
+<p>where,</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>like any F* function type, Pulse functions are dependent and the
+right hand side of the arrow can mention <code class="docutils literal notranslate"><span class="pre">x</span></code></p></li>
+<li><p>immediately to the right of the arrow is a Pulse computation type
+tag, similar to F*’s <code class="docutils literal notranslate"><span class="pre">Tot</span></code>, or <code class="docutils literal notranslate"><span class="pre">GTot</span></code>, etc.</p></li>
+<li><p>The tag <code class="docutils literal notranslate"><span class="pre">stt</span></code> is the most permissive of Pulse computation type
+tags, allowing the function’s body to read and write the state,
+run forever etc., but with pre-condition <code class="docutils literal notranslate"><span class="pre">pre</span></code>, return type
+<code class="docutils literal notranslate"><span class="pre">b</span></code>, and post-condition <code class="docutils literal notranslate"><span class="pre">fun</span> <span class="pre">y</span> <span class="pre">-&gt;</span> <span class="pre">post</span></code>.</p></li>
+</ul>
+</div></blockquote>
+<p>Pulse provides several other kinds of computation types. For now, the
+most important is the constructor for ghost computations. We show
+below <code class="docutils literal notranslate"><span class="pre">apply_ghost</span></code>, the analog of <code class="docutils literal notranslate"><span class="pre">apply</span></code> but for <code class="docutils literal notranslate"><span class="pre">ghost</span></code>
+functions.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span>
+<span class="k">fn</span> apply_ghost 
+         (#a:Type0)
+         (#b:a -&gt; Type0)
+         (#pre:a -&gt; slprop)
+         (#post: (x:a -&gt; b x -&gt; slprop))
+         (f: (x:a -&gt; stt_ghost (b x) emp_inames (pre x) (<span class="k">fun</span> y -&gt; post x y)))
+         (x:a)
+<span class="k">requires</span> pre x
+<span class="k">returns</span> y:b x
+<span class="k">ensures</span> post x y
+{
+  f x
+}
+</pre></div>
+</div>
+<p>The type of <code class="docutils literal notranslate"><span class="pre">f</span></code> is similar to what we had before, but this time we
+have:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>computation type tag <code class="docutils literal notranslate"><span class="pre">stt_ghost</span></code>, indication that this function
+reads or writes ghost state only, and always terminates.</p></li>
+<li><p>the return type is <code class="docutils literal notranslate"><span class="pre">b</span> <span class="pre">x</span></code></p></li>
+<li><p>the next argument is <code class="docutils literal notranslate"><span class="pre">emp_inames</span></code>, describes the set of
+invariants that a computation may open, where <code class="docutils literal notranslate"><span class="pre">emp_inames</span></code> means
+that this computation opens no invariants. For now, let’s ignore
+this.</p></li>
+<li><p>the precondition is <code class="docutils literal notranslate"><span class="pre">pre</span> <span class="pre">x</span></code> and the postcondition is <code class="docutils literal notranslate"><span class="pre">fun</span> <span class="pre">y</span> <span class="pre">-&gt;</span>
+<span class="pre">post</span> <span class="pre">x</span> <span class="pre">y</span></code>.</p></li>
+</ul>
+</div></blockquote>
+<section id="universes">
+<h3>Universes<a class="headerlink" href="#universes" title="Link to this heading"></a></h3>
+<p>For completeness, the signature of <code class="docutils literal notranslate"><span class="pre">stt</span></code> and <code class="docutils literal notranslate"><span class="pre">stt_ghost</span></code> are shown
+below:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> stt (a:Type u#a) (i:inames) (pre:slprop) (post: a -&gt; slprop)
+  : Type u#0
+
+<span class="k">val</span> stt_ghost (a:Type u#a) (i:inames) (pre:slprop) (post: a -&gt; slprop)
+  : Type u#4
+</pre></div>
+</div>
+<p>A point to note is that <code class="docutils literal notranslate"><span class="pre">stt</span></code> computations live in universe
+<code class="docutils literal notranslate"><span class="pre">u#0</span></code>. This is because <code class="docutils literal notranslate"><span class="pre">stt</span></code> computations are allowed to
+infinitely loop, and are built upon <a class="reference internal" href="../part4/part4_div.html#part4-div"><span class="std std-ref">the effect of divergence</span></a>, or <code class="docutils literal notranslate"><span class="pre">Div</span></code>, which, as we learned earlier, lives in
+universe <code class="docutils literal notranslate"><span class="pre">u#0</span></code>. The universe of <code class="docutils literal notranslate"><span class="pre">stt</span></code> means that one can store an
+<code class="docutils literal notranslate"><span class="pre">stt</span></code> function in an reference, e.g., <code class="docutils literal notranslate"><span class="pre">ref</span> <span class="pre">(unit</span> <span class="pre">-&gt;</span> <span class="pre">stt</span> <span class="pre">unit</span> <span class="pre">p</span> <span class="pre">q)</span></code>
+is a legal type in Pulse.</p>
+<p>In contrast, <code class="docutils literal notranslate"><span class="pre">stt_ghost</span></code> functions are total and live in
+universe 4. You cannot store a <code class="docutils literal notranslate"><span class="pre">stt_ghost</span></code> function in the state,
+since that would allow writing non-terminating functions in
+<code class="docutils literal notranslate"><span class="pre">stt_ghost</span></code>.</p>
+</section>
+</section>
+<section id="counters">
+<h2>Counters<a class="headerlink" href="#counters" title="Link to this heading"></a></h2>
+<p>For a slightly more interesting use of higher order programming, let’s
+look at how to program a mutable counter. We’ll start by defining the
+type <code class="docutils literal notranslate"><span class="pre">ctr</span></code> of a counter.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">noeq</span>
+<span class="k">type</span> ctr = {
+    inv: int -&gt; slprop;
+    next: i:erased int -&gt; stt int (inv i) (<span class="k">fun</span> y -&gt; inv (i + 1) ** pure (y == reveal i));
+    destroy: i:erased int -&gt; stt unit (inv i) (<span class="k">fun</span> <span class="k">_</span> -&gt; emp)
+}
+</pre></div>
+</div>
+<p>A counter packages the following:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>A predicate <code class="docutils literal notranslate"><span class="pre">inv</span></code> on the state, where <code class="docutils literal notranslate"><span class="pre">inv</span> <span class="pre">i</span></code> states that the
+current value of the counter is <code class="docutils literal notranslate"><span class="pre">i</span></code>, without describing exactly
+how the counter’s state is implemented.</p></li>
+<li><p>A stateful function <code class="docutils literal notranslate"><span class="pre">next</span></code> that expects the <code class="docutils literal notranslate"><span class="pre">inv</span> <span class="pre">i</span></code>, returns
+the current value <code class="docutils literal notranslate"><span class="pre">i</span></code> of the counter, and provides <code class="docutils literal notranslate"><span class="pre">inv</span> <span class="pre">(i</span> <span class="pre">+</span>
+<span class="pre">1)</span></code>.</p></li>
+<li><p>A stateful function <code class="docutils literal notranslate"><span class="pre">destroy</span></code> to deallocate the counter.</p></li>
+</ul>
+</div></blockquote>
+<p>One way to implement a <code class="docutils literal notranslate"><span class="pre">ctr</span></code> is to represent the state with a
+heap-allocated reference. This is what <code class="docutils literal notranslate"><span class="pre">new_counter</span></code> does below:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> new_counter ()
+<span class="k">returns</span> c:ctr
+<span class="k">ensures</span> c.inv 0
+{
+    <span class="k">open</span> Pulse.Lib.Box;
+    <span class="k">let</span> x = alloc 0;
+    <span class="k">fn</span> next (i:erased int)
+    <span class="k">requires</span> pts_to x i 
+    <span class="k">returns</span> j:int
+    <span class="k">ensures</span> pts_to x (i + 1)
+    <span class="k">ensures</span> pure (j == reveal i)
+    {
+        <span class="k">let</span> j = !x;
+        x := j + 1;
+        j
+    };
+    <span class="k">fn</span> destroy (i:erased int)
+    <span class="k">requires</span> pts_to x i
+    {
+       free x
+    };
+    <span class="k">let</span> c = { inv = pts_to x; next; destroy };
+    <span class="k">rewrite</span> (pts_to x 0) as (c.inv 0);
+    c
+}
+</pre></div>
+</div>
+<p>Here’s how it works.</p>
+<p>First, we allocate a new heap reference <code class="docutils literal notranslate"><span class="pre">x</span></code> initialized to <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+<p>Pulse allows us to define functions within any scope. So, we define
+two local functions <code class="docutils literal notranslate"><span class="pre">next</span></code> and <code class="docutils literal notranslate"><span class="pre">destroy</span></code>, whose implementations
+and specifications are straightforward. The important bit is that they
+capture the reference <code class="docutils literal notranslate"><span class="pre">x:box</span> <span class="pre">int</span></code> in their closure.</p>
+<p>Finally, we package <code class="docutils literal notranslate"><span class="pre">next</span></code> and <code class="docutils literal notranslate"><span class="pre">destroy</span></code> into a <code class="docutils literal notranslate"><span class="pre">c:ctr</span></code>,
+instantiating <code class="docutils literal notranslate"><span class="pre">inv</span></code> to <code class="docutils literal notranslate"><span class="pre">Box.pts_to</span> <span class="pre">x</span></code>, rewrite the context assertion
+to <code class="docutils literal notranslate"><span class="pre">c.inv</span> <span class="pre">0</span></code>, and return <code class="docutils literal notranslate"><span class="pre">c</span></code>.</p>
+<p>In a caller’s context, such as <code class="docutils literal notranslate"><span class="pre">test_counter</span></code> below, the fact that
+the counter is implemented using a single mutable heap reference is
+completely hidden.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> test_counter ()
+{
+    <span class="k">let</span> c = new_counter ();
+    <span class="k">let</span> next = c.next;
+    <span class="k">let</span> destroy = c.destroy;
+    <span class="k">let</span> x = next <span class="k">_</span>; <span class="c">//FIXME: Should be able to write c.next</span>
+    <span class="k">assert</span> pure (x == 0);
+    <span class="k">let</span> x = next <span class="k">_</span>;
+    <span class="k">assert</span> pure (x == 1);
+    destroy <span class="k">_</span>;
+}
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pulse_ghost.html" class="btn btn-neutral float-left" title="Ghost Computations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pulse_implication_and_forall.html" class="btn btn-neutral float-right" title="Implication and Universal Quantification" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

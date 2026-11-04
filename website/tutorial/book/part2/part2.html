@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Representing Data, Proofs, and Computations with Inductive Types &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Inductive type definitions" href="part2_inductive_type_families.html" />
+    <link rel="prev" title="Wrapping up" href="../part1/part1_wrap.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Representing Data, Proofs, and Computations with Inductive Types</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="part2_inductive_type_families.html">Inductive type definitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_vectors.html">Length-indexed Lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_merkle.html">Merkle Trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_equality.html">Equality Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_logical_connectives.html">Constructive &amp; Classical Connectives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_stlc.html">Simply Typed Lambda Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_phoas.html">Higher-order Abstract Syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_well_founded.html">Well-founded Relations and Termination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_par.html">A First Model of Computational Effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_universes.html">Universes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pulse/pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Representing Data, Proofs, and Computations with Inductive Types</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="representing-data-proofs-and-computations-with-inductive-types">
+<span id="part2"></span><h1>Representing Data, Proofs, and Computations with Inductive Types<a class="headerlink" href="#representing-data-proofs-and-computations-with-inductive-types" title="Link to this heading"></a></h1>
+<p>Earlier, we learned about <a class="reference internal" href="../part1/part1_inductives.html#part1-ch3"><span class="std std-ref">defining new data types</span></a>
+in F*. For example, here’s the type of lists parameterized by a type
+<code class="docutils literal notranslate"><span class="pre">a</span></code> of the list elements.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> list a =
+  | Nil  : list a
+  | Cons : hd:a -&gt; tl:list a -&gt; list a
+</pre></div>
+</div>
+<p>We also saw that it was easy to define basic functions over these
+types, using pattern matching and recursion. For example, here’s
+a function to compute the length of a list.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> length #a (l:list a)
+  : nat
+  = <span class="k">match</span> l <span class="k">with</span>
+    | [] -&gt; 0
+    | <span class="k">_</span> :: tl -&gt; 1 + length tl
+</pre></div>
+</div>
+<p>The function <code class="docutils literal notranslate"><span class="pre">length</span></code> defines some property of a <code class="docutils literal notranslate"><span class="pre">list</span></code> (its
+length) separately from the definition of the <code class="docutils literal notranslate"><span class="pre">list</span></code> type itself.
+Sometimes, however, it can be convenient to define a property of a
+type together with the type itself. For example, in some situations,
+it may be natural to define the length of the list together with the
+definition of the list type itself, so that every list is structurally
+equipped with a notion of its length. Here’s how:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> vec (a:Type) : nat -&gt; Type =
+  | Nil : vec a 0
+  | Cons : #n:nat -&gt; hd:a -&gt; tl:vec a n -&gt; vec a (n + 1)
+</pre></div>
+</div>
+<p>What we have here is our first indexed type, <code class="docutils literal notranslate"><span class="pre">vec</span> <span class="pre">a</span> <span class="pre">n</span></code>. One way to
+understand this definition is that <code class="docutils literal notranslate"><span class="pre">vec</span> <span class="pre">a</span> <span class="pre">:</span> <span class="pre">nat</span> <span class="pre">-&gt;</span> <span class="pre">Type</span></code> describes a
+family of types, <code class="docutils literal notranslate"><span class="pre">vec</span> <span class="pre">a</span> <span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">vec</span> <span class="pre">a</span> <span class="pre">1</span></code>, … etc., all representing
+lists of <code class="docutils literal notranslate"><span class="pre">a</span></code>-typed elements, but where the <em>index</em> <code class="docutils literal notranslate"><span class="pre">n</span></code> describes
+the length of the list. With this definition of <code class="docutils literal notranslate"><span class="pre">vec</span></code>, the function
+<code class="docutils literal notranslate"><span class="pre">length</span></code> is redundant: given a <code class="docutils literal notranslate"><span class="pre">v</span> <span class="pre">:</span> <span class="pre">vec</span> <span class="pre">a</span> <span class="pre">n</span></code> we know that its
+<code class="docutils literal notranslate"><span class="pre">length</span> <span class="pre">v</span></code> is <code class="docutils literal notranslate"><span class="pre">n</span></code>, without having to recompute it.</p>
+<p>This style of enriching a type definition with indexes to state
+properties of the type is reminiscent of what we learned earlier about
+<a class="reference internal" href="../part1/part1_lemmas.html#part1-intrinsic-extrinsic"><span class="std std-ref">intrinsic versus extrinsic proofs</span></a>. Rather than defining a single type
+<code class="docutils literal notranslate"><span class="pre">list</span> <span class="pre">a</span></code> for all lists and then separately (i.e., extrinsically)
+defining a function <code class="docutils literal notranslate"><span class="pre">length</span></code> to compute the length of a list, with
+<code class="docutils literal notranslate"><span class="pre">vec</span></code> we’ve enriched the type of the list intrinsically, so that
+type of <code class="docutils literal notranslate"><span class="pre">vec</span></code> immediately tells you its length.</p>
+<p>Now, you may have seen examples like this length-indexed <code class="docutils literal notranslate"><span class="pre">vec</span></code> type
+before—it comes up often in tutorials about dependently typed
+programming. But, indexed types can do a lot more. In this section we
+learn about indexed inductive types from three related perspectives:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Representing data: Inductive types allow us to build new data
+types, includes lists, vectors, trees, etc. in several flavors.
+We present two case studies: <a class="reference internal" href="part2_vectors.html#part2-vectors"><span class="std std-ref">vectors</span></a> and
+<a class="reference internal" href="part2_merkle.html#part2-merkle"><span class="std std-ref">Merkle trees</span></a>, a binary tree data structure
+equipped with cryptographic proofs.</p></li>
+<li><p>Representing proofs: The core logic of F* rests upon several
+simple inductive type definitions. We revisit the logical
+connectives we’ve seen before (including the <a class="reference internal" href="part2_logical_connectives.html#part2-connectives"><span class="std std-ref">propositional
+connectives</span></a> and <a class="reference internal" href="part2_equality.html#part2-equality"><span class="std std-ref">equality</span></a>) and show how rather than being primitive
+notions in F*, their definitions arise from a few core
+constructions involving inductive types. Other core notions in the
+language, including the handling of <a class="reference internal" href="../part1/part1_termination.html#part1-termination"><span class="std std-ref">termination proofs</span></a>, can also be understood in terms of inductive
+types that <a class="reference internal" href="part2_well_founded.html#part2-well-founded-recursion"><span class="std std-ref">model well-founded recursion</span></a>.</p></li>
+<li><p>Representing computations: Inductive type definitions allow
+embedding other programming languages or computational models
+within F*. We develop two case studies.</p>
+<ul>
+<li><p>We develop a <a class="reference internal" href="part2_stlc.html#part2-stlc"><span class="std std-ref">deep embedding of the simply-typed lambda
+calculus</span></a> with several reduction strategies, and a
+proof of its syntactic type soundness. The example showcases the
+use of several inductive types to represent the syntax of a
+programming language, a relation describing its type system, and
+another relation describing its operational semantics.</p></li>
+<li><p>We also show how to use <a class="reference internal" href="part2_phoas.html#part2-phoas"><span class="std std-ref">higher-order abstract syntax</span></a> to represent well-typed lambda terms, a concise
+style that illustrates how to use inductive types that store
+functions.</p></li>
+<li><p>Finally, we look at a <a class="reference internal" href="part2_par.html#part2-par"><span class="std std-ref">shallow embedding of an imperative
+programming language with structured concurrency</span></a>,
+representing computations as infinitely branching inductively
+defined trees. The example introduces modeling computational
+effects as monads and showcases the use of inductive types
+at higher order.</p></li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+<p>This section is somewhat more advanced than the first. It also
+interleaves some technical material about F*’s core logic with case
+studies showing some of those core concepts at work. You can certainly
+work through the material sequentially, but depending on your
+interests, you may find the following paths through the material to be
+more accessible.</p>
+<p>If you’re familiar with dependent types but are new to F* and want a
+quick tour, the following path might work for you:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="part2_vectors.html#part2-vectors"><span class="std std-ref">Length-indexed lists</span></a>, F*-specific notations</p></li>
+<li><p><a class="reference internal" href="part2_equality.html#part2-equality"><span class="std std-ref">Equality</span></a></p></li>
+<li><p><a class="reference internal" href="part2_logical_connectives.html#part2-connectives"><span class="std std-ref">Logical connectives</span></a></p></li>
+<li><p>Any of the case studies, depending on your interest.</p></li>
+</ul>
+</div></blockquote>
+<p>If you’re unfamiliar with dependent types and are more curious to
+learn how to use F* by working through examples, following path might
+work for you:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference internal" href="part2_inductive_type_families.html#part2-inductives"><span class="std std-ref">Inductive type definitions</span></a>, basic concepts</p></li>
+<li><p><a class="reference internal" href="part2_vectors.html#part2-vectors"><span class="std std-ref">Length-indexed lists</span></a>, F*-specific notations in the simplest setting</p></li>
+<li><p><a class="reference internal" href="part2_merkle.html#part2-merkle"><span class="std std-ref">Merkle trees</span></a>, a more interesting example, with applications to cryptographic security</p></li>
+<li><p><a class="reference internal" href="part2_logical_connectives.html#part2-connectives"><span class="std std-ref">Logical connectives</span></a>, some utilities to manipulate F*’s logical connectives</p></li>
+<li><p>Any of the case studies, depending on your interest, with the <a class="reference internal" href="part2_stlc.html#part2-stlc"><span class="std std-ref">Simply Typed Lambda Calculus</span></a> perhaps the easiest of them.</p></li>
+</ul>
+</div></blockquote>
+<p>But, by the end of this section, through several exercises, we expect
+the reader to be familiar enough with inductive types to define their
+own data structures and inductively defined relations, while also
+gaining a working knowledge of some core parts of F*’s type theory.</p>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="part2_inductive_type_families.html">Inductive type definitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="part2_vectors.html">Length-indexed Lists</a></li>
+<li class="toctree-l1"><a class="reference internal" href="part2_merkle.html">Merkle Trees</a></li>
+<li class="toctree-l1"><a class="reference internal" href="part2_equality.html">Equality Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="part2_logical_connectives.html">Constructive &amp; Classical Connectives</a></li>
+<li class="toctree-l1"><a class="reference internal" href="part2_stlc.html">Simply Typed Lambda Calculus</a></li>
+<li class="toctree-l1"><a class="reference internal" href="part2_phoas.html">Higher-order Abstract Syntax</a></li>
+<li class="toctree-l1"><a class="reference internal" href="part2_well_founded.html">Well-founded Relations and Termination</a></li>
+<li class="toctree-l1"><a class="reference internal" href="part2_par.html">A First Model of Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="part2_universes.html">Universes</a></li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../part1/part1_wrap.html" class="btn btn-neutral float-left" title="Wrapping up" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="part2_inductive_type_families.html" class="btn btn-neutral float-right" title="Inductive type definitions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

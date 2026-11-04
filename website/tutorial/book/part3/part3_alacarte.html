@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fun with Typeclasses: Datatypes a la Carte &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Computational Effects" href="../part4/part4.html" />
+    <link rel="prev" title="Typeclasses" href="part3_typeclasses.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="part3.html">Modularity With Interfaces and Typeclasses</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="part3_interfaces.html">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part3_typeclasses.html">Typeclasses</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Fun with Typeclasses: Datatypes a la Carte</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#getting-started">Getting Started</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#smart-constructors-with-injections-and-projections">Smart Constructors with Injections and Projections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#evaluating-expressions">Evaluating Expressions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#provably-correct-optimizations">Provably Correct Optimizations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exercises">Exercises</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#exercise-1">Exercise 1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#exercise-2">Exercise 2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#exercise-3">Exercise 3</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pulse/pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="part3.html">Modularity With Interfaces and Typeclasses</a></li>
+      <li class="breadcrumb-item active">Fun with Typeclasses: Datatypes a la Carte</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="fun-with-typeclasses-datatypes-a-la-carte">
+<span id="part3-alacarte"></span><h1>Fun with Typeclasses: Datatypes a la Carte<a class="headerlink" href="#fun-with-typeclasses-datatypes-a-la-carte" title="Link to this heading"></a></h1>
+<p>In a classic 1998 post, Phil Wadler describes a difficulty in language and
+library design: how to modularly extend a data type together with the operations
+on those types. Wadler calls this the <a class="reference external" href="https://homepages.inf.ed.ac.uk/wadler/papers/expression/expression.txt">Expression Problem</a>,
+saying:</p>
+<blockquote>
+<div><p>The Expression Problem is a new name for an old problem.  The goal is to
+define a datatype by cases, where one can add new cases to the datatype and
+new functions over the datatype, without recompiling existing code, and while
+retaining static type safety (e.g., no casts).</p>
+</div></blockquote>
+<p>There are many solutions to the Expression Problem, though a particularly
+elegant one is Wouter Swierstra’s <a class="reference external" href="https://www.cambridge.org/core/journals/journal-of-functional-programming/article/data-types-a-la-carte/14416CB20C4637164EA9F77097909409">Data Types a la Carte</a>.
+Swierstra’s paper is a really beautiful functional pearl and is highly
+recommended—it’s probably useful background to have before diving into this
+chapter, though we’ll try to explain everything here as we go. His solution is a
+great illustration of extensibility with typeclasses: so, we show how to apply
+his approach using typeclasses in F*. More than anything, it’s a really fun
+example to work out.</p>
+<p>Swierstra’s paper uses Haskell: so he does not prove his functions terminating.
+One could do this in F* too, using the effect of <a class="reference internal" href="../part4/part4_div.html#part4-div"><span class="std std-ref">divergence</span></a>.
+However, in this chapter, we show how to make it all work with total functions
+and strictly positive inductive definitions. As a bonus, we also show how to do
+proofs of correctness of the various programs that Swierstra develops.</p>
+<section id="getting-started">
+<h2>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h2>
+<p>To set the stage, consider the following simple type of arithmetic expressions
+and a function <code class="docutils literal notranslate"><span class="pre">evaluate</span></code> to evaluate an expression to an integer:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> exp =
+| V <span class="k">of</span> int
+| Plus : exp -&gt; exp -&gt; exp
+
+<span class="k">let</span> <span class="k">rec</span> evaluate = <span class="k">function</span>
+| V i -&gt; i
+| Plus e1 e2 -&gt; evaluate e1 + evaluate e2
+</pre></div>
+</div>
+<p>This is straightforward to define, but it has an extensibility problem.</p>
+<p>If one wanted to add another type of expression, say <code class="docutils literal notranslate"><span class="pre">Mul</span> <span class="pre">:</span> <span class="pre">exp</span> <span class="pre">-&gt;</span> <span class="pre">exp</span> <span class="pre">-&gt;</span>
+<span class="pre">exp</span></code>, then one needs to redefine both the type <code class="docutils literal notranslate"><span class="pre">exp</span></code> adding the new case and
+to redefine <code class="docutils literal notranslate"><span class="pre">evaluate</span></code> to handle that case.</p>
+<p>A solution to the Expression Problem would allow one to add cases to the <code class="docutils literal notranslate"><span class="pre">exp</span></code>
+type and to progressively define functions to handle each case separately.</p>
+<p>Swierstra’s idea is to define a single generic data type that is parameterized
+by a type constructor, allowing one to express, in general, a tree of finite
+depth, but one whose branching structure and payload is left generic. A first
+attempt at such a definition in F* is shown below:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span>[@@expect_failure]
+<span class="k">noeq</span>
+<span class="k">type</span> expr (f : (Type -&gt; Type)) =
+  | In <span class="k">of</span> f (expr f)
+</pre></div>
+</div>
+<p>Unfortunately, this definition is not accepted by F*, because it is not
+necessarily well-founded. As we saw in a previous section on <a class="reference internal" href="../part2/part2_inductive_type_families.html#part2-strictly-positive-annotations"><span class="std std-ref">strictly
+positive definitions</span></a>, if we’re not
+careful, such definitions can allow one to prove <code class="docutils literal notranslate"><span class="pre">False</span></code>. In particular, we
+need to constrain the type constructor argument <code class="docutils literal notranslate"><span class="pre">f</span></code> to be <em>strictly positive</em>,
+like so:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">noeq</span>
+<span class="k">type</span> expr (f : ([@@@strictly_positive]Type -&gt; Type)) =
+  | In <span class="k">of</span> f (expr f)
+</pre></div>
+</div>
+<p>This definition may bend your mind a little at first, but it’s actually quite
+simple. It may help to consider an example: the type <code class="docutils literal notranslate"><span class="pre">expr</span> <span class="pre">list</span></code> has values of
+the form <code class="docutils literal notranslate"><span class="pre">In</span> <span class="pre">of</span> <span class="pre">list</span> <span class="pre">(expr</span> <span class="pre">list)</span></code>, i.e., trees of arbitrary depth with a
+variable branching factor such as in the example shown below.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> list ([@@@strictly_positive]a:Type) =
+| Nil
+| Cons : a -&gt; list a -&gt; list a
+
+<span class="k">let</span> elist = expr list
+
+<span class="c">(*</span>
+<span class="c">   .___ Nil</span>
+<span class="c">  /</span>
+<span class="c"> .</span>
+<span class="c">  \.___.____Nil</span>
+<span class="c">*)</span>
+<span class="k">let</span> elist_ex1 = 
+  In (Cons (In Nil) 
+           (Cons (In (Cons (In Nil) Nil)) 
+            Nil))
+</pre></div>
+</div>
+<p>Now, given two type constructors <code class="docutils literal notranslate"><span class="pre">f</span></code> and <code class="docutils literal notranslate"><span class="pre">g</span></code>, one can take their <em>sum</em> or
+coproduct. This is analogous to the <code class="docutils literal notranslate"><span class="pre">either</span></code> type we saw in <a class="reference internal" href="../part1/part1_inductives.html#part1-ch3"><span class="std std-ref">Part 1</span></a>, but at the level of type constructors rather than types: we write
+<code class="docutils literal notranslate"><span class="pre">f</span> <span class="pre">++</span> <span class="pre">g</span></code> for <code class="docutils literal notranslate"><span class="pre">coprod</span> <span class="pre">f</span> <span class="pre">g</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">noeq</span>
+<span class="k">type</span> coprod (f g: ([@@@strictly_positive]Type -&gt; Type)) ([@@@strictly_positive]a:Type) =
+  | Inl <span class="k">of</span> f a
+  | Inr <span class="k">of</span> g a
+<span class="k">let</span> ( ++ ) f g = coprod f g
+</pre></div>
+</div>
+<p>Now, with these abstractions in place, we can define the following, where <code class="docutils literal notranslate"><span class="pre">expr</span>
+<span class="pre">(value</span> <span class="pre">++</span> <span class="pre">add)</span></code> is isomorphic to the <code class="docutils literal notranslate"><span class="pre">exp</span></code> type we started with. Notice that
+we’ve now defined the cases of our type of arithmetic expressions independently
+and can compose the cases with <code class="docutils literal notranslate"><span class="pre">++</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> value ([@@@strictly_positive]a:Type) =
+  | Val <span class="k">of</span> int
+
+<span class="k">type</span> add ([@@@strictly_positive]a:Type) =
+  | Add : a -&gt; a -&gt; add a
+
+<span class="k">let</span> addExample : expr (value ++ add) = In (Inr (Add (In (Inl (Val 118))) (In (Inl (Val 1219)))))
+</pre></div>
+</div>
+<p>Of course, building a value of type <code class="docutils literal notranslate"><span class="pre">expr</span> <span class="pre">(value</span> <span class="pre">++</span> <span class="pre">add)</span></code> is utterly horrible:
+but we’ll see how to make that better using typeclasses, next .</p>
+</section>
+<section id="smart-constructors-with-injections-and-projections">
+<h2>Smart Constructors with Injections and Projections<a class="headerlink" href="#smart-constructors-with-injections-and-projections" title="Link to this heading"></a></h2>
+<p>A data constructor, e.g., <code class="docutils literal notranslate"><span class="pre">Inl</span> <span class="pre">:</span> <span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">either</span> <span class="pre">a</span> <span class="pre">b</span></code> is an injective function
+from <code class="docutils literal notranslate"><span class="pre">a</span></code> to <code class="docutils literal notranslate"><span class="pre">either</span> <span class="pre">a</span> <span class="pre">b</span></code>, i.e., each element <code class="docutils literal notranslate"><span class="pre">x:a</span></code> is mapped to a unique
+element <code class="docutils literal notranslate"><span class="pre">Inl</span> <span class="pre">x</span> <span class="pre">:</span> <span class="pre">either</span> <span class="pre">a</span> <span class="pre">b</span></code>. One can also project back that <code class="docutils literal notranslate"><span class="pre">a</span></code> from an
+<code class="docutils literal notranslate"><span class="pre">either</span> <span class="pre">a</span> <span class="pre">b</span></code>, though this is only a partial function. Abstracting injections
+and projections will give us a generic way to construct values in our extensible
+type of expressions.</p>
+<p>First, we define some abbreviations:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> inj_t (f g:Type -&gt; Type) = #a:Type -&gt; f a -&gt; g a
+<span class="k">let</span> proj_t (f g:Type -&gt; Type) = #a:Type -&gt; x:g a -&gt; option (f a)
+</pre></div>
+</div>
+<p>A type constructor <code class="docutils literal notranslate"><span class="pre">f</span></code> is less than or equal to another constructor <code class="docutils literal notranslate"><span class="pre">g</span></code> if
+there is an injection from <code class="docutils literal notranslate"><span class="pre">f</span> <span class="pre">a</span></code> to <code class="docutils literal notranslate"><span class="pre">g</span> <span class="pre">a</span></code>. This notion is captured by the
+typeclass below: We have an <code class="docutils literal notranslate"><span class="pre">inj</span></code> and a <code class="docutils literal notranslate"><span class="pre">proj</span></code> where <code class="docutils literal notranslate"><span class="pre">proj</span></code> is an inverse
+of <code class="docutils literal notranslate"><span class="pre">inj</span></code>, and <code class="docutils literal notranslate"><span class="pre">inj</span></code> is a partial inverse of <code class="docutils literal notranslate"><span class="pre">proj</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> leq (f g : [@@@strictly_positive]Type -&gt; Type) = {
+  inj: inj_t f g;
+  proj: proj_t f g;
+  inversion: unit
+   -&gt; <span class="k">Lemma</span> (
+    (<span class="k">forall</span> (a:Type) (x:g a).
+      <span class="k">match</span> proj x <span class="k">with</span>
+      | Some y -&gt; inj y == x
+      | <span class="k">_</span> -&gt; True) /\
+    (<span class="k">forall</span> (a:Type) (x:f a). 
+      proj (inj x) == Some x)
+  )
+}
+</pre></div>
+</div>
+<p>We can now define some instances of <code class="docutils literal notranslate"><span class="pre">leq</span></code>. First, of course, <code class="docutils literal notranslate"><span class="pre">leq</span></code> is
+reflexive, and F* can easily prove the inversion lemma with SMT.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">instance</span> leq_refl f : leq f f = {
+  inj=(<span class="k">fun</span> #<span class="k">_</span> x -&gt; x);
+  proj=(<span class="k">fun</span> #<span class="k">_</span> x -&gt; Some x);
+  inversion=(<span class="k">fun</span> <span class="k">_</span> -&gt; ())
+}
+</pre></div>
+</div>
+<p>More interestingly, we can prove that <code class="docutils literal notranslate"><span class="pre">f</span></code> is less than or equal to the
+extension of <code class="docutils literal notranslate"><span class="pre">f</span></code> with <code class="docutils literal notranslate"><span class="pre">g</span></code> on the left:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">instance</span> leq_ext_left f g
+: leq f (g ++ f)
+= <span class="k">let</span> inj : inj_t f (g ++ f) = Inr <span class="k">in</span> 
+  <span class="k">let</span> proj : proj_t f (g ++ f) = <span class="k">fun</span> #a x -&gt;
+    <span class="k">match</span> x <span class="k">with</span>
+    | Inl <span class="k">_</span> -&gt; None
+    | Inr x -&gt; Some x
+  <span class="k">in</span>
+  { inj; proj; inversion=(<span class="k">fun</span> <span class="k">_</span> -&gt; ()) }
+</pre></div>
+</div>
+<p>We could also prove the analogous <code class="docutils literal notranslate"><span class="pre">leq_ext_right</span></code>, but we will explicitly not
+give an instance for it, since as we’ll see shortly, the instances we give are
+specifically chosen to allow type inference to work well. Additional instances
+will lead to ambiguities and confuse the inference algorithm.</p>
+<p>Instead, we will give a slightly more general form, including  a congruence rule
+that says that if <code class="docutils literal notranslate"><span class="pre">f</span></code> is less than or equal to <code class="docutils literal notranslate"><span class="pre">h</span></code>, then <code class="docutils literal notranslate"><span class="pre">f</span></code> is also less
+than or equal to the extension of <code class="docutils literal notranslate"><span class="pre">h</span></code> with <code class="docutils literal notranslate"><span class="pre">g</span></code> on the right.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">instance</span> leq_cong_right 
+  f g h
+  {| f_inj:leq f h |}
+: leq f (h ++ g)
+= <span class="k">let</span> inj : inj_t f (h ++ g) = <span class="k">fun</span> #a x -&gt; Inl (f_inj.inj x) <span class="k">in</span>
+  <span class="k">let</span> proj : proj_t f (h ++ g) = <span class="k">fun</span> #a x -&gt; 
+    <span class="k">match</span> x <span class="k">with</span>
+    | Inl x -&gt; f_inj.proj x
+    | <span class="k">_</span> -&gt; None
+  <span class="k">in</span>
+  { inj; proj; inversion=(<span class="k">fun</span> <span class="k">_</span> -&gt; f_inj.inversion()) }
+</pre></div>
+</div>
+<p>Now, for any pair of type constructors that satisfy <code class="docutils literal notranslate"><span class="pre">leq</span> <span class="pre">f</span> <span class="pre">g</span></code>, we can lift the
+associated injections and projections to our extensible expression datatype and
+prove the round-trip lemmas</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> compose (#a #b #c:Type) (f:b -&gt; c) (g: a -&gt; b) (x:a) : c = f (g x)
+<span class="k">let</span> inject #f #g {| gf: leq g f |}
+: g (expr f) -&gt; expr f 
+= compose In gf.inj
+
+<span class="k">let</span> project #g #f {| gf: leq g f |}
+: x:expr f -&gt; option (g (expr f)) 
+= <span class="k">fun</span> (In x) -&gt; gf.proj x
+
+<span class="k">let</span> inject_project 
+  #f #g {| gf: leq g f |}
+  (x:expr f)
+: <span class="k">Lemma</span> (
+    <span class="k">match</span> project #g #f x <span class="k">with</span>
+    | Some y -&gt; inject y == x
+    | <span class="k">_</span> -&gt; True
+) [<span class="k">SMTPat</span> (project #g #f x)]
+= gf.inversion()
+
+<span class="k">let</span> project_inject #f #g {| gf: leq g f |} (x:g (expr f))
+: <span class="k">Lemma</span> (
+    project #g #f (inject x) == Some x
+) [<span class="k">SMTPat</span> (project #g #f (inject x))]
+= gf.inversion()
+</pre></div>
+</div>
+<p>Now, with this machinery in place, we get to the fun part. For each of the cases
+of the <code class="docutils literal notranslate"><span class="pre">expr</span></code> type, we can define a generic smart constructor, allowing one to
+lift it to any type more general than the case we’re defining.</p>
+<p>For instance, the smart constructor <code class="docutils literal notranslate"><span class="pre">v</span></code> lifts the constructor <code class="docutils literal notranslate"><span class="pre">Val</span> <span class="pre">x</span></code> into
+the type <code class="docutils literal notranslate"><span class="pre">expr</span> <span class="pre">f</span></code> for any type greater than or equal to <code class="docutils literal notranslate"><span class="pre">value</span></code>. Likewise,
+<code class="docutils literal notranslate"><span class="pre">(+^)</span></code> lifts <code class="docutils literal notranslate"><span class="pre">Add</span> <span class="pre">x</span> <span class="pre">y</span></code> into any type greater than or equal to <code class="docutils literal notranslate"><span class="pre">add</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> v #f {| vf: leq value f |} (x:int)
+: expr f
+= inject (Val x)
+
+<span class="k">let</span> ( +^ ) #f {| vf : leq add f |} (x y: expr f)
+: expr f
+= inject (Add x y)
+</pre></div>
+</div>
+<p>And now we can write our example value so much more nicely than before:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> ex1 : expr (value ++ add) = v 118 +^ v 1219
+</pre></div>
+</div>
+<p>The type annotation on <code class="docutils literal notranslate"><span class="pre">ex1</span> <span class="pre">:</span> <span class="pre">expr</span> <span class="pre">(value</span> <span class="pre">++</span> <span class="pre">add)</span></code> is crucial: it allows the
+type inference algorithm to instantiate the generic parameter <code class="docutils literal notranslate"><span class="pre">f</span></code> in each
+<code class="docutils literal notranslate"><span class="pre">v</span></code> and in <code class="docutils literal notranslate"><span class="pre">(+^)</span></code> to <code class="docutils literal notranslate"><span class="pre">(value</span> <span class="pre">++</span> <span class="pre">add)</span></code> and then the search for typeclass
+instances finds <code class="docutils literal notranslate"><span class="pre">value</span> <span class="pre">`leq`</span> <span class="pre">(value</span> <span class="pre">++</span> <span class="pre">add)</span></code> by using <code class="docutils literal notranslate"><span class="pre">leq_cong_right</span></code> and
+<code class="docutils literal notranslate"><span class="pre">leq_left</span></code>; and  <code class="docutils literal notranslate"><span class="pre">add</span> <span class="pre">`leq`</span> <span class="pre">(value</span> <span class="pre">++</span> <span class="pre">add)</span></code> using <code class="docutils literal notranslate"><span class="pre">leq_ext_left</span></code>.</p>
+<p>With this setup, extensibility works out smoothly: we can add a multiplication
+case, define a smart constructor for it, and easily use it to build expressions
+with values, addition, and multiplication.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> mul ([@@@strictly_positive]a:Type) =
+  | Mul : a -&gt; a -&gt; mul a
+
+<span class="k">let</span> ( *^ ) #f {| vf : leq mul f |} (x y: expr f)
+: expr f
+= inject (Mul x y)
+
+<span class="k">let</span> ex2 : expr (value ++ add ++ mul) = v 1001 +^ v 1833 +^ v 13713 *^ v 24
+</pre></div>
+</div>
+</section>
+<section id="evaluating-expressions">
+<h2>Evaluating Expressions<a class="headerlink" href="#evaluating-expressions" title="Link to this heading"></a></h2>
+<p>Now that we have a way to construct expressions, let’s see how to define an
+interpreter for expressions in an extensible way. An interpreter involves
+traversing the expression tree, and applying operations to an accumulated
+result, and returning the final accumulated value. In other words, we need a way
+to <em>fold</em> over an expression tree, but to do so in an extensible, generic way.</p>
+<p>The path to doing that involves defining a notion of a functor: we saw functors
+briefly in a <a class="reference internal" href="part3_typeclasses.html#part3-monadic-syntax"><span class="std std-ref">previous section</span></a>, and maybe you’re
+already familiar with it from Haskell.</p>
+<p>Our definition of functor below is slightly different than what one might
+normally see. Usually, a type constructor <code class="docutils literal notranslate"><span class="pre">t</span></code> is a functor if it supports an
+operation <code class="docutils literal notranslate"><span class="pre">fmap:</span> <span class="pre">(a</span> <span class="pre">-&gt;</span> <span class="pre">b)</span> <span class="pre">-&gt;</span> <span class="pre">t</span> <span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">t</span> <span class="pre">b</span></code>. In our definition below, we flip the
+order of arguments and require <code class="docutils literal notranslate"><span class="pre">fmap</span> <span class="pre">x</span> <span class="pre">f</span></code> to guarantee that it calls <code class="docutils literal notranslate"><span class="pre">f</span></code>
+only on subterms of <code class="docutils literal notranslate"><span class="pre">x</span></code>—this will allow us to build functors over
+inductively defined datatypes in an extensible way, while still proving that all
+our functions termination.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> functor (f:[@@@strictly_positive]Type -&gt; Type) = {
+  fmap : (#a:Type -&gt; #b:Type -&gt; x:f a -&gt; (y:a{y &lt;&lt; x} -&gt; b) -&gt; f b)
+}
+</pre></div>
+</div>
+<p>Functor instances for <code class="docutils literal notranslate"><span class="pre">value</span></code>, <code class="docutils literal notranslate"><span class="pre">add</span></code>, and <code class="docutils literal notranslate"><span class="pre">mul</span></code> are easy to define:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">instance</span> functor_value : functor value =
+  <span class="k">let</span> fmap (#a #b:Type) (x:value a) (f:(y:a{y&lt;&lt;x} -&gt; b)) : value b =
+    <span class="k">let</span> Val x = x <span class="k">in</span> Val x
+  <span class="k">in</span>
+  { fmap }
+</pre></div>
+</div>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">instance</span> functor_add : functor add =
+  <span class="k">let</span> fmap (#a #b:Type) (x:add a) (f:(y:a{y&lt;&lt;x} -&gt; b)) : add b =
+    <span class="k">let</span> Add x y = x <span class="k">in</span>
+    Add (f x) (f y)
+  <span class="k">in</span>
+  { fmap }
+</pre></div>
+</div>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">instance</span> functor_mul : functor mul = 
+  <span class="k">let</span> fmap (#a #b:Type) (x:mul a) (f:(y:a{y&lt;&lt;x} -&gt; b)) : mul b =
+    <span class="k">let</span> Mul x y = x <span class="k">in</span>
+    Mul (f x) (f y)
+  <span class="k">in</span>
+  { fmap }
+</pre></div>
+</div>
+<p>Maybe more interesting is a functor instance for co-products, or sums of
+functors, i.e., if <code class="docutils literal notranslate"><span class="pre">f</span></code> and <code class="docutils literal notranslate"><span class="pre">g</span></code> are both functors, then so is <code class="docutils literal notranslate"><span class="pre">f</span> <span class="pre">++</span> <span class="pre">g</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">instance</span> functor_coprod 
+    #f #g
+    {| ff: functor f |} {| fg: functor g |}
+: functor (coprod f g)
+= <span class="k">let</span> fmap (#a #b:Type) (x:coprod f g a) (a2b:(y:a{y &lt;&lt; x} -&gt; b)) 
+  : coprod f g b
+  = <span class="k">match</span> x <span class="k">with</span>
+    | Inl x -&gt; Inl (ff.fmap x a2b)
+    | Inr x -&gt; Inr (fg.fmap x a2b)
+  <span class="k">in</span>
+  { fmap }
+</pre></div>
+</div>
+<p>With this in place, we can finally define a generic way to fold over an
+expression. Given a function <code class="docutils literal notranslate"><span class="pre">alg</span></code> to map an <code class="docutils literal notranslate"><span class="pre">f</span> <span class="pre">a</span></code> to a result value <code class="docutils literal notranslate"><span class="pre">a</span></code>,
+<code class="docutils literal notranslate"><span class="pre">fold_expr</span></code> traverses an <code class="docutils literal notranslate"><span class="pre">expr</span> <span class="pre">f</span></code> accumulating the results of <code class="docutils literal notranslate"><span class="pre">alg</span></code>
+applied to each node in the tree. Here we see why it was important to refine the
+type of <code class="docutils literal notranslate"><span class="pre">fmap</span></code> with the precondition <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">&lt;&lt;</span> <span class="pre">t</span></code>: the recursive call to
+<code class="docutils literal notranslate"><span class="pre">fold_expr</span></code> terminates only because the argument <code class="docutils literal notranslate"><span class="pre">x</span></code> is guaranteed to precede
+<code class="docutils literal notranslate"><span class="pre">t</span></code> in F*’s built-in well-founded order.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> fold_expr #f #a {| ff : functor f |}
+    (alg:f a -&gt; a) (e:expr f)
+: a
+= <span class="k">let</span> In t = e <span class="k">in</span>
+  alg (fmap t (<span class="k">fun</span> x -&gt; fold_expr alg x))
+</pre></div>
+</div>
+<p>Now that we have a general way to fold over our expression trees, we need an
+extensible way to define the evaluators for each type of node in a tree. For
+that, we can define another typeclass, <code class="docutils literal notranslate"><span class="pre">eval</span> <span class="pre">f</span></code> for an evaluator for nodes of
+type <code class="docutils literal notranslate"><span class="pre">f</span></code>. It’s easy to give instances of eval for our three types of nodes,
+separately from each other.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> eval (f: [@@@strictly_positive]Type -&gt; Type) = {
+  evalAlg : f int -&gt; int
+}
+
+<span class="k">instance</span> eval_val : eval value =
+  <span class="k">let</span> evalAlg : value int -&gt; int = <span class="k">fun</span> (Val x) -&gt; x <span class="k">in</span>
+  { evalAlg }
+
+<span class="k">instance</span> eval_add : eval add =
+  <span class="k">let</span> evalAlg : add int -&gt; int = <span class="k">fun</span> (Add x y) -&gt; x + y <span class="k">in</span>
+  { evalAlg }
+
+<span class="k">instance</span> eval_mul : eval mul=
+  <span class="k">let</span> evalAlg : mul int -&gt; int = <span class="k">fun</span> (Mul x y) -&gt; x * y <span class="k">in</span>
+  {  evalAlg }
+</pre></div>
+</div>
+<p>With evaluators for <code class="docutils literal notranslate"><span class="pre">f</span></code> and <code class="docutils literal notranslate"><span class="pre">g</span></code>, one can build an evaluator for <code class="docutils literal notranslate"><span class="pre">f++g</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">instance</span> eval_coprod 
+    #f #g
+    {| ef: eval f |}
+    {| eg: eval g |} 
+: eval (coprod f g)
+= <span class="k">let</span> evalAlg (x:coprod f g int) : int =
+    <span class="k">match</span> x <span class="k">with</span>
+    | Inl x -&gt; ef.evalAlg x
+    | Inr y -&gt; eg.evalAlg y
+  <span class="k">in</span>
+  { evalAlg }
+</pre></div>
+</div>
+<p>Finally, we can build a generic evaluator for expressions:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> eval_expr  #f {| eval f |} {| functor f |} (x:expr f)
+: int = fold_expr evalAlg x
+</pre></div>
+</div>
+<p>And, hooray, it works! We can ask F* to normalize and check that the result
+matches what we expect:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> test = <span class="k">assert_norm</span> (eval_expr ex1 == 1337)
+<span class="k">let</span> test2 = <span class="k">assert_norm</span> (eval_expr ex2 == ((1001 + 1833 + 13713 * 24)))
+</pre></div>
+</div>
+</section>
+<section id="provably-correct-optimizations">
+<h2>Provably Correct Optimizations<a class="headerlink" href="#provably-correct-optimizations" title="Link to this heading"></a></h2>
+<p>Now, let’s say we wanted to optimize our expressions, rewriting them by
+appealing to the usual arithmetic rules, e.g., distributing multiplication over
+addition etc. Swierstra shows how to do that, but in Haskell, there aren’t any
+proofs of correctness. But, in F*, we can prove our expression rewrite rules
+correct, in the sense that they preserve the semantics of expression evaluation.</p>
+<p>Let’s start by defining the type of a rewrite rule and what it means for it to
+be sound:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> rewrite_rule f = expr f -&gt; option (expr f)
+<span class="k">let</span> rewrite_rule_soundness #f (r:rewrite_rule f)
+  {| eval f |} {| functor f |} (x:expr f)
+= <span class="k">match</span> r x <span class="k">with</span>
+  | None -&gt; True
+  | Some y -&gt; eval_expr x == eval_expr y
+  
+<span class="k">noeq</span>
+<span class="k">type</span> rewrite_t (f:<span class="k">_</span>) {| eval f |} {| functor f |} = {
+  rule: rewrite_rule f;
+  soundness: unit -&gt; <span class="k">Lemma</span> (<span class="k">forall</span> x. rewrite_rule_soundness rule x)
+}
+</pre></div>
+</div>
+<p>A rewrite rule may fail, but if it rewrites <code class="docutils literal notranslate"><span class="pre">x</span></code> to <code class="docutils literal notranslate"><span class="pre">y</span></code>, then both <code class="docutils literal notranslate"><span class="pre">x</span></code> and
+<code class="docutils literal notranslate"><span class="pre">y</span></code> must evaluate to the same result. We can package up a rewrite rule and its
+soundness proof into a record, <code class="docutils literal notranslate"><span class="pre">rewrite_t</span></code>.</p>
+<p>Now, to define some rewrite rules, it’s convenient to have a bit of syntax to
+handle potential rewrite failures—we’ll use the monadic syntax <a class="reference internal" href="part3_typeclasses.html#part3-monadic-syntax"><span class="std std-ref">shown
+previously</span></a>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> (<span class="k">let</span>?) 
+    (x:option &#39;a) 
+    (g:(y:&#39;a { Some y == x} -&gt; option &#39;b))
+: option &#39;b =
+  <span class="k">match</span> x <span class="k">with</span>
+  | None -&gt; None
+  | Some y -&gt; g y
+
+<span class="k">let</span> return (x:&#39;a) : option &#39;a = Some x
+
+<span class="k">let</span> dflt (y:&#39;a) (x:option &#39;a) : &#39;a =
+  <span class="k">match</span> x <span class="k">with</span>
+  | None -&gt; y
+  | Some x -&gt; x
+
+<span class="k">let</span> or_else (x:option &#39;a)
+            (or_else: squash (None? x) -&gt; &#39;a)
+: &#39;a
+= <span class="k">match</span> x <span class="k">with</span>
+  | None -&gt; or_else ()
+  | Some y -&gt; y
+</pre></div>
+</div>
+<p>Next, in order to define our rewrite rules for each case, we define what we
+expect to be true for the expression evaluator for an expression tree that has
+that case.</p>
+<p>For instance, if we’re evaluating an <code class="docutils literal notranslate"><span class="pre">Add</span></code> node, then we expect the result to
+the addition of each subtree.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> ev_val_sem #f (ev: eval f) {| functor f |} {| leq value f |} =
+  <span class="k">forall</span> (x:expr f). dflt True 
+    (<span class="k">let</span>? Val a = project x <span class="k">in</span>
+     Some (eval_expr x == a))
+
+<span class="k">let</span> ev_add_sem #f (ev: eval f) {| functor f |} {| leq add f |} =
+  <span class="k">forall</span> (x:expr f). dflt True 
+    (<span class="k">let</span>? Add a b = project x <span class="k">in</span>
+     Some (eval_expr x == eval_expr a + eval_expr b))
+
+<span class="k">let</span> ev_mul_sem #f (ev: eval f) {| functor f |} {| leq mul f |} =
+  <span class="k">forall</span> (x:expr f). dflt True 
+    (<span class="k">let</span>? Mul a b = project x <span class="k">in</span>
+     Some (eval_expr x == eval_expr a * eval_expr b))
+</pre></div>
+</div>
+<p>We can now define two example rewrite rules. The first rewrites <code class="docutils literal notranslate"><span class="pre">(a</span> <span class="pre">*</span> <span class="pre">(c</span> <span class="pre">+</span>
+<span class="pre">d))</span></code> to <code class="docutils literal notranslate"><span class="pre">(a</span> <span class="pre">*</span> <span class="pre">c</span> <span class="pre">+</span> <span class="pre">a</span> <span class="pre">*</span> <span class="pre">d)</span></code>; and the second rewrites <code class="docutils literal notranslate"><span class="pre">(c</span> <span class="pre">+</span> <span class="pre">d)</span> <span class="pre">*</span> <span class="pre">b</span></code> to <code class="docutils literal notranslate"><span class="pre">(c</span> <span class="pre">*</span>
+<span class="pre">b</span> <span class="pre">+</span> <span class="pre">d</span> <span class="pre">*</span> <span class="pre">b)</span></code>. Both of these are easily proven sound for any type of expression
+tree whose nodes <code class="docutils literal notranslate"><span class="pre">f</span></code> include <code class="docutils literal notranslate"><span class="pre">add</span></code> and <code class="docutils literal notranslate"><span class="pre">mul</span></code>, under the hypothesis that
+the evaluator behaves as expected.</p>
+<p>We can generically compose rewrite rules:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> compose_rewrites #f
+    {| ev: eval f |} {| functor f |}
+    (r0 r1: rewrite_t f)
+: rewrite_t f
+= <span class="k">let</span> rule : expr f -&gt; option (expr f) = <span class="k">fun</span> x -&gt;
+    <span class="k">match</span> r0.rule x <span class="k">with</span>
+    | None -&gt; r1.rule x
+    | x -&gt; x
+  <span class="k">in</span>
+  <span class="k">let</span> soundness <span class="k">_</span> 
+    : <span class="k">Lemma</span> (<span class="k">forall</span> x. rewrite_rule_soundness rule x)
+    = r0.soundness(); r1.soundness()
+  <span class="k">in</span>
+  { rule; soundness }
+</pre></div>
+</div>
+<p>Then, given any rewrite rule <code class="docutils literal notranslate"><span class="pre">l</span></code>, we can fold over the expression applying the
+rewrite rule bottom up whenever it is eligible.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> rewrite_alg #f {| eval f |} {| functor f |} 
+                  (l:rewrite_t f) (x:f (expr f))
+= dflt (In x) &lt;| l.rule (In x)
+
+<span class="k">let</span> rewrite #f {| eval f |} {| functor f |} 
+               (l:rewrite_t f) (x:expr f)
+= fold_expr (rewrite_alg l) x
+</pre></div>
+</div>
+<p>As with our evaluator, we can test that it works, by asking F* to evaluate the
+rewrite rules on an example. We first define <code class="docutils literal notranslate"><span class="pre">rewrite_distr</span></code> to apply both
+distributivity rewrite rules. And then assert that rewrite <code class="docutils literal notranslate"><span class="pre">ex6</span></code> produces
+<code class="docutils literal notranslate"><span class="pre">ex6'</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> rewrite_distr
+  #f
+  {| ev: eval f |} {| functor f |}
+  {| leq add f |} {| leq mul f |}
+  (pf: squash (ev_add_sem ev /\ ev_mul_sem ev))
+  (x:expr f)
+: expr f
+= rewrite (compose_rewrites (distr_mul_l pf) (distr_mul_r pf)) x
+
+<span class="k">let</span> ex5_l : expr (value ++ add ++ mul) = v 3 *^ (v 1 +^ v 2)
+<span class="k">let</span> ex5_r : expr (value ++ add ++ mul) = (v 1 +^ v 2) *^ v 3
+<span class="k">let</span> ex6 = ex5_l +^ ex5_r
+
+<span class="k">let</span> ex5&#39;_l : expr (value ++ add ++ mul) = (v 3 *^ v 1) +^ (v 3 *^ v 2)
+<span class="k">let</span> ex5&#39;_r : expr (value ++ add ++ mul) = (v 1 *^ v 3) +^ (v 2 *^ v 3)
+<span class="k">let</span> ex6&#39; = ex5&#39;_l +^ ex5&#39;_r 
+
+<span class="k">let</span> test56 = <span class="k">assert_norm</span> (rewrite_distr () ex6 == ex6&#39;)
+</pre></div>
+</div>
+<p>Of course, more than just testing it, we can prove that it is correct. In fact,
+we can prove that applying any rewrite rule over an entire expression tree
+preserves its semantics.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> rewrite_soundness 
+    (x:expr (value ++ add ++ mul))
+    (l:rewrite_t (value ++ add ++ mul))
+: <span class="k">Lemma</span> (eval_expr x == eval_expr (rewrite l x))
+= <span class="k">match</span> project #value x <span class="k">with</span>
+  | Some (Val <span class="k">_</span>) -&gt;
+    l.soundness()
+  | <span class="k">_</span> -&gt;
+    <span class="k">match</span> project #add x <span class="k">with</span>
+    | Some (Add a b) -&gt; 
+      rewrite_soundness a l; rewrite_soundness b l;
+      l.soundness()
+    | <span class="k">_</span> -&gt;
+      <span class="k">let</span> Some (Mul a b) = project #mul x <span class="k">in</span>
+      rewrite_soundness a l; rewrite_soundness b l;
+      l.soundness()
+</pre></div>
+</div>
+<p>This is the one part of this development where the definition is not completely
+generic in the type of expression nodes. Instead, this is proof for the specific
+case of expressions that contain values, additions, and multiplications. I
+haven’t found a way to make this more generic. One would likely need to define a
+generic induction principle similar in structure to <code class="docutils literal notranslate"><span class="pre">fold_expr</span></code>—but that’s
+for another day’s head scratching. If you know an easy way, please let me know!</p>
+<p>That said, the proof is quite straightforward and pleasant: We simply match on
+the cases, use the induction hypothesis on the subtrees if any, and then apply
+the soundness lemma of the rewrite rule. F* and Z3 automates much of the
+reasoning, e.g., in the last case, we know we must have a <code class="docutils literal notranslate"><span class="pre">Mul</span></code> node, since
+we’ve already matched the other two cases.</p>
+<p>Of course, since rewriting is sound for any rule, it is also sound for rewriting
+with our distributivity rules.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> rewrite_distr_soundness 
+    (x:expr (value ++ add ++ mul))
+: <span class="k">Lemma</span> (eval_expr x == eval_expr (rewrite_distr () x))
+= rewrite_soundness x (compose_rewrites (distr_mul_l ()) (distr_mul_r ()))
+</pre></div>
+</div>
+</section>
+<section id="exercises">
+<h2>Exercises<a class="headerlink" href="#exercises" title="Link to this heading"></a></h2>
+<p>This <a class="reference external" href="../code/exercises/Part3.DataTypesALaCarte.fst">file</a> provides
+the definitions you need.</p>
+<section id="exercise-1">
+<h3>Exercise 1<a class="headerlink" href="#exercise-1" title="Link to this heading"></a></h3>
+<p>Write a function <code class="docutils literal notranslate"><span class="pre">to_string_specific</span></code> whose type is <code class="docutils literal notranslate"><span class="pre">expr</span> <span class="pre">(value</span> <span class="pre">++</span> <span class="pre">add</span> <span class="pre">++</span>
+<span class="pre">mul)</span> <span class="pre">-&gt;</span> <span class="pre">string</span></code> to print an expression as a string.</p>
+<div class="toggle docutils container">
+<div class="header docutils container">
+<p><strong>Answer</strong></p>
+</div>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> functor (f:[@@@strictly_positive]Type -&gt; Type) = {
+  fmap : (#a:Type -&gt; #b:Type -&gt; x:f a -&gt; (y:a{y &lt;&lt; x} -&gt; b) -&gt; f b)
+}
+</pre></div>
+</div>
+</div>
+</section>
+<section id="exercise-2">
+<h3>Exercise 2<a class="headerlink" href="#exercise-2" title="Link to this heading"></a></h3>
+<p>Next, write a class <code class="docutils literal notranslate"><span class="pre">render</span> <span class="pre">f</span></code> with a <code class="docutils literal notranslate"><span class="pre">to_string</span></code> function to generically
+print any expression of type <code class="docutils literal notranslate"><span class="pre">expr</span> <span class="pre">f</span></code>.</p>
+<div class="toggle docutils container">
+<div class="header docutils container">
+<p><strong>Answer</strong></p>
+</div>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> render (f: [@@@strictly_positive]Type -&gt; Type) = {
+  to_string : 
+    #g:<span class="k">_</span> -&gt;
+    x:f (expr g) -&gt;
+    (y:g (expr g) { y &lt;&lt; x } -&gt; string) -&gt;
+    string
+}
+
+<span class="k">instance</span> render_value : render value =
+  <span class="k">let</span> to_string #g (x:value (expr g)) <span class="k">_</span> : string =
+    <span class="k">match</span> x <span class="k">with</span>
+    | Val x -&gt; string_of_int x
+  <span class="k">in</span>
+  { to_string }
+
+
+<span class="k">instance</span> render_add : render add =
+  <span class="k">let</span> to_string #g (x:add (expr g)) (to_str0: (y:g (expr g) {y &lt;&lt; x} -&gt; string)) : string =
+    <span class="k">match</span> x <span class="k">with</span>
+    | Add x y -&gt;
+      <span class="k">let</span> In x = x <span class="k">in</span>
+      <span class="k">let</span> In y = y <span class="k">in</span>
+      &quot;(&quot; ^ to_str0 x ^ &quot; + &quot; ^ to_str0 y ^ &quot;)&quot;
+  <span class="k">in</span>
+  { to_string }
+
+<span class="k">instance</span> render_mul : render mul =
+  <span class="k">let</span> to_string #g (x:mul (expr g)) (to_str0: (y:g (expr g) {y &lt;&lt; x} -&gt; string)) : string =
+    <span class="k">match</span> x <span class="k">with</span>
+    | Mul x y -&gt;
+      <span class="k">let</span> In x = x <span class="k">in</span>
+      <span class="k">let</span> In y = y <span class="k">in</span>
+      &quot;(&quot; ^ to_str0 x ^ &quot; * &quot; ^ to_str0 y ^ &quot;)&quot;
+  <span class="k">in</span>
+  { to_string }
+
+<span class="k">instance</span> render_coprod (f g: <span class="k">_</span>)
+  {| rf: render f |} 
+  {| rg: render g |}
+: render (coprod f g)
+= <span class="k">let</span> to_string #h (x:coprod f g (expr h)) (rc: (y:h (expr h) { y &lt;&lt; x }) -&gt; string): string =
+    <span class="k">match</span> x <span class="k">with</span>
+    | Inl x -&gt; rf.to_string #h x rc
+    | Inr y -&gt; rg.to_string #h y rc
+  <span class="k">in</span>
+  { to_string }
+
+<span class="k">let</span> <span class="k">rec</span> render0_render
+    (#f: <span class="k">_</span>)
+    {| rf: render f |}
+    (x: f (expr f))
+: string
+= rf.to_string #f x render0_render
+
+<span class="k">let</span> pretty #f (e:expr f) {| rf: render f |} : string =
+  <span class="k">let</span> In e = e <span class="k">in</span>
+  rf.to_string e render0_render
+
+<span class="c">//SNIPPET_START: lift$</span>
+<span class="c">(* lift allows promoting terms defined in a smaller type to a bigger one *)</span>
+<span class="k">let</span> <span class="k">rec</span> lift #f #g
+    {| ff: functor f |} 
+    {| fg: leq f g |}
+    (x: expr f)
+: expr g
+= <span class="k">let</span> In xx = x <span class="k">in</span>
+  <span class="k">let</span> xx : f (expr f) = xx <span class="k">in</span>
+  <span class="k">let</span> yy : f (expr g) = ff.fmap xx lift <span class="k">in</span> 
+  In (fg.inj yy)
+
+<span class="c">(* reuse addExample by lifting it *)</span>
+<span class="k">let</span> ex3 : expr (value ++ add ++ mul) = lift addExample *^ v 2
+<span class="k">let</span> test3 = <span class="k">assert_norm</span> (eval_expr ex3 == (1337 * 2))
+<span class="c">//SNIPPET_END: lift$</span>
+
+<span class="k">let</span> test4 = pretty ex3
+<span class="k">let</span> tt = <span class="k">assert_norm</span> (pretty ex3 == &quot;((118 + 1219) * 2)&quot;)
+</pre></div>
+</div>
+</div>
+</section>
+<section id="exercise-3">
+<h3>Exercise 3<a class="headerlink" href="#exercise-3" title="Link to this heading"></a></h3>
+<p>Write a function <code class="docutils literal notranslate"><span class="pre">lift</span></code> with the following signature</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> lift #f #g
+   {| ff: functor f |}
+   {| fg: leq f g |}
+   (x: expr f)
+: expr g
+</pre></div>
+</div>
+<p>Use it to reuse an expression defined for one type to another, so that the
+assertion below succeeds</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> ex3 : expr (value ++ add ++ mul) = lift addExample *^ v 2
+
+[@@expect_failure]
+<span class="k">let</span> test_e3 = <span class="k">assert_norm</span> (eval_expr ex3 == (1337 * 2))
+</pre></div>
+</div>
+<div class="toggle docutils container">
+<div class="header docutils container">
+<p><strong>Answer</strong></p>
+</div>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="c">(* lift allows promoting terms defined in a smaller type to a bigger one *)</span>
+<span class="k">let</span> <span class="k">rec</span> lift #f #g
+    {| ff: functor f |} 
+    {| fg: leq f g |}
+    (x: expr f)
+: expr g
+= <span class="k">let</span> In xx = x <span class="k">in</span>
+  <span class="k">let</span> xx : f (expr f) = xx <span class="k">in</span>
+  <span class="k">let</span> yy : f (expr g) = ff.fmap xx lift <span class="k">in</span> 
+  In (fg.inj yy)
+
+<span class="c">(* reuse addExample by lifting it *)</span>
+<span class="k">let</span> ex3 : expr (value ++ add ++ mul) = lift addExample *^ v 2
+<span class="k">let</span> test3 = <span class="k">assert_norm</span> (eval_expr ex3 == (1337 * 2))
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="part3_typeclasses.html" class="btn btn-neutral float-left" title="Typeclasses" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../part4/part4.html" class="btn btn-neutral float-right" title="Computational Effects" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

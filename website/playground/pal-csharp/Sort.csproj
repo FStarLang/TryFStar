@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <PalCsRoot Condition="'$(PalCsRoot)' == ''">$(PAL_CS_ROOT)</PalCsRoot>
+    <PalCsRoot Condition="'$(PalCsRoot)' == ''">/opt/pal-csharp</PalCsRoot>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Pal.Annotations">
+      <HintPath>$(PalCsRoot)/src/Pal.Annotations/bin/Release/net10.0/Pal.Annotations.dll</HintPath>
+    </Reference>
+    <Compile Include="InsertionSortSorted.cs" />
+    <Compile Include="Test.cs" />
+  </ItemGroup>
+</Project>

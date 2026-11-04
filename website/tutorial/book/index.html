@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Proof-oriented Programming in F* &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="static/custom.css?v=24463673" />
+
+  
+  
+        <script src="static/jquery.js?v=8dae8fb0"></script>
+        <script src="static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="static/documentation_options.js?v=5929fcd5"></script>
+        <script src="static/doctools.js?v=888ff710"></script>
+        <script src="static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Structure of this book" href="structure.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pulse/pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Proof-oriented Programming in F*</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="proof-oriented-programming-in-f">
+<h1>Proof-oriented Programming in F*<a class="headerlink" href="#proof-oriented-programming-in-f" title="Link to this heading"></a></h1>
+<p>F* is a dependently typed programming language and proof
+assistant. This book describes how to use F* for <em>proof-oriented
+programming</em>, a paradigm in which one co-designs programs and proofs
+to provide mathematical guarantees about various aspects of a
+program’s behavior, including properties like functional correctness
+(precisely characterizing the input/output behavior of a program),
+security properties (e.g., ensuring that a program never leaks certain
+secrets), and bounds on resource usage.</p>
+<p>Although a functional programming language at its core, F* promotes
+programming in a variety of paradigms, including programming with
+pure, total functions, low-level programming in imperative languages
+like C and assembly, concurrent programming with shared memory and
+message-passing, and distributed programming. Built on top of F*’s
+expressive, dependently typed core logic, no matter which paradigm you
+choose, proof-oriented programming in F* enables constructing programs
+with proofs that they behave as intended.</p>
+<p><strong>A note on authorship</strong>: Many people have contributed to the
+development of F* over the past decade. Many parts of this book too
+are based on research papers, libraries, code samples, and language
+features co-authored with several other people. However, the
+presentation here, including especially any errors or oversights, are
+due to the authors. That said, contributions are most welcome and we
+hope this book will soon include chapters authored by others.</p>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="intro.html#a-capsule-summary-of-f">A Capsule Summary of F*</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="part1/part1.html">Programming and Proving with Total Functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="part1/part1_getting_off_the_ground.html">Getting off the ground</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part1/part1_polymorphism.html">Polymorphism and type inference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part1/part1_equality.html">Equality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part1/part1_prop_assertions.html">Interfacing with an SMT solver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part1/part1_inductives.html">Inductive types and pattern matching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part1/part1_termination.html">Proofs of termination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part1/part1_lemmas.html">Lemmas and proofs by induction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part1/part1_quicksort.html">Case Study: Quicksort</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part1/part1_execution.html">Executing programs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part1/part1_wrap.html">Wrapping up</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="part2/part2_inductive_type_families.html">Inductive type definitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2/part2_vectors.html">Length-indexed Lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2/part2_merkle.html">Merkle Trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2/part2_equality.html">Equality Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2/part2_logical_connectives.html">Constructive &amp; Classical Connectives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2/part2_stlc.html">Simply Typed Lambda Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2/part2_phoas.html">Higher-order Abstract Syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2/part2_well_founded.html">Well-founded Relations and Termination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2/part2_par.html">A First Model of Computational Effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2/part2_universes.html">Universes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="part3/part3.html">Modularity With Interfaces and Typeclasses</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="part3/part3_interfaces.html">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part3/part3_typeclasses.html">Typeclasses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part3/part3_alacarte.html">Fun with Typeclasses: Datatypes a la Carte</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="part4/part4.html">Computational Effects</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="part4/part4_background.html">Computation Types to Track Dependences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part4/part4_computation_types_and_tot.html">The Effect of Total Computations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part4/part4_ghost.html">Erasure and the Ghost Effect</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part4/part4_div.html">Divergence, or Non-Termination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part4/part4_pure.html">Primitive Effect Refinements</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="part5/part5.html">Tactics and Metaprogramming with Meta-F*</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="part5/part5_meta.html">An Overview of Tactics</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pulse/pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pulse/pulse_getting_started.html">Getting up and running with Codespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse/pulse_ch1.html">Pulse Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse/pulse_ch2.html">Mutable References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse/pulse_existentials.html">Existential Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse/pulse_user_defined_predicates.html">User-defined Predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse/pulse_conditionals.html">Conditionals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse/pulse_loops.html">Loops &amp; Recursion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse/pulse_arrays.html">Mutable Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse/pulse_ghost.html">Ghost Computations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse/pulse_higher_order.html">Higher Order Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse/pulse_implication_and_forall.html">Implication and Universal Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse/pulse_linked_list.html">Linked Lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse/pulse_atomics_and_invariants.html">Atomic Operations and Invariants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse/pulse_spin_lock.html">Spin Locks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse/pulse_parallel_increment.html">Parallel Increment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse/pulse_extraction.html">Extraction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="agentic/agentic.html">Agentic Proof-Oriented Programming</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="agentic/agentic_getting_started.html">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agentic/agentic_rubrics_templates_audits.html">Rubrics, Templates, and Audits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agentic/agentic_sorting_algorithms.html">On Abstraction &amp; Rubrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agentic/agentic_rubrics_as_templates.html">Rubrics as Templates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agentic/agentic_state_machines.html">Stateful Services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agentic/agentic_tls.html">A Verified TLS-1.3 Client and Server</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="under_the_hood/under_the_hood.html">Under the hood</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="under_the_hood/uth_smt.html">Understanding how F* uses Z3</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="structure.html" class="btn btn-neutral float-right" title="Structure of this book" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

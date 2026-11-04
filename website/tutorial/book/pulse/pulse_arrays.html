@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mutable Arrays &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Ghost Computations" href="pulse_ghost.html" />
+    <link rel="prev" title="Loops &amp; Recursion" href="pulse_loops.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pulse_getting_started.html">Getting up and running with Codespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ch1.html">Pulse Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ch2.html">Mutable References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_existentials.html">Existential Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_user_defined_predicates.html">User-defined Predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_conditionals.html">Conditionals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_loops.html">Loops &amp; Recursion</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Mutable Arrays</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#array-t"><code class="docutils literal notranslate"><span class="pre">array</span> <span class="pre">t</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#compare">Compare</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#copy">Copy</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#stack-allocated-arrays">Stack allocated arrays</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#heap-allocated-arrays">Heap allocated arrays</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ghost.html">Ghost Computations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_higher_order.html">Higher Order Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_implication_and_forall.html">Implication and Universal Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_linked_list.html">Linked Lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_atomics_and_invariants.html">Atomic Operations and Invariants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_spin_lock.html">Spin Locks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_parallel_increment.html">Parallel Increment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_extraction.html">Extraction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+      <li class="breadcrumb-item active">Mutable Arrays</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="mutable-arrays">
+<span id="pulse-arrays"></span><h1>Mutable Arrays<a class="headerlink" href="#mutable-arrays" title="Link to this heading"></a></h1>
+<p>In this chapter, we will learn about mutable arrays in Pulse. An array
+is a contiguous collection of values of the same type. Similar to <code class="docutils literal notranslate"><span class="pre">ref</span></code>,
+arrays in Pulse can be allocated in the stack frame of the current function
+or in the heap—while the stack allocated arrays are reclaimed automatically
+(e.g., when the function returns), heap allocated arrays are explicitly managed
+by the programmer.</p>
+<p>Pulse provides two array types: <code class="docutils literal notranslate"><span class="pre">Pulse.Lib.Array.array</span> <span class="pre">t</span></code> as the basic array type
+and <code class="docutils literal notranslate"><span class="pre">Pulse.Lib.Vec.vec</span> <span class="pre">t</span></code> for heap allocated arrays. To provide code reuse, functions
+that may operate over both stack and heap allocated arrays can be written using
+<code class="docutils literal notranslate"><span class="pre">Pulse.Lib.Array.array</span> <span class="pre">t</span></code>—the <code class="docutils literal notranslate"><span class="pre">Pulse.Lib.Vec</span></code> library provides back-and-forth coercions
+between <code class="docutils literal notranslate"><span class="pre">vec</span> <span class="pre">t</span></code> and <code class="docutils literal notranslate"><span class="pre">array</span> <span class="pre">t</span></code>.</p>
+<section id="array-t">
+<h2><code class="docutils literal notranslate"><span class="pre">array</span> <span class="pre">t</span></code><a class="headerlink" href="#array-t" title="Link to this heading"></a></h2>
+<p>We illustrate the basics of <code class="docutils literal notranslate"><span class="pre">array</span> <span class="pre">t</span></code> with the help of the following example
+that reads an array:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> read_i
+  (#[@@@ Rust_generics_bounds [&quot;Copy&quot;]] t:Type0)
+  (arr:array t)
+  (#p:perm)
+  (#s:erased (Seq.seq t))
+  (i:SZ.t { SZ.v i &lt; Seq.length s })
+  preserves pts_to arr #p s
+  <span class="k">returns</span> x:t
+  <span class="k">ensures</span> pure (x == Seq.index s (SZ.v i))
+{
+  arr.(i)
+}
+</pre></div>
+</div>
+<p>The library provides a points-to predicate <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">arr</span> <span class="pre">#p</span> <span class="pre">s</span></code> with
+the interpretation that in the current memory, the contents of <code class="docutils literal notranslate"><span class="pre">arr</span></code>
+are same as the (functional) sequence <code class="docutils literal notranslate"><span class="pre">s:FStar.Seq.seq</span> <span class="pre">t</span></code>. Like the
+<code class="docutils literal notranslate"><span class="pre">pts_to</span></code> predicate on reference, it is also indexed by an implicit
+fractional permission <code class="docutils literal notranslate"><span class="pre">p</span></code>, which distinguishes shared, read-only
+access from exclusive read/write access.</p>
+<p>In the arguments of <code class="docutils literal notranslate"><span class="pre">read_i</span></code>, the argument <code class="docutils literal notranslate"><span class="pre">`s</span></code> is erased, since
+it is for specification only.</p>
+<p>Arrays can be read and written-to using indexes of type
+<code class="docutils literal notranslate"><span class="pre">FStar.SizeT.t</span></code>, a model of C <code class="docutils literal notranslate"><span class="pre">size_t</span></code> <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> in F*, provided that
+the index is within the array bounds—the refinement <code class="docutils literal notranslate"><span class="pre">SZ.v</span> <span class="pre">i</span> <span class="pre">&lt;</span>
+<span class="pre">Seq.length</span> <span class="pre">s</span></code> enforces that the index is in bounds, where <code class="docutils literal notranslate"><span class="pre">module</span> <span class="pre">SZ</span>
+<span class="pre">=</span> <span class="pre">FStar.SizeT</span></code>. The function returns the <code class="docutils literal notranslate"><span class="pre">i</span></code>-th element of the
+array, as asserted by the postcondition slprop <code class="docutils literal notranslate"><span class="pre">pure</span> <span class="pre">(x</span> <span class="pre">==</span> <span class="pre">Seq.index</span>
+<span class="pre">s</span> <span class="pre">(SZ.v</span> <span class="pre">i))</span></code>. The body of the function uses the array read operator
+<code class="docutils literal notranslate"><span class="pre">arr.(i)</span></code>.</p>
+<p>As another example, let’s write to the <code class="docutils literal notranslate"><span class="pre">i</span></code>-th element of an array:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> write_i (#t:Type0) (arr:array t) (#s:erased (Seq.seq t)) (x:t) (i:SZ.t { SZ.v i &lt; Seq.length s })
+  <span class="k">requires</span> pts_to arr s
+  <span class="k">ensures</span> pts_to arr (Seq.upd s (SZ.v i) x)
+{
+  arr.(i) &lt;- x
+}
+</pre></div>
+</div>
+<p>The function uses the array write operator <code class="docutils literal notranslate"><span class="pre">arr(i)</span> <span class="pre">&lt;-</span> <span class="pre">x</span></code> and the postcondition
+asserts that in the state when the function returns, the contents of the array
+are same as the sequence <code class="docutils literal notranslate"><span class="pre">s</span></code> updated at the index <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p>
+<p>While any permission suffices for reading, writing requires
+<code class="docutils literal notranslate"><span class="pre">1.0R</span></code>.  For example, implementing <code class="docutils literal notranslate"><span class="pre">write_i</span></code> without
+<code class="docutils literal notranslate"><span class="pre">1.0R</span></code> is rejected, as shown below.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span>[@@ expect_failure]
+
+<span class="k">fn</span> write_ip #t (arr:array t) (#p:perm) (#s:erased <span class="k">_</span>) (x:t) (i:SZ.t { SZ.v i &lt; Seq.length s })
+  <span class="k">requires</span> pts_to arr #p s
+  <span class="k">ensures</span> pts_to arr #p (Seq.upd s (SZ.v i) x)
+{
+  arr.(i) &lt;- x
+}
+</pre></div>
+</div>
+<p>The library contains <code class="docutils literal notranslate"><span class="pre">share</span></code> and <code class="docutils literal notranslate"><span class="pre">gather</span></code> functions, similar to
+those for references, to divide and combine permissions on arrays.</p>
+<p>We now look at a couple of examples that use arrays with conditionals,
+loops, existentials, and invariants, using many of the Pulse
+constructs we have seen so far.</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id2" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p><code class="docutils literal notranslate"><span class="pre">size_t</span></code> in C is an unsigned integer type that is at least
+<code class="docutils literal notranslate"><span class="pre">16</span></code> bits wide. The upper bound of <code class="docutils literal notranslate"><span class="pre">size_t</span></code> is platform
+dependent. <code class="docutils literal notranslate"><span class="pre">FStar.SizeT.size_t</span></code> models this type and is
+extracted to the primitive <code class="docutils literal notranslate"><span class="pre">size_t</span></code> type in C, similar to the
+other <a class="reference internal" href="../part3/part3_interfaces.html#machine-integers"><span class="std std-ref">bounded integer types</span></a> discussed
+previously.</p>
+</aside>
+</aside>
+<section id="compare">
+<h3>Compare<a class="headerlink" href="#compare" title="Link to this heading"></a></h3>
+<p>Let’s implement a function that compares two arrays for equality:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> compare
+  (#[@@@ Rust_generics_bounds [&quot;PartialEq&quot;; &quot;Copy&quot;]] t:eqtype)
+  #p1 #p2
+  (a1 a2:A.array t)
+  (l:SZ.t) 
+  <span class="k">requires</span> (
+    A.pts_to a1 #p1 &#39;s1 **
+    A.pts_to a2 #p2 &#39;s2 **
+    pure (Seq.length &#39;s1 == Seq.length &#39;s2 /\ Seq.length &#39;s2 == SZ.v l)
+  )
+  <span class="k">returns</span> res:bool
+  <span class="k">ensures</span> (
+    A.pts_to a1 #p1 &#39;s1 **
+    A.pts_to a2 #p2 &#39;s2 **
+    pure (res &lt;==&gt; Seq.equal &#39;s1 &#39;s2)
+  )
+</pre></div>
+</div>
+<p>The function takes two arrays <code class="docutils literal notranslate"><span class="pre">a1</span></code> and <code class="docutils literal notranslate"><span class="pre">a2</span></code> as input, and returns a boolean.
+The postcondition <code class="docutils literal notranslate"><span class="pre">pure</span> <span class="pre">(res</span> <span class="pre">&lt;==&gt;</span> <span class="pre">Seq.equal</span> <span class="pre">'s1</span> <span class="pre">'s2)</span></code>
+specifies that the boolean is true if and only if the sequence representations of the
+two arrays are equal. Since the function only reads the arrays, it is parametric in the
+permissions <code class="docutils literal notranslate"><span class="pre">p1</span></code> and <code class="docutils literal notranslate"><span class="pre">p2</span></code> on the two arrays. Note that the type parameter <code class="docutils literal notranslate"><span class="pre">t</span></code> has
+type <a class="reference internal" href="../part1/part1_equality.html#part1-equality"><span class="std std-ref">eqtype</span></a>, requiring that values of type <code class="docutils literal notranslate"><span class="pre">t</span></code> support
+decidable equality.</p>
+<p>One way to implement <code class="docutils literal notranslate"><span class="pre">compare</span></code> is to use a <code class="docutils literal notranslate"><span class="pre">while</span></code> loop, reading the two arrays
+using a mutable counter and checking that the corresponding elements are equal.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span>{
+  <span class="k">let</span> <span class="k">mut</span> i = 0sz;
+  <span class="k">while</span> (
+    <span class="k">let</span> vi = !i;
+    <span class="k">if</span> (vi &lt;^ l) {
+      (a1.(vi) = a2.(vi))
+    } <span class="k">else</span> {
+      <span class="k">false</span>
+    }
+  )
+  <span class="k">invariant</span>
+  <span class="k">exists</span>* (vi:SZ.t{SZ.v vi &lt;= SZ.v l}). ( 
+    R.pts_to i vi **
+    A.pts_to a1 #p1 &#39;s1 **
+    A.pts_to a2 #p2 &#39;s2 **
+    pure (
+      SZ.v vi &lt;= SZ.v l /\
+      (<span class="k">forall</span> (i:nat). i &lt; SZ.v vi ==&gt; Seq.index &#39;s1 i == Seq.index &#39;s2 i)
+    )
+  )
+  {
+    i := !i +^ 1sz
+  };
+  (!i = l);
+}
+</pre></div>
+</div>
+<p>The loop invariant states that (a) the arrays are pointwise equal up to the current value
+of the counter, and (b) the boolean <code class="docutils literal notranslate"><span class="pre">b</span></code> is true if and only if the current value
+of the counter is less than the length of the arrays and the arrays are equal at that index.
+While (a) helps proving the final postcondition of <code class="docutils literal notranslate"><span class="pre">compare</span></code>, (b) is required to maintain the
+invariant after the counter is incremented in the loop body.</p>
+</section>
+<section id="copy">
+<h3>Copy<a class="headerlink" href="#copy" title="Link to this heading"></a></h3>
+<p>As our next example, let’s implement a <code class="docutils literal notranslate"><span class="pre">copy</span></code> function that copies the contents
+of the array <code class="docutils literal notranslate"><span class="pre">a2</span></code> to <code class="docutils literal notranslate"><span class="pre">a1</span></code>.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> copy
+  (#[@@@ Rust_generics_bounds [&quot;Copy&quot;]] t:Type0)
+  (a1 a2:A.array t)
+  (l:SZ.t)
+  (#p2:perm)
+  <span class="k">requires</span> (
+    A.pts_to a1 &#39;s1 **
+    A.pts_to a2 #p2 &#39;s2 **
+    pure (Seq.length &#39;s1 == Seq.length &#39;s2 /\ Seq.length &#39;s2 == SZ.v l)
+  )
+  <span class="k">ensures</span> (
+    (<span class="k">exists</span>* s1. A.pts_to a1 s1 ** pure (Seq.equal s1 &#39;s2)) **
+    A.pts_to a2 #p2 &#39;s2
+  )
+{
+  <span class="k">let</span> <span class="k">mut</span> i = 0sz;
+  <span class="k">while</span> (
+    (!i &lt;^ l)
+  )
+  <span class="k">invariant</span>
+  <span class="k">exists</span>* vi s1. ( 
+    R.pts_to i vi **
+    A.pts_to a1 s1 **
+    A.pts_to a2 #p2 &#39;s2 **
+    pure (
+      Seq.length s1 == Seq.length &#39;s2 /\
+      SZ.v vi &lt;= SZ.v l /\
+      (<span class="k">forall</span> (i:nat). i &lt; SZ.v vi ==&gt; Seq.index s1 i == Seq.index &#39;s2 i)
+    )
+  )
+  {
+    <span class="k">let</span> vi = !i;
+    a1.(vi) &lt;- a2.(vi);
+    i := vi +^ 1sz
+  }
+}
+</pre></div>
+</div>
+<p>The loop invariant existentially abstracts over the contents of <code class="docutils literal notranslate"><span class="pre">a1</span></code>, and maintains
+that up to the current loop counter, the contents of the two arrays are equal. Rest of
+the code is straightforward, the loop conditional checks that the loop counter is less
+than the array lengths and the loop body copies one element at a time.</p>
+<p>The reader will notice that the postcondition of <code class="docutils literal notranslate"><span class="pre">copy</span></code> is a little convoluted.
+A better signature would be the following, where we directly state that the
+contents of <code class="docutils literal notranslate"><span class="pre">a1</span></code> are same as <code class="docutils literal notranslate"><span class="pre">'s2</span></code>:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> copy2
+  (#[@@@ Rust_generics_bounds [&quot;Copy&quot;]] t:Type0)
+  (a1 a2:A.array t)
+  (l:SZ.t)
+  (#p2:perm)
+  <span class="k">requires</span> (
+    A.pts_to a1 &#39;s1 **
+    A.pts_to a2 #p2 &#39;s2 **
+    pure (Seq.length &#39;s1 == Seq.length &#39;s2 /\ Seq.length &#39;s2 == SZ.v l)
+  )
+  <span class="k">ensures</span> (
+    A.pts_to a1 &#39;s2 **
+    A.pts_to a2 #p2 &#39;s2
+  )
+</pre></div>
+</div>
+<p>We can implement this signature, but it requires one step of rewriting at the end
+after the <code class="docutils literal notranslate"><span class="pre">while</span></code> loop to get the postcondition in this exact shape:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span>  <span class="c">// after the loop</span>
+  <span class="k">with</span> <span class="k">_</span> v1 s1. <span class="k">_</span>; <span class="c">//bind existentially bound witnesses from the invariant</span>
+  Seq.lemma_eq_elim s1 &#39;s2; <span class="c">//call an F* lemma to prove that s1 == &#39;s2</span>
+  ()
+</pre></div>
+</div>
+<p>We could also rewrite the predicates explicitly, as we saw in a
+<a class="reference internal" href="pulse_user_defined_predicates.html#pulse-rewriting"><span class="std std-ref">previous chapter</span></a>.</p>
+</section>
+</section>
+<section id="stack-allocated-arrays">
+<h2>Stack allocated arrays<a class="headerlink" href="#stack-allocated-arrays" title="Link to this heading"></a></h2>
+<p>Stack arrays can be allocated using the expression <code class="docutils literal notranslate"><span class="pre">[|</span> <span class="pre">v;</span> <span class="pre">n</span> <span class="pre">|]</span></code>. It
+allocates an array of size <code class="docutils literal notranslate"><span class="pre">n</span></code>, with all the array elements
+initialized to <code class="docutils literal notranslate"><span class="pre">v</span></code>. The size <code class="docutils literal notranslate"><span class="pre">n</span></code> must be compile-time constant.
+It provides the postcondition that the newly created array points to a
+length <code class="docutils literal notranslate"><span class="pre">n</span></code> sequence of <code class="docutils literal notranslate"><span class="pre">v</span></code>. The following example allocates two
+arrays on the stack and compares them using the <code class="docutils literal notranslate"><span class="pre">compare</span></code> function
+above.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> compare_stack_arrays ()
+{
+  <span class="c">// |- emp</span>
+  <span class="k">let</span> <span class="k">mut</span> a1 = [| 0; 2sz |];
+  <span class="c">// a1:array int |- pts_to a1 (Seq.create 0 (SZ.v 2))</span>
+  <span class="k">let</span> <span class="k">mut</span> a2 = [| 0; 2sz |];
+  <span class="c">// a1 a2:array int |- pts_to a1 (Seq.create 0 (SZ.v 2)) ** pts_to a2 (Seq.create 0 (SZ.v 2))</span>
+  <span class="k">let</span> b = compare a1 a2 2sz;
+  <span class="k">assert</span> (pure b)
+}
+</pre></div>
+</div>
+<p>As with the stack references, stack arrays don’t need to be deallocated or
+dropped, they are reclaimed automatically when the function returns. As a result,
+returning them from the function is not allowed:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span>[@@ expect_failure]
+
+<span class="k">fn</span> ret_stack_array ()
+  <span class="k">returns</span> a:array int
+  <span class="k">ensures</span> pts_to a (Seq.create 2 0)
+{
+  <span class="k">let</span> <span class="k">mut</span> a1 = [| 0; 2sz |];
+  a1  <span class="c">// cannot prove pts_to a (Seq.create 0 2) in the context emp</span>
+}
+</pre></div>
+</div>
+</section>
+<section id="heap-allocated-arrays">
+<h2>Heap allocated arrays<a class="headerlink" href="#heap-allocated-arrays" title="Link to this heading"></a></h2>
+<p>The library <code class="docutils literal notranslate"><span class="pre">Pulse.Lib.Vec</span></code> provides the type <code class="docutils literal notranslate"><span class="pre">vec</span> <span class="pre">t</span></code>, for
+heap-allocated arrays: <code class="docutils literal notranslate"><span class="pre">vec</span></code> is to <code class="docutils literal notranslate"><span class="pre">array</span></code> as <code class="docutils literal notranslate"><span class="pre">box</span></code> is to
+<code class="docutils literal notranslate"><span class="pre">ref</span></code>.</p>
+<p>Similar to <code class="docutils literal notranslate"><span class="pre">array</span></code>, <code class="docutils literal notranslate"><span class="pre">vec</span></code> is accompanied with a <code class="docutils literal notranslate"><span class="pre">pts_to</span></code>
+assertion with support for fractional permissions, <code class="docutils literal notranslate"><span class="pre">share</span></code> and
+<code class="docutils literal notranslate"><span class="pre">gather</span></code> for dividing and combining permissions, and read and write
+functions. However, unlike <code class="docutils literal notranslate"><span class="pre">array</span></code>, the <code class="docutils literal notranslate"><span class="pre">Vec</span></code> library provides
+allocation and free functions.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">module</span> V = Pulse.Lib.Vec
+
+ 
+<span class="k">fn</span> heap_arrays ()
+  <span class="k">returns</span> a:V.vec int
+  <span class="k">ensures</span> V.pts_to a (Seq.create 2 0)
+{
+  <span class="k">let</span> a1 = V.alloc 0 2sz;
+  <span class="k">let</span> a2 = V.alloc 0 2sz;
+  V.free a1;
+  a2  <span class="c">// returning vec is ok</span>
+}
+</pre></div>
+</div>
+<p>As with the heap references, heap allocated arrays can be coerced to <code class="docutils literal notranslate"><span class="pre">array</span></code> using the coercion
+<code class="docutils literal notranslate"><span class="pre">vec_to_array</span></code>. To use the coercion, it is often required to convert <code class="docutils literal notranslate"><span class="pre">Vec.pts_to</span></code> to <code class="docutils literal notranslate"><span class="pre">Array.pts_to</span></code>
+back-and-forth; the library provides <code class="docutils literal notranslate"><span class="pre">to_array_pts_to</span></code> and <code class="docutils literal notranslate"><span class="pre">to_vec_pts_to</span></code> lemmas for this purpose.</p>
+<p>The following example illustrates the pattern. It copies the contents of a stack array into a heap array,
+using the <code class="docutils literal notranslate"><span class="pre">copy2</span></code> function we wrote above.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> copy_app ([@@@ Rust_mut_binder] v:V.vec int)
+  <span class="k">requires</span> <span class="k">exists</span>* s. V.pts_to v s ** pure (Seq.length s == 2)
+  <span class="k">ensures</span> V.pts_to v (Seq.create 2 0)
+{
+  <span class="k">let</span> <span class="k">mut</span> a = [| 0; 2sz |];
+  <span class="c">// v, s |- V.pts_to v s ** ...</span>
+  V.to_array_pts_to v;
+  <span class="c">// v, s |- pts_to (vec_to_array v) s ** ...</span>
+  copy2 (V.vec_to_array v) a 2sz;
+  <span class="c">// v, s |- pts_to (vec_to_array v) (Seq.create 2 0) ** ...</span>
+  V.to_vec_pts_to v
+  <span class="c">// v, s |- V.pts_to v (Seq.create 2 0) ** ...</span>
+}
+</pre></div>
+</div>
+<p>Note how the assertion for <code class="docutils literal notranslate"><span class="pre">v</span></code> transforms from <code class="docutils literal notranslate"><span class="pre">V.pts_to</span></code> to <code class="docutils literal notranslate"><span class="pre">pts_to</span></code> (the points-to assertion
+for arrays) and back. It means that array algorithms and routines can be implemented with the
+<code class="docutils literal notranslate"><span class="pre">array</span> <span class="pre">t</span></code> type, and then can be reused for both stack- and heap-allocated arrays.</p>
+<p>Finally, though the name <code class="docutils literal notranslate"><span class="pre">vec</span> <span class="pre">a</span></code> evokes the Rust <code class="docutils literal notranslate"><span class="pre">std::Vec</span></code> library, we don’t yet support automatic
+resizing.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pulse_loops.html" class="btn btn-neutral float-left" title="Loops &amp; Recursion" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pulse_ghost.html" class="btn btn-neutral float-right" title="Ghost Computations" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

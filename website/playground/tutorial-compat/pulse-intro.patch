@@ -1,0 +1,20 @@
+--- PulseTutorial.Intro.fst
++++ PulseTutorial.Intro.fst
+@@ -22,7 +22,7 @@
+ 
+ 
+ 
+-fn par (#p #q #r #s:_)
++divergent fn par (#p #q #r #s:_)
+         {| is_send p, is_send q, is_send r, is_send s |}
+        (f: (unit -> stt unit p (fun _ -> q)))
+        (g: (unit -> stt unit r (fun _ -> s)))
+@@ -60,7 +60,7 @@
+ //end incr_explicit_i$
+ 
+ //par_incr$
+-fn par_incr (x y:ref int)
++divergent fn par_incr (x y:ref int)
+ requires pts_to x 'i
+ requires pts_to y 'j
+ ensures pts_to x ('i + 1)

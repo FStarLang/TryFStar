@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Linked Lists &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Atomic Operations and Invariants" href="pulse_atomics_and_invariants.html" />
+    <link rel="prev" title="Implication and Universal Quantification" href="pulse_implication_and_forall.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pulse_getting_started.html">Getting up and running with Codespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ch1.html">Pulse Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ch2.html">Mutable References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_existentials.html">Existential Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_user_defined_predicates.html">User-defined Predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_conditionals.html">Conditionals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_loops.html">Loops &amp; Recursion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_arrays.html">Mutable Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ghost.html">Ghost Computations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_higher_order.html">Higher Order Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_implication_and_forall.html">Implication and Universal Quantification</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Linked Lists</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#representing-a-linked-list">Representing a Linked List</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#boilerplate-introducing-and-eliminating-is-list">Boilerplate: Introducing and Eliminating <code class="docutils literal notranslate"><span class="pre">is_list</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#case-analyzing-a-nullable-pointer">Case analyzing a nullable pointer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#length-recursively">Length, Recursively</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exercise-1">Exercise 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exercise-2">Exercise 2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#length-iteratively-with-trades">Length, Iteratively, with Trades</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#trade-tails">Trade Tails</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tail-of-a-list">Tail of a list</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#length-iter"><code class="docutils literal notranslate"><span class="pre">length_iter</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#append-recursively">Append, Recursively</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#append-iteratively">Append, Iteratively</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#exercise-3">Exercise 3</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#exercise-4">Exercise 4</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_atomics_and_invariants.html">Atomic Operations and Invariants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_spin_lock.html">Spin Locks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_parallel_increment.html">Parallel Increment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_extraction.html">Extraction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+      <li class="breadcrumb-item active">Linked Lists</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="linked-lists">
+<span id="pulse-linked-list"></span><h1>Linked Lists<a class="headerlink" href="#linked-lists" title="Link to this heading"></a></h1>
+<p>In this chapter, we develop a linked list library. Along the way,
+we’ll see uses of recursive predicates, trades, and universal
+quantification.</p>
+<section id="representing-a-linked-list">
+<h2>Representing a Linked List<a class="headerlink" href="#representing-a-linked-list" title="Link to this heading"></a></h2>
+<p>Let’s start by defining the type of a singly linked list:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">noeq</span>
+<span class="k">type</span> node (t:Type0) = {
+    head : t;
+    tail : llist t;
+}
+
+<span class="k">and</span> node_ptr (t:Type0) = ref (node t)
+
+<span class="c">//A nullable pointer to a node</span>
+<span class="k">and</span> llist (t:Type0) = option (node_ptr t)
+</pre></div>
+</div>
+<p>A <code class="docutils literal notranslate"><span class="pre">node</span> <span class="pre">t</span></code> contains a <code class="docutils literal notranslate"><span class="pre">head:t</span></code> and a <code class="docutils literal notranslate"><span class="pre">tail:llist</span> <span class="pre">t</span></code>, a nullable
+reference pointing to the rest of the list. Nullable references are
+represented by an option, as <a class="reference internal" href="pulse_conditionals.html#pulse-nullable-ref-helpers"><span class="std std-ref">we saw before</span></a>.</p>
+<p>Next, we need a predicate to relate a linked list to a logical
+representation of the list, for use in specifications.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> is_list #t ([@@@mkey] x:llist t) (l:list t)
+: <span class="k">Tot</span> slprop (<span class="k">decreases</span> l)
+= <span class="k">match</span> l <span class="k">with</span>
+  | [] -&gt; pure (x == None)
+  | head::tl -&gt; 
+    <span class="k">exists</span>* (p:node_ptr t) (tail:llist t).
+      pure (x == Some p) **
+      pts_to p { head; tail } **
+      is_list tail tl
+</pre></div>
+</div>
+<p>The predicate <code class="docutils literal notranslate"><span class="pre">is_list</span> <span class="pre">x</span> <span class="pre">l</span></code> is a recursive predicate:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>When <code class="docutils literal notranslate"><span class="pre">l</span> <span class="pre">==</span> <span class="pre">[]</span></code>, the reference <code class="docutils literal notranslate"><span class="pre">x</span></code> must be null.</p></li>
+<li><p>Otherwise, <code class="docutils literal notranslate"><span class="pre">l</span> <span class="pre">==</span> <span class="pre">head</span> <span class="pre">::</span> <span class="pre">tl</span></code>, <code class="docutils literal notranslate"><span class="pre">x</span></code> must contain a valid
+reference <code class="docutils literal notranslate"><span class="pre">p</span></code>, where <code class="docutils literal notranslate"><span class="pre">p</span></code> points to <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">head;</span> <span class="pre">tail</span> <span class="pre">}</span></code> and,
+recursively , we have <code class="docutils literal notranslate"><span class="pre">is_list</span> <span class="pre">tail</span> <span class="pre">tl</span></code>.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="boilerplate-introducing-and-eliminating-is-list">
+<h2>Boilerplate: Introducing and Eliminating <code class="docutils literal notranslate"><span class="pre">is_list</span></code><a class="headerlink" href="#boilerplate-introducing-and-eliminating-is-list" title="Link to this heading"></a></h2>
+<p>We’ve seen <a class="reference internal" href="pulse_ghost.html#pulse-recursive-predicates"><span class="std std-ref">recursive predicates in a previous chapter</span></a>, and just as we did there, we need some
+helper ghost functions to work with <code class="docutils literal notranslate"><span class="pre">is_list</span></code>. We expect the Pulse
+checker will automate these boilerplate ghost lemmas in the future,
+but, for now, we are forced to write them by hand.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span>
+<span class="k">fn</span> elim_is_list_nil (#t:Type0) (x:llist t)
+<span class="k">requires</span> is_list x &#39;l
+<span class="k">requires</span> pure (&#39;l == [])
+<span class="k">ensures</span> pure (x == None)
+{
+   <span class="k">rewrite</span> <span class="k">each</span> &#39;l as Nil #t;
+   <span class="k">unfold</span> (is_list x [])
+}
+
+
+
+<span class="k">ghost</span>
+<span class="k">fn</span> intro_is_list_nil (#t:Type0) (x:llist t)
+<span class="k">requires</span> pure (x == None)
+<span class="k">ensures</span> is_list x []
+{
+    <span class="k">fold</span> (is_list x []);
+}
+
+
+
+<span class="k">ghost</span>
+<span class="k">fn</span> elim_is_list_cons (#t:Type0) (x:llist t) (l:list t) (head:t) (tl:list t)
+<span class="k">requires</span> is_list x l
+<span class="k">requires</span> pure (l == head::tl)
+<span class="k">ensures</span> (
+  <span class="k">exists</span>* (p:node_ptr t) (tail:llist t).
+    pure (x == Some p) **
+    pts_to p { head; tail } **
+    is_list tail tl
+)
+{
+  <span class="k">rewrite</span> <span class="k">each</span> l as (head::tl);
+  <span class="k">unfold</span> (is_list x (head::tl));
+}
+
+    
+
+
+<span class="k">ghost</span>
+<span class="k">fn</span> intro_is_list_cons (#t:Type0) (x:llist t) (v:node_ptr t) (#node:node t) (#tl:list t)
+<span class="k">requires</span>
+  pts_to v node **
+  is_list node.tail tl **
+  pure (x == Some v)
+<span class="k">ensures</span>
+  is_list x (node.head::tl)
+{
+    <span class="k">rewrite</span> (pts_to v node) as (pts_to v { head=node.head; tail=node.tail });
+    <span class="k">fold</span> (is_list x (node.head::tl));
+}
+</pre></div>
+</div>
+</section>
+<section id="case-analyzing-a-nullable-pointer">
+<h2>Case analyzing a nullable pointer<a class="headerlink" href="#case-analyzing-a-nullable-pointer" title="Link to this heading"></a></h2>
+<p>When working with a linked list, the first thing we’ll do, typically,
+is to check whether a given <code class="docutils literal notranslate"><span class="pre">x:llist</span> <span class="pre">t</span></code> is null or not. However, the
+<code class="docutils literal notranslate"><span class="pre">is_list</span> <span class="pre">x</span> <span class="pre">l</span></code> predicate is defined by case analyzing <code class="docutils literal notranslate"><span class="pre">l:list</span> <span class="pre">t</span></code>
+rather than <code class="docutils literal notranslate"><span class="pre">x:llist</span> <span class="pre">t</span></code>, since that makes it possible to write
+the predicate by recursing on the tail of <code class="docutils literal notranslate"><span class="pre">l</span></code>. So, below, we have a
+predicate <code class="docutils literal notranslate"><span class="pre">is_list_cases</span> <span class="pre">x</span> <span class="pre">l</span></code> that inverts <code class="docutils literal notranslate"><span class="pre">is_list</span> <span class="pre">x</span> <span class="pre">l</span></code> predicate
+based on whether or not <code class="docutils literal notranslate"><span class="pre">x</span></code> is null.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> is_list_cases #t (x:llist t) (l:list t)
+: slprop 
+= <span class="k">match</span> x <span class="k">with</span>
+  | None -&gt; pure (l == [])
+  | Some v -&gt; 
+    <span class="k">exists</span>* (n:node t) (tl:list t).
+      pts_to v n **
+      pure (l == n.head::tl) **
+      is_list n.tail tl
+</pre></div>
+</div>
+<p>Next, we define a ghost function to invert <code class="docutils literal notranslate"><span class="pre">is_list</span></code> into <code class="docutils literal notranslate"><span class="pre">is_list_cases</span></code>.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span>
+<span class="k">fn</span> cases_of_is_list #t (x:llist t) (l:list t)
+<span class="k">requires</span> is_list x l
+<span class="k">ensures</span> is_list_cases x l
+{
+  <span class="k">match</span> l {
+    [] -&gt; {
+      <span class="k">unfold</span> (is_list x []);
+      <span class="k">fold</span> (is_list_cases None l);
+      <span class="k">rewrite</span> <span class="k">each</span> (None #(ref (node t))) as x;
+    }
+    head :: tl -&gt; {
+      <span class="k">unfold</span> (is_list x (head::tl));
+      <span class="k">with</span> w tail. <span class="k">_</span>;
+      <span class="k">let</span> v = Some?.v x;
+      <span class="k">rewrite</span> <span class="k">each</span> w as v;
+      <span class="k">rewrite</span> <span class="k">each</span> tail as (({ head; tail }).tail) <span class="k">in</span> (is_list tail tl);
+      <span class="k">fold</span> (is_list_cases (Some v) l);
+      <span class="k">rewrite</span> <span class="k">each</span> (Some #(ref (node t)) v) as x;
+    }
+  }
+}
+</pre></div>
+</div>
+<p>We also define two more ghost functions that package up the call to
+<code class="docutils literal notranslate"><span class="pre">cases_of_is_list</span></code>.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span>
+<span class="k">fn</span> is_list_case_none (#t:Type) (x:llist t) (#l:list t)
+preserves is_list x l
+<span class="k">requires</span> pure (x == None)
+<span class="k">ensures</span> pure (l == [])
+{
+  cases_of_is_list x l;
+  <span class="k">rewrite</span> <span class="k">each</span> x as (None #(ref (node t)));
+  <span class="k">unfold</span> (is_list_cases None l);
+  <span class="k">fold</span> (is_list x []);
+  <span class="k">rewrite</span> is_list x [] as is_list x l;
+}
+</pre></div>
+</div>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span>
+<span class="k">fn</span> is_list_case_some (#t:Type) (x:llist t) (v:node_ptr t) (#l:list t) 
+<span class="k">requires</span> is_list x l
+<span class="k">requires</span> pure (x == Some v)
+<span class="k">ensures</span>
+  <span class="k">exists</span>* (node:node t) (tl:list t).
+    pts_to v node **
+    is_list node.tail tl **
+    pure (l == node.head::tl)
+{
+  cases_of_is_list x l;
+  <span class="k">rewrite</span> <span class="k">each</span> x as (Some v);
+  <span class="k">unfold</span> (is_list_cases (Some v) l);
+}
+</pre></div>
+</div>
+</section>
+<section id="length-recursively">
+<h2>Length, Recursively<a class="headerlink" href="#length-recursively" title="Link to this heading"></a></h2>
+<p>With our helper functions in hand, let’s get to writing some real
+code, starting with a function to compute the length of an <code class="docutils literal notranslate"><span class="pre">llist</span></code>.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> <span class="k">rec</span> length (#t:Type0) (x:llist t)
+preserves is_list x &#39;l
+<span class="k">returns</span> n:nat
+<span class="k">ensures</span> pure (n == List.<span class="k">Tot</span>.length &#39;l)
+{
+  <span class="k">match</span> x {
+    norewrite None -&gt; {
+      is_list_case_none x;
+      0
+    }
+    norewrite Some vl -&gt; {
+      is_list_case_some x vl;
+      <span class="k">let</span> node = !vl;
+      <span class="k">let</span> n = length node.tail;
+      intro_is_list_cons x vl;
+      (1 + n)
+    }
+  }
+}
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">None</span></code> case is simple.</p>
+<p>Some points to note in the <code class="docutils literal notranslate"><span class="pre">Some</span></code> case:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>We use <code class="docutils literal notranslate"><span class="pre">with</span> <span class="pre">_node</span> <span class="pre">_tl.</span> <span class="pre">_</span></code> to “get our hands on” the
+existentially bound witnesses.</p></li>
+<li><p>After reading <code class="docutils literal notranslate"><span class="pre">let</span> <span class="pre">node</span> <span class="pre">=</span> <span class="pre">!vl</span></code>, we need <code class="docutils literal notranslate"><span class="pre">is_list</span> <span class="pre">node.tail</span>
+<span class="pre">_tl</span></code> to make the recursive call. But the context contains
+<code class="docutils literal notranslate"><span class="pre">is_list</span> <span class="pre">_node.tail</span> <span class="pre">_tl</span></code> and <code class="docutils literal notranslate"><span class="pre">node</span> <span class="pre">==</span> <span class="pre">_node</span></code>. So, we need a
+rewrite.</p></li>
+<li><p>We re-introduce the <code class="docutils literal notranslate"><span class="pre">is_list</span></code> predicate, and return <code class="docutils literal notranslate"><span class="pre">1</span> <span class="pre">+</span>
+<span class="pre">n</span></code>. While the <code class="docutils literal notranslate"><span class="pre">intro_is_list_cons</span> <span class="pre">x</span> <span class="pre">vl</span></code> is a ghost step and
+will be erased before execution, the addition is not—so, this
+function is not tail recursive.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="exercise-1">
+<h2>Exercise 1<a class="headerlink" href="#exercise-1" title="Link to this heading"></a></h2>
+<p>Write a tail-recursive version of <code class="docutils literal notranslate"><span class="pre">length</span></code>.</p>
+</section>
+<section id="exercise-2">
+<h2>Exercise 2<a class="headerlink" href="#exercise-2" title="Link to this heading"></a></h2>
+<p>Index the <code class="docutils literal notranslate"><span class="pre">is_list</span></code> predicate with a fractional permission.  Write
+ghost functions to share and gather fractional <code class="docutils literal notranslate"><span class="pre">is_list</span></code> predicates.</p>
+</section>
+<section id="length-iteratively-with-trades">
+<h2>Length, Iteratively, with Trades<a class="headerlink" href="#length-iteratively-with-trades" title="Link to this heading"></a></h2>
+<p>What if we wanted to implement <code class="docutils literal notranslate"><span class="pre">length</span></code> using a while loop, as is
+more idiomatic in a language like C. It will take us a few steps to
+get there, and we’ll use the trade operator (<code class="docutils literal notranslate"><span class="pre">&#64;==&gt;</span></code>) to structure
+our proof.</p>
+<section id="trade-tails">
+<h3>Trade Tails<a class="headerlink" href="#trade-tails" title="Link to this heading"></a></h3>
+<p>Our first step is to define <code class="docutils literal notranslate"><span class="pre">tail_for_cons</span></code>, a lemma stating that with
+permission on a node pointer (<code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">v</span> <span class="pre">n</span></code>), we can build a trade
+transforming a permission on the tail into a permission for a cons
+cell starting at the given node.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span>
+<span class="k">fn</span> tail_for_cons (#t:Type) (v:node_ptr t) (#n:node t) (tl:erased (list t))
+<span class="k">requires</span> 
+  pts_to v n
+<span class="k">ensures</span> 
+  (is_list n.tail tl @==&gt; is_list (Some v) (n.head::tl))
+{
+  intro (is_list n.tail tl @==&gt; is_list (Some v) (n.head::tl)) #(pts_to v n) <span class="k">fn</span> <span class="k">_</span>
+  {
+    intro_is_list_cons (Some v) v
+  };
+}
+</pre></div>
+</div>
+</section>
+<section id="tail-of-a-list">
+<h3>Tail of a list<a class="headerlink" href="#tail-of-a-list" title="Link to this heading"></a></h3>
+<p>Next, here’s a basic operation on a linked list: given a pointer to a
+cons cell, return a pointer to its tail. Here’s a small diagram:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">x</span>             <span class="n">tl</span>
+<span class="o">|</span>             <span class="o">|</span>
+<span class="n">v</span>             <span class="n">v</span>
+<span class="o">.---.---.</span>     <span class="o">.---.---.</span>
+<span class="o">|</span>   <span class="o">|</span> <span class="o">--|---&gt;</span> <span class="o">|</span>   <span class="o">|</span> <span class="o">--|--&gt;</span> <span class="o">...</span>
+<span class="o">.---.---.</span>     <span class="o">.---.---.</span>
+</pre></div>
+</div>
+<p>We’re given a pointer <code class="docutils literal notranslate"><span class="pre">x</span></code> to the cons cell at the head of a list,
+and we want to return <code class="docutils literal notranslate"><span class="pre">tl</span></code>, the pointer to the next cell (or
+<code class="docutils literal notranslate"><span class="pre">None</span></code>, if this is the end of the list). But, if we want to return
+a pointer to <code class="docutils literal notranslate"><span class="pre">tl</span></code>, we have a permission accounting problem:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>We cannot return permission to <code class="docutils literal notranslate"><span class="pre">x</span></code> to the caller, since then we
+would have two <em>aliases</em> pointing to the next cell in the list:
+the returned <code class="docutils literal notranslate"><span class="pre">tl</span></code> and <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">-&gt;</span> <span class="pre">next</span></code>.</p></li>
+<li><p>But, we cannot consume the permission to <code class="docutils literal notranslate"><span class="pre">x</span></code> either, since we
+would like to return permission to <code class="docutils literal notranslate"><span class="pre">x</span></code> once the return <code class="docutils literal notranslate"><span class="pre">tl</span></code>
+goes out of scope.</p></li>
+</ul>
+</div></blockquote>
+<p>The solution here is to use a trade. The type of <code class="docutils literal notranslate"><span class="pre">tail</span></code> below says
+that if <code class="docutils literal notranslate"><span class="pre">x</span></code> is a non-null pointer satisfying <code class="docutils literal notranslate"><span class="pre">is_list</span> <span class="pre">x</span> <span class="pre">'l</span></code>, then
+<code class="docutils literal notranslate"><span class="pre">tail</span></code> returns a pointer <code class="docutils literal notranslate"><span class="pre">y</span></code> such that <code class="docutils literal notranslate"><span class="pre">is_list</span> <span class="pre">y</span> <span class="pre">tl</span></code> (where
+<code class="docutils literal notranslate"><span class="pre">tl</span></code> is the tail of <code class="docutils literal notranslate"><span class="pre">'l</span></code>); and, one can trade <code class="docutils literal notranslate"><span class="pre">is_list</span> <span class="pre">y</span> <span class="pre">tl</span></code> to
+recover permission to <code class="docutils literal notranslate"><span class="pre">is_list</span> <span class="pre">x</span> <span class="pre">'l</span></code>. The trade essentially says
+that you cannot have permission to <code class="docutils literal notranslate"><span class="pre">is_list</span> <span class="pre">x</span> <span class="pre">'l</span></code> and <code class="docutils literal notranslate"><span class="pre">is_list</span> <span class="pre">y</span>
+<span class="pre">tl</span></code> at the same time, but once you give up permission on <code class="docutils literal notranslate"><span class="pre">y</span></code>, you
+can get back the original permission on <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> tail (#t:Type) (x:llist t)
+<span class="k">requires</span> is_list x &#39;l
+<span class="k">requires</span> pure (Some? x)
+<span class="k">returns</span> y:llist t
+<span class="k">ensures</span> <span class="k">exists</span>* tl.
+    is_list y tl **
+    (is_list y tl @==&gt; is_list x &#39;l) **
+    pure (Cons? &#39;l /\ tl == Cons?.tl &#39;l)
+{ 
+    <span class="k">let</span> np = Some?.v x;
+    is_list_case_some x np;
+    <span class="k">let</span> nd = !np;
+    <span class="k">with</span> tl. <span class="k">assert</span> is_list nd.tail tl;
+    intro (is_list nd.tail tl @==&gt; is_list x &#39;l) #(np |-&gt; nd) <span class="k">fn</span> <span class="k">_</span> {
+      intro_is_list_cons x np;
+    };
+    nd.tail
+}
+</pre></div>
+</div>
+</section>
+<section id="length-iter">
+<h3><code class="docutils literal notranslate"><span class="pre">length_iter</span></code><a class="headerlink" href="#length-iter" title="Link to this heading"></a></h3>
+<p>The code below shows our iterative implementation of <code class="docutils literal notranslate"><span class="pre">length</span></code>. The
+basic idea is simple, though the proof takes a bit of doing. We
+initialize a current pointer <code class="docutils literal notranslate"><span class="pre">cur</span></code> to the head of the list; and
+<code class="docutils literal notranslate"><span class="pre">ctr</span></code> to <code class="docutils literal notranslate"><span class="pre">0</span></code>. Then, while <code class="docutils literal notranslate"><span class="pre">cur</span></code> is not null, we move <code class="docutils literal notranslate"><span class="pre">cur</span></code> to
+the tail and increment <code class="docutils literal notranslate"><span class="pre">ctr</span></code>. Finally, we return the <code class="docutils literal notranslate"><span class="pre">!ctr</span></code>.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> length_iter (#t:Type) (x: llist t)
+preserves is_list x &#39;l
+<span class="k">returns</span> n:nat
+<span class="k">ensures</span> pure (n == List.<span class="k">Tot</span>.length &#39;l)
+{
+  <span class="k">open</span> I;
+  <span class="k">let</span> <span class="k">mut</span> cur = x;
+  <span class="k">let</span> <span class="k">mut</span> ctr = 0; 
+  I.refl (is_list x &#39;l); <span class="c">//initialize the trade for the invariant</span>
+  <span class="k">while</span> (
+    Some? !cur
+  )
+  <span class="k">invariant</span>
+  <span class="k">exists</span>* n ll suffix.
+    pts_to ctr n **
+    pts_to cur ll **
+    is_list ll suffix **
+    pure (n == List.<span class="k">Tot</span>.length &#39;l - List.<span class="k">Tot</span>.length suffix) **
+    (is_list ll suffix @==&gt; is_list x &#39;l)
+  {
+    <span class="k">let</span> n = !ctr;
+    <span class="k">let</span> ll = !cur;
+    <span class="k">let</span> next = tail ll;     <span class="c">//tail gives us back a trade</span>
+    <span class="k">with</span> tl. <span class="k">_</span>;
+    I.trans (is_list next tl) <span class="k">_</span> <span class="k">_</span>; <span class="c">//extend the trade, transitively</span>
+    cur := next;
+    ctr := n + 1;
+  };
+  <span class="k">with</span> <span class="k">_</span> _n ll _sfx. <span class="k">_</span>;
+  is_list_case_none ll; <span class="c">//this tells us that suffix=[]; so n == List.Tot.length &#39;l</span>
+  I.elim <span class="k">_</span> <span class="k">_</span>;           <span class="c">//regain ownership of x, giving up ll</span>
+  <span class="k">let</span> n = !ctr;
+  n
+}
+</pre></div>
+</div>
+<p>Now, for the proof. The main part is the loop invariant, which says:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>the current value of the counter is <code class="docutils literal notranslate"><span class="pre">n</span></code>;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cur</span></code> holds a list pointer, <code class="docutils literal notranslate"><span class="pre">ll</span></code> where <code class="docutils literal notranslate"><span class="pre">ll</span></code> contains the
+list represented by <code class="docutils literal notranslate"><span class="pre">suffix</span></code>;</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n</span></code> is the length of the prefix of the list traversed so far;</p></li>
+<li><p>the loop continues as long as <code class="docutils literal notranslate"><span class="pre">b</span></code> is true, i.e., the list
+pointer <code class="docutils literal notranslate"><span class="pre">l</span></code> is not <code class="docutils literal notranslate"><span class="pre">None</span></code>;</p></li>
+<li><p>and, the key bit: you can trade ownership on <code class="docutils literal notranslate"><span class="pre">ll</span></code> back for
+ownership on the original list <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p></li>
+</ul>
+</div></blockquote>
+<p>Some parts of this could be simplified, e.g., to avoid some of the
+rewrites.</p>
+<p>One way to understand how trades have helped here is to compare
+<code class="docutils literal notranslate"><span class="pre">length_iter</span></code> to the recursive function <code class="docutils literal notranslate"><span class="pre">length</span></code>. In <code class="docutils literal notranslate"><span class="pre">length</span></code>,
+after each recursive call returns, we called a ghost function to
+repackage permission on the cons cell after taking out permission on
+the tail. The recursive function call stack kept track of all these
+pieces of ghost code that had to be executed. In the iterative
+version, we use the trade to package up all the ghost functions that
+need to be run, rather than using the call stack. When the loop
+terminates, we use <code class="docutils literal notranslate"><span class="pre">I.elim</span></code> to run all that ghost code at once.</p>
+<p>Of course, the recursive <code class="docutils literal notranslate"><span class="pre">length</span></code> is much simpler in this case, but
+this pattern of using trades to package up ghost functions is quite
+broadly useful.</p>
+</section>
+</section>
+<section id="append-recursively">
+<h2>Append, Recursively<a class="headerlink" href="#append-recursively" title="Link to this heading"></a></h2>
+<p>Here’s another recursive function on linked lists: <code class="docutils literal notranslate"><span class="pre">append</span></code>
+concatenates <code class="docutils literal notranslate"><span class="pre">y</span></code> on to the end of <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<p>It’s fairly straightforward: we recurse until we reach the last node
+of <code class="docutils literal notranslate"><span class="pre">x</span></code> (i.e., the <code class="docutils literal notranslate"><span class="pre">tail</span></code> field is <code class="docutils literal notranslate"><span class="pre">None</span></code>; and we set that field
+to point to <code class="docutils literal notranslate"><span class="pre">y</span></code>.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> <span class="k">rec</span> append (#t:Type0) (x y:llist t)
+<span class="k">requires</span> is_list x &#39;l1
+<span class="k">requires</span> is_list y &#39;l2
+<span class="k">requires</span> pure (Some? x)
+<span class="k">ensures</span> is_list x (&#39;l1 @ &#39;l2)
+{
+  <span class="k">let</span> np = Some?.v x;
+  is_list_case_some x np;
+  <span class="k">let</span> node = !np;
+  <span class="k">match</span> node.tail {
+    None -&gt; {
+      is_list_case_none node.tail;
+      elim_is_list_nil node.tail;
+      np := { node <span class="k">with</span> tail = y };
+      intro_is_list_cons x np; 
+    }
+    Some <span class="k">_</span> -&gt; {
+      append node.tail y;
+      intro_is_list_cons x np;
+    }
+  }
+}
+</pre></div>
+</div>
+<p>The code is tail recursive in the <code class="docutils literal notranslate"><span class="pre">Some</span> <span class="pre">_</span></code> case, but notice that we
+have a ghost function call <em>after</em> the recursive call. Like we did for
+<code class="docutils literal notranslate"><span class="pre">length</span></code>, can we implement an iterative version of <code class="docutils literal notranslate"><span class="pre">append</span></code>,
+factoring this ghost code on the stack into a trade?</p>
+</section>
+<section id="append-iteratively">
+<h2>Append, Iteratively<a class="headerlink" href="#append-iteratively" title="Link to this heading"></a></h2>
+<p>Let’s start by defining a more general version of the <code class="docutils literal notranslate"><span class="pre">tail</span></code>
+function from before. In comparison, the postcondition of <code class="docutils literal notranslate"><span class="pre">tail_alt</span></code>
+uses a universal quantifier to say, roughly, that whatever list <code class="docutils literal notranslate"><span class="pre">tl'</span></code>
+the returns <code class="docutils literal notranslate"><span class="pre">y</span></code> points to, it can be traded for a pointer to <code class="docutils literal notranslate"><span class="pre">x</span></code>
+that cons’s on to <code class="docutils literal notranslate"><span class="pre">tl</span></code>. Our previous function <code class="docutils literal notranslate"><span class="pre">tail</span></code> can be easily
+recovered by instantiating <code class="docutils literal notranslate"><span class="pre">tl'</span></code> to <code class="docutils literal notranslate"><span class="pre">tl</span></code>.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> is_cons #t ([@@@mkey] x: list t) (hd: t) (tl: list t) : slprop =
+  pure (x == hd :: tl)
+
+<span class="k">fn</span> tail_alt (#t:Type) (x:llist t)
+<span class="k">requires</span> is_list x &#39;l
+<span class="k">requires</span> pure (Some? x)
+<span class="k">returns</span> y:llist t
+<span class="k">ensures</span> <span class="k">exists</span>* hd tl.
+  is_list y tl **
+  (<span class="k">forall</span>* tl&#39;. is_list y tl&#39; @==&gt; is_list x (hd::tl&#39;)) **
+  is_cons &#39;l hd tl
+{ 
+  <span class="k">let</span> np = Some?.v x;
+  is_list_case_some x np;
+  <span class="k">with</span> _node _tl. <span class="k">_</span>;
+  <span class="k">let</span> node = !np;
+  intro (<span class="k">forall</span>* tl&#39;. is_list node.tail tl&#39; @==&gt; is_list x (node.head::tl&#39;))
+      #(pts_to np node) <span class="k">fn</span> <span class="k">_</span> tl&#39; {
+    intro_is_list_cons x np;
+  };
+  <span class="k">fold</span> is_cons &#39;l node.head _tl;
+  node.tail
+}
+</pre></div>
+</div>
+<p>We’ll use these quantified trades in our invariant of <code class="docutils literal notranslate"><span class="pre">append_iter</span></code>,
+shown below. The main idea of the implementation is to use a while
+loop to traverse to the last element of the first list <code class="docutils literal notranslate"><span class="pre">x</span></code>; and then
+to set <code class="docutils literal notranslate"><span class="pre">y</span></code> as the <code class="docutils literal notranslate"><span class="pre">next</span></code> pointer of this last element.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> append_iter (#t:Type) (x y:llist t)
+<span class="k">requires</span> is_list x &#39;l1
+<span class="k">requires</span> is_list y &#39;l2
+<span class="k">requires</span> pure (Some? x)
+<span class="k">ensures</span> is_list x (&#39;l1 @ &#39;l2)
+{
+  <span class="k">let</span> <span class="k">mut</span> cur = x;
+  <span class="c">//the base case, set up the initial invariant</span>
+  intro (<span class="k">forall</span>* l. is_list x l @==&gt; is_list x ([] @ l)) <span class="k">fn</span> <span class="k">_</span> l {};
+  <span class="k">while</span> (not_is_last_cell (!cur)) <span class="c">//check if we are at the last cell</span>
+  <span class="k">invariant</span> <span class="k">exists</span>* ll pfx sfx.
+    pts_to cur ll **   <span class="c">//cur holds the pointer to the current head of the traversal, ll</span>
+    is_list ll sfx **  <span class="c">//ll points to some suffix of the original list, since `pfx@sfx = &#39;l1` below</span>
+    <span class="c">//the main bit: whatever ll points to `sfx&#39;`, trade it for x pointing to the concatenation ``pfx @ sfx&#39;`` </span>
+    (<span class="k">forall</span>* sfx&#39;. is_list ll sfx&#39; @==&gt; is_list x (pfx @ sfx&#39;)) ** 
+    pure (
+      pfx@sfx == &#39;l1 /\ <span class="c">//sfx is really the suffix</span>
+      Some? ll          <span class="c">//and the current list is always non-null</span>
+    )
+  {
+    <span class="k">with</span> ll pfx sfx. <span class="k">_</span>;
+    <span class="k">let</span> l = !cur;
+    <span class="k">let</span> next = tail_alt l;
+    <span class="k">with</span> hd tl. <span class="k">unfold</span> is_cons sfx hd tl;
+    <span class="c">(* this is the key induction step *)</span>
+    FA.trans_compose
+        (is_list next) (is_list l) (is_list x)
+        (<span class="k">fun</span> tl -&gt; hd :: tl)
+        (<span class="k">fun</span> tl -&gt; pfx @ tl);
+    <span class="c">//Use F* sugar for classical connectives to introduce a property</span>
+    <span class="c">//needed for the next rewrite</span>
+    (<span class="k">introduce</span> <span class="k">forall</span> tl. pfx @ (hd :: tl) == (pfx @ [hd]) @ tl
+      <span class="k">with</span> List.<span class="k">Tot</span>.Properties.append_assoc pfx [hd] tl);
+    <span class="k">rewrite</span> (<span class="k">forall</span>* tl. is_list next tl @==&gt; is_list x (pfx@(hd::tl)))
+          as (<span class="k">forall</span>* tl. is_list next tl @==&gt; is_list x ((pfx@[hd])@tl));
+    cur := next;
+    non_empty_list next; <span class="c">//need to prove that Some? next, for the invariant</span>
+  };
+  <span class="k">with</span> <span class="k">_</span> ll pfx sfx. <span class="k">_</span>;
+  <span class="k">let</span> last = !cur;
+  append_at_last_cell last y;
+  FA.elim_forall_imp (is_list last) (<span class="k">fun</span> sfx&#39; -&gt; is_list x (pfx @ sfx&#39;)) (sfx@&#39;l2);
+  List.<span class="k">Tot</span>.Properties.append_assoc pfx sfx &#39;l2;
+  ()
+}
+</pre></div>
+</div>
+<p>There are a few interesting points to note.</p>
+<blockquote>
+<div><ul>
+<li><p>The main part is the quantified trade in the invariant, which, as
+we traverse the list, encapsulates the ghost code that we need to
+run at the end to restore permission to the initial list pointer
+<code class="docutils literal notranslate"><span class="pre">x</span></code>.</p></li>
+<li><p>The library function, <code class="docutils literal notranslate"><span class="pre">FA.trans_compose</span></code> has the following
+signature:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span>
+<span class="k">fn</span> trans_compose (#a #b #c:Type0)
+                 (p: a -&gt; slprop)
+                 (q: b -&gt; slprop)
+                 (r: c -&gt; slprop)
+                 (f: a -&gt; <span class="k">GTot</span> b)
+                 (g: b -&gt; <span class="k">GTot</span> c)
+<span class="k">requires</span>
+  (<span class="k">forall</span>* x. p x @==&gt; q (f x)) **
+  (<span class="k">forall</span>* x. q x @==&gt; r (g x))
+<span class="k">ensures</span>
+  <span class="k">forall</span>* x. p x @==&gt; r (g (f x))
+</pre></div>
+</div>
+<p>We use it in the key induction step as we move one step down the
+list—similar to what we had in <code class="docutils literal notranslate"><span class="pre">length_iter</span></code>, but this time
+with a quantifier.</p>
+</li>
+<li><p>Illustrating again that Pulse is a superset of pure F*, we make
+use of a <a class="reference internal" href="../part2/part2_logical_connectives.html#part2-connectives"><span class="std std-ref">bit of F* sugar</span></a> in the
+<code class="docutils literal notranslate"><span class="pre">introduce</span> <span class="pre">forall</span></code> to prove a property needed for a Pulse
+rewrite.</p></li>
+<li><p>Finally, at the end of the loop, we use <code class="docutils literal notranslate"><span class="pre">FA.elim_forall_imp</span></code> to
+restore permission on <code class="docutils literal notranslate"><span class="pre">x</span></code>, now pointing to a concatenated list,
+effectively running all the ghost code we accumulated as we
+traversed the list.</p></li>
+</ul>
+</div></blockquote>
+<p>Perhaps the lesson from all this is that recursive programs are much
+easier to write and prove correct than iterative ones? That’s one
+takeaway. But, hopefully, you’ve seen how trades and quantifiers work
+and can be useful in some proofs—of course, we’ll use them not just
+for rewriting recursive as iterative code.</p>
+<section id="exercise-3">
+<h3>Exercise 3<a class="headerlink" href="#exercise-3" title="Link to this heading"></a></h3>
+<p>Write a function to insert an element in a list at a specific
+position.</p>
+</section>
+<section id="exercise-4">
+<h3>Exercise 4<a class="headerlink" href="#exercise-4" title="Link to this heading"></a></h3>
+<p>Write a function to reverse a list.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pulse_implication_and_forall.html" class="btn btn-neutral float-left" title="Implication and Universal Quantification" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pulse_atomics_and_invariants.html" class="btn btn-neutral float-right" title="Atomic Operations and Invariants" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

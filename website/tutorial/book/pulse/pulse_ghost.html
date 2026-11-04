@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ghost Computations &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Higher Order Functions" href="pulse_higher_order.html" />
+    <link rel="prev" title="Mutable Arrays" href="pulse_arrays.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pulse_getting_started.html">Getting up and running with Codespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ch1.html">Pulse Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ch2.html">Mutable References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_existentials.html">Existential Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_user_defined_predicates.html">User-defined Predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_conditionals.html">Conditionals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_loops.html">Loops &amp; Recursion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_arrays.html">Mutable Arrays</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Ghost Computations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ghost-functions">Ghost Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#some-primitive-ghost-functions">Some Primitive Ghost Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#recursive-predicates-and-ghost-lemmas">Recursive Predicates and Ghost Lemmas</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#recursive-ghost-lemmas">Recursive Ghost Lemmas</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#mutable-ghost-references">Mutable Ghost References</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#a-somewhat-contrived-example">A somewhat contrived example</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_higher_order.html">Higher Order Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_implication_and_forall.html">Implication and Universal Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_linked_list.html">Linked Lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_atomics_and_invariants.html">Atomic Operations and Invariants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_spin_lock.html">Spin Locks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_parallel_increment.html">Parallel Increment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_extraction.html">Extraction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+      <li class="breadcrumb-item active">Ghost Computations</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="ghost-computations">
+<span id="pulse-ghost"></span><h1>Ghost Computations<a class="headerlink" href="#ghost-computations" title="Link to this heading"></a></h1>
+<p>Throughout the chapters on pure F*, we made routine use of the
+<code class="docutils literal notranslate"><span class="pre">Lemmas</span></code> and ghost functions to prove properties of our
+programs. Lemmas, you will recall, are pure, total functions that
+always return <code class="docutils literal notranslate"><span class="pre">unit</span></code>, i.e., they have no computational significance
+and are erased by the F* compiler. F* <a class="reference internal" href="../part4/part4_ghost.html#part4-ghost"><span class="std std-ref">ghost functions</span></a> are also pure, total functions, except that they are
+allowed to inspect erased values in a controlled way—they too are
+erased by the F* compiler.</p>
+<p>As we’ve seen already, F* lemmas and ghost functions can be directly
+used in Pulse code. But, these are only useful for describing
+properties about the pure values in scope. Often, in Pulse, one needs
+to write lemmas that speak about the state, manipulate <code class="docutils literal notranslate"><span class="pre">slprops</span></code>,
+etc. For this purpose, Pulse provides its own notion of <em>ghost
+computations</em> (think of these as the analog of F* lemmas and ghost
+functions, except they are specified using <code class="docutils literal notranslate"><span class="pre">slprops</span></code>); and <em>ghost
+state</em> (think of these as the analog of F* erased types, except ghost
+state is mutable, though still computationally irrelevant). Ghost
+computations are used everywhere in Pulse—we’ve already seen a few
+examples. Ghost state is especially useful in proofs of concurrent
+programs.</p>
+<section id="ghost-functions">
+<h2>Ghost Functions<a class="headerlink" href="#ghost-functions" title="Link to this heading"></a></h2>
+<p>Here’s a Pulse function that fails to check, with the error message
+below.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span>[@@expect_failure]
+<span class="k">fn</span> incr_erased_non_ghost (x:erased int)
+<span class="k">returns</span> y:int
+<span class="k">ensures</span> pure (y == x + 1)
+{
+  <span class="k">let</span> x = reveal x;
+  (x + 1)
+}
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Cannot</span> <span class="n">bind</span> <span class="n">ghost</span> <span class="n">expression</span> <span class="n">reveal</span> <span class="n">x</span> <span class="k">with</span> <span class="n">ST</span> <span class="n">computation</span>
+</pre></div>
+</div>
+<p>We should expect this to fail, since the program claims to be able to
+compute an integer <code class="docutils literal notranslate"><span class="pre">y</span></code> by incrementing an erased integer <code class="docutils literal notranslate"><span class="pre">x</span></code>—the
+<code class="docutils literal notranslate"><span class="pre">x:erased</span> <span class="pre">int</span></code> doesn’t exist at runtime, so this program cannot be
+compiled.</p>
+<p>But, if we tag the function with the <code class="docutils literal notranslate"><span class="pre">ghost</span></code> qualifier, then this
+works:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span>
+<span class="k">fn</span> incr_erased (x:erased int)
+<span class="k">returns</span> y:int
+<span class="k">ensures</span> pure (y == x + 1)
+{
+  <span class="k">let</span> x = reveal x;
+  (x + 1)
+}
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">ghost</span></code> qualifier indicates the Pulse checker that the
+function is to be erased at runtime, so <code class="docutils literal notranslate"><span class="pre">ghost</span></code> functions are
+allowed to make use of F* functions with <code class="docutils literal notranslate"><span class="pre">GTot</span></code> effect, like
+<code class="docutils literal notranslate"><span class="pre">FStar.Ghost.reveal</span></code>.</p>
+<p>However, for this to be sound, no compilable code is allowed to depend
+on the return value of a <code class="docutils literal notranslate"><span class="pre">ghost</span></code> function. So, the following code
+fails with the error below:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span>[@@expect_failure]
+<span class="k">fn</span> use_incr_erased (x:erased int)
+<span class="k">returns</span> y:int
+<span class="k">ensures</span> pure (y == x + 1)
+{
+  incr_erased x;
+}
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Expected</span> <span class="n">a</span> <span class="n">term</span> <span class="k">with</span> <span class="n">a</span> <span class="n">non</span><span class="o">-</span><span class="n">informative</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">g</span><span class="o">.</span><span class="p">,</span> <span class="n">erased</span><span class="p">)</span> <span class="nb">type</span><span class="p">;</span> <span class="n">got</span> <span class="nb">int</span>
+</pre></div>
+</div>
+<p>That is, when calling a <code class="docutils literal notranslate"><span class="pre">ghost</span></code> function from a non-ghost context,
+the return type of the ghost function must be non-informative, e.g,
+<code class="docutils literal notranslate"><span class="pre">erased</span></code>, or <code class="docutils literal notranslate"><span class="pre">unit</span></code> etc. The class of non-informative types and
+the rules for allowing F* <a class="reference internal" href="../part4/part4_ghost.html#ghost-in-total-contexts"><span class="std std-ref">ghost computations to be used in total
+contexts is described here</span></a>, and the same
+rules apply in Pulse.</p>
+<p>To use of <code class="docutils literal notranslate"><span class="pre">incr_erased</span></code> in non-ghost contexts, we have to erase its
+result. There are a few ways of doing this.</p>
+<p>Here’s a verbose but explicit way, where we define a nested ghost
+function to wrap the call to <code class="docutils literal notranslate"><span class="pre">incr_erased</span></code>.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> use_incr_erased (x:erased int)
+<span class="k">returns</span> y:erased int
+<span class="k">ensures</span> pure (y == x + 1)
+{
+  <span class="k">ghost</span>
+  <span class="k">fn</span> wrap (x:erased int)
+  <span class="k">returns</span> y:erased int
+  <span class="k">ensures</span> pure (y == x + 1)
+  {
+    <span class="k">let</span> y = incr_erased x;
+    hide y
+  };
+  wrap x
+}
+</pre></div>
+</div>
+<p>The library also contains <code class="docutils literal notranslate"><span class="pre">Pulse.Lib.Pervasives.call_ghost</span></code> that is
+a higher-order combinator to erase the result of a ghost call.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> use_incr_erased_alt (x:erased int)
+<span class="k">returns</span> y:erased int
+<span class="k">ensures</span> pure (y == x + 1)
+{ 
+  call_ghost incr_erased x;
+}
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">call_ghost</span></code> combinator can be used with ghost functions of
+different arities, though it requires the applications to be curried
+in the following way.</p>
+<p>Suppose we have a binary ghost function, like <code class="docutils literal notranslate"><span class="pre">add_erased</span></code>:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span>
+<span class="k">fn</span> add_erased (x y:erased int)
+<span class="k">returns</span> z:int
+<span class="k">ensures</span> pure (z == x + y)
+{
+  <span class="k">let</span> x = reveal x;
+  <span class="k">let</span> y = reveal y;
+  (x + y)
+}
+</pre></div>
+</div>
+<p>To call it in a non-ghost context, one can do the following:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> use_add_erased (x y:erased int)
+<span class="k">returns</span> z:erased int
+<span class="k">ensures</span> pure (z == x + y)
+{
+  call_ghost (add_erased x) y
+}
+</pre></div>
+</div>
+<p>That said, since <code class="docutils literal notranslate"><span class="pre">ghost</span></code> functions must have non-informative return
+types to be usable in non-ghost contexts, it’s usually best to define
+them that way to start with, rather than having to wrap them at each
+call site, as shown below:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span>
+<span class="k">fn</span> add_erased_erased (x y:erased int)
+<span class="k">returns</span> z:erased int
+<span class="k">ensures</span> pure (z == x + y)
+{
+  <span class="k">let</span> x = reveal x;
+  <span class="k">let</span> y = reveal y;
+  hide (x + y)
+}
+</pre></div>
+</div>
+</section>
+<section id="some-primitive-ghost-functions">
+<h2>Some Primitive Ghost Functions<a class="headerlink" href="#some-primitive-ghost-functions" title="Link to this heading"></a></h2>
+<p>Pulse ghost functions with <code class="docutils literal notranslate"><span class="pre">emp</span></code> or <code class="docutils literal notranslate"><span class="pre">pure</span> <span class="pre">_</span></code> pre and
+postconditions are not that interesting—such functions can usually
+be written with regular F* ghost functions.</p>
+<p>Ghost functions are often used as proof steps to prove equivalences
+among <code class="docutils literal notranslate"><span class="pre">slprops</span></code>. We saw a few <a class="reference internal" href="pulse_conditionals.html#pulse-nullable-ref-helpers"><span class="std std-ref">examples of ghost functions
+before</span></a>—they are ghost since their
+implementations are compositions of <code class="docutils literal notranslate"><span class="pre">ghost</span></code> functions from the Pulse
+library.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">rewrite</span></code> primitive that we saw <a class="reference internal" href="pulse_user_defined_predicates.html#pulse-rewriting"><span class="std std-ref">previously</span></a> is in fact a defined function in the Pulse
+library. Its signature looks like this:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span>
+<span class="k">fn</span> __rewrite (p q:slprop)
+<span class="k">requires</span> p
+<span class="k">requires</span> pure (p == q)
+<span class="k">ensures</span> q
+</pre></div>
+</div>
+<p>Many of the other primitives like <code class="docutils literal notranslate"><span class="pre">fold</span></code>, <code class="docutils literal notranslate"><span class="pre">unfold</span></code>, etc. are
+defined in terms of <code class="docutils literal notranslate"><span class="pre">rewrite</span></code> and are <code class="docutils literal notranslate"><span class="pre">ghost</span></code> computations.</p>
+<p>Other primitives like <code class="docutils literal notranslate"><span class="pre">introduce</span> <span class="pre">exists*</span></code> are also implemented in
+terms of library <code class="docutils literal notranslate"><span class="pre">ghost</span></code> functions, with signatures like the one
+below:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span>
+<span class="k">fn</span> intro_exists (#a:Type0) (p:a -&gt; slprop) (x:erased a)
+<span class="k">requires</span> p x
+<span class="k">ensures</span> <span class="k">exists</span>* x. p x
+</pre></div>
+</div>
+</section>
+<section id="recursive-predicates-and-ghost-lemmas">
+<span id="pulse-recursive-predicates"></span><h2>Recursive Predicates and Ghost Lemmas<a class="headerlink" href="#recursive-predicates-and-ghost-lemmas" title="Link to this heading"></a></h2>
+<p>We previously saw how to <a class="reference internal" href="pulse_user_defined_predicates.html#pulse-definedvprops"><span class="std std-ref">define custom predicates</span></a>, e.g., for representation predicates on data
+structures. Since a <code class="docutils literal notranslate"><span class="pre">slprop</span></code> is just a regular type, one can also
+define <code class="docutils literal notranslate"><span class="pre">slprops</span></code> by recursion in F*. Working with these recursive
+predicates in Pulse usually involves writing recursive ghost functions
+as lemmas. We’ll look at a simple example of this here and revisit in
+subsequent chapters as we look at programming unbounded structures, like
+linked lists.</p>
+<p>Say you have a list of references and want to describe that they all
+contain integers whose value is at most <code class="docutils literal notranslate"><span class="pre">n</span></code>. The recursive predicate
+<code class="docutils literal notranslate"><span class="pre">all_at_most</span> <span class="pre">l</span> <span class="pre">n</span></code> does just that:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> all_at_most (l:list (ref nat)) (n:nat)
+: slprop
+= <span class="k">match</span> l <span class="k">with</span>
+  | [] -&gt; emp
+  | hd::tl -&gt; <span class="k">exists</span>* (i:nat). pts_to hd i ** pure (i &lt;= n) ** all_at_most tl n
+</pre></div>
+</div>
+<p>As we did when working with <a class="reference internal" href="pulse_conditionals.html#pulse-nullable-ref-helpers"><span class="std std-ref">nullable references</span></a>, it’s useful to define a few helper
+ghost functions to introduce and eliminate this predicate, for each of
+its cases.</p>
+<section id="recursive-ghost-lemmas">
+<h3>Recursive Ghost Lemmas<a class="headerlink" href="#recursive-ghost-lemmas" title="Link to this heading"></a></h3>
+<p>Pulse allows writing recursive ghost functions as lemmas for use in
+Pulse code. Like F* lemmas, recursive ghost functions must be proven
+to terminate on all inputs—otherwise, they would not be sound.</p>
+<p>To see this in action, let’s write a ghost function to prove that
+<code class="docutils literal notranslate"><span class="pre">all_at_most</span> <span class="pre">l</span> <span class="pre">n</span></code> can be weakened to <code class="docutils literal notranslate"><span class="pre">all_at_most</span> <span class="pre">l</span> <span class="pre">m</span></code> when <code class="docutils literal notranslate"><span class="pre">n</span> <span class="pre">&lt;=</span>
+<span class="pre">m</span></code>.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span>
+<span class="k">fn</span> <span class="k">rec</span> weaken_at_most (l:list (ref nat)) (n:nat) (m:nat)
+<span class="k">requires</span> all_at_most l n
+<span class="k">requires</span> pure (n &lt;= m)
+<span class="k">ensures</span> all_at_most l m
+<span class="k">decreases</span> l
+{
+  <span class="k">match</span> l {
+    [] -&gt; {
+      <span class="k">unfold</span> (all_at_most [] n);
+      <span class="k">fold</span> (all_at_most [] m);
+      <span class="k">rewrite</span> all_at_most [] m as all_at_most l m;
+    }
+    hd :: tl -&gt; {
+      <span class="k">unfold</span> (all_at_most (hd::tl) n);
+      weaken_at_most tl n m;
+      <span class="k">fold</span> (all_at_most (hd::tl) m);
+      <span class="k">rewrite</span> all_at_most (hd::tl) m as all_at_most l m;
+    }
+  }
+}
+</pre></div>
+</div>
+<p>A few points to note:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Recursive functions in Pulse are defined using <code class="docutils literal notranslate"><span class="pre">fn</span> <span class="pre">rec</span></code>.</p></li>
+<li><p>Ghost recursive functions must also have a <code class="docutils literal notranslate"><span class="pre">decreases</span></code>
+annotation—unlike in F*, Pulse does not yet attempt to infer a
+default decreases annotation. In this case, we are recursing on
+the list <code class="docutils literal notranslate"><span class="pre">l</span></code>.</p></li>
+<li><p>List patterns in Pulse do not (yet) have the same syntactic sugar
+as in F*, i.e., you cannot write <code class="docutils literal notranslate"><span class="pre">[]</span></code> and <code class="docutils literal notranslate"><span class="pre">hd::tl</span></code> as
+patterns.</p></li>
+<li><p>The proof itself is fairly straightforward:</p>
+<ul>
+<li><p>In the <code class="docutils literal notranslate"><span class="pre">Nil</span></code> case, we eliminate the <code class="docutils literal notranslate"><span class="pre">all_at_most</span></code> predicate
+at <code class="docutils literal notranslate"><span class="pre">n</span></code> and introduce it at <code class="docutils literal notranslate"><span class="pre">m</span></code>.</p></li>
+<li><p>In the <code class="docutils literal notranslate"><span class="pre">Cons</span></code> case, we eliminate <code class="docutils literal notranslate"><span class="pre">all_at_most</span> <span class="pre">l</span> <span class="pre">n</span></code>,` use the
+induction hypothesis to weaken the <code class="docutils literal notranslate"><span class="pre">all_at_most</span></code> predicate on
+the <code class="docutils literal notranslate"><span class="pre">tl</span></code>; and then introduce it again, packaging it with
+assumption on <code class="docutils literal notranslate"><span class="pre">hd</span></code>.</p></li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+</section>
+</section>
+<section id="mutable-ghost-references">
+<h2>Mutable Ghost References<a class="headerlink" href="#mutable-ghost-references" title="Link to this heading"></a></h2>
+<p>The underlying logic that Pulse is based on actually supports a very
+general form of ghost state based on partial commutative monoids
+(PCMs). Users can define their own ghost state abstractions in F*
+using PCMs and use these in Pulse programs. The library
+<code class="docutils literal notranslate"><span class="pre">Pulse.Lib.GhostReference</span></code> provides the simplest and most common
+form of ghost state: references to erased values with a
+fractional-permission-based ownership discipline.</p>
+<p>We’ll use the module abbreviation <code class="docutils literal notranslate"><span class="pre">module</span> <span class="pre">GR</span> <span class="pre">=</span>
+<span class="pre">Pulse.Lib.GhostReference</span></code> in what follows. The library is very
+similar to <code class="docutils literal notranslate"><span class="pre">Pulse.Lib.Reference</span></code>, in that it provides:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">GR.ref</span> <span class="pre">a</span></code>: The main type of ghost references. <code class="docutils literal notranslate"><span class="pre">GR.ref</span></code> is an
+erasable type and is hence considered non-informative.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GR.pts_to</span> <span class="pre">(#a:Type0)</span> <span class="pre">(r:GR.ref</span> <span class="pre">a)</span> <span class="pre">(#p:perm)</span> <span class="pre">(v:a)</span> <span class="pre">:</span> <span class="pre">slprop</span></code> is
+the main predicate provided by the library. Similar to the regular
+<code class="docutils literal notranslate"><span class="pre">pts_to</span></code>, the permission index defaults to <code class="docutils literal notranslate"><span class="pre">1.0R</span></code>.</p></li>
+<li><p>Unlike <code class="docutils literal notranslate"><span class="pre">ref</span> <span class="pre">a</span></code> (and more like <code class="docutils literal notranslate"><span class="pre">box</span> <span class="pre">a</span></code>), ghost references
+<code class="docutils literal notranslate"><span class="pre">GR.ref</span> <span class="pre">a</span></code> are not lexically scoped: they are allocated using
+<code class="docutils literal notranslate"><span class="pre">GR.alloc</span></code> and freed using <code class="docutils literal notranslate"><span class="pre">GR.free</span></code>. Of course, neither
+allocation nor free’ing has any runtime cost—these are just
+ghost operations.</p></li>
+<li><p>Reading a ghost reference using <code class="docutils literal notranslate"><span class="pre">!r</span></code> returns an <code class="docutils literal notranslate"><span class="pre">erased</span> <span class="pre">a</span></code>,
+when <code class="docutils literal notranslate"><span class="pre">r:GR.ref</span> <span class="pre">a</span></code>. Likewise, to update <code class="docutils literal notranslate"><span class="pre">r</span></code>, it is enough to
+provide a new value <code class="docutils literal notranslate"><span class="pre">v:erased</span> <span class="pre">a</span></code>.</p></li>
+<li><p>Operations to <code class="docutils literal notranslate"><span class="pre">share</span></code> and <code class="docutils literal notranslate"><span class="pre">gather</span></code> ghost references work just
+as with <code class="docutils literal notranslate"><span class="pre">ref</span></code>.</p></li>
+</ul>
+</div></blockquote>
+<section id="a-somewhat-contrived-example">
+<h3>A somewhat contrived example<a class="headerlink" href="#a-somewhat-contrived-example" title="Link to this heading"></a></h3>
+<p>Most examples that require ghost state usually involve stating
+interesting invariants between multiple threads, or sometimes in a
+sequential setting to correlate knowledge among different
+components. We’ll see examples of that in a later chapter. For now,
+here’s a small example that gives a flavor of how ghost state can be
+used.</p>
+<p>Suppose we want to give a function read/write access to a reference,
+but want to ensure that before it returns, it resets the value of the
+reference to its original value. The simplest way to do that would be
+to give the function the following signature:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> uses_but_resets #a (x:ref a)
+<span class="k">requires</span> pts_to x &#39;v
+<span class="k">ensures</span> pts_to x &#39;v
+</pre></div>
+</div>
+<p>Here’s another way to do it, this time with ghost references.</p>
+<p>First, we define a predicate <code class="docutils literal notranslate"><span class="pre">correlated</span></code> that holds full permission
+to a reference and half permission to a ghost reference, forcing them
+to hold the same value.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> correlated #a (x:ref a) (y:GR.ref a) (v:a)=
+  pts_to x v ** GR.pts_to y #0.5R v
+</pre></div>
+</div>
+<p>Now, here’s the signature of a function <code class="docutils literal notranslate"><span class="pre">use_temp</span></code>: at first glance,
+from its signature alone, one might think that the witness <code class="docutils literal notranslate"><span class="pre">v0</span></code>
+bound in the precondition is unrelated to the <code class="docutils literal notranslate"><span class="pre">v1</span></code> bound in the
+postcondition.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> use_temp (x:ref int) (y:GR.ref int)
+<span class="k">requires</span> <span class="k">exists</span>* v0. correlated x y v0
+<span class="k">ensures</span> <span class="k">exists</span>* v1. correlated x y v1
+</pre></div>
+</div>
+<p>But, <code class="docutils literal notranslate"><span class="pre">use_temp</span></code> only has half-permission to the ghost reference and
+cannot mutate it. So, although it can mutate the reference itself, in
+order to return its postcondition, it must reset the reference to its
+initial value.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span>{
+  <span class="k">unfold</span> correlated u#0;
+  <span class="k">let</span> v = !x;
+  x := 17; <span class="c">//temporarily mutate x, give to to another function to use with full perm</span>
+  x := v; <span class="c">//but, we&#39;re forced to set it back to its original value</span>
+  <span class="k">fold</span> correlated u#0;
+}
+</pre></div>
+</div>
+<p>This property can be exploited by a caller to pass a reference to
+<code class="docutils literal notranslate"><span class="pre">use_temp</span></code> and be assured that the value is unchanged when it
+returns.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> use_correlated ()
+{
+  <span class="k">let</span> <span class="k">mut</span> x = 17;
+  <span class="k">let</span> g = GR.alloc 17;
+  GR.share g;
+  <span class="k">fold</span> correlated u#0;  <span class="c">// GR.pts_to g #0.5R 17 ** correlated x g 17</span>
+  use_temp x g;     <span class="c">// GR.pts_to g #0.5R 17 ** correlated x g ?v1</span>
+  <span class="k">unfold</span> correlated u#0; <span class="c">// GR.pts_to g #0.5R 17 ** GR.pts_to g #0.5R ?v1 ** pts_to x ?v1</span>
+  GR.gather g;       <span class="c">//this is the crucial step</span>
+                     <span class="c">// GT.pts_to g 17 ** pure (?v1 == 17) ** pts_to x ?v1</span>
+  <span class="k">assert</span> (pts_to x 17);
+  GR.free g;
+}
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pulse_arrays.html" class="btn btn-neutral float-left" title="Mutable Arrays" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pulse_higher_order.html" class="btn btn-neutral float-right" title="Higher Order Functions" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

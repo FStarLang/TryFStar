@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inductive type definitions &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Length-indexed Lists" href="part2_vectors.html" />
+    <link rel="prev" title="Representing Data, Proofs, and Computations with Inductive Types" href="part2.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="part2.html">Representing Data, Proofs, and Computations with Inductive Types</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Inductive type definitions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#strictly-positive-definitions">Strictly positive definitions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#strictly-positive-annotations">Strictly Positive Annotations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#unused-annotations">Unused Annotations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="part2_vectors.html">Length-indexed Lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_merkle.html">Merkle Trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_equality.html">Equality Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_logical_connectives.html">Constructive &amp; Classical Connectives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_stlc.html">Simply Typed Lambda Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_phoas.html">Higher-order Abstract Syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_well_founded.html">Well-founded Relations and Termination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_par.html">A First Model of Computational Effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_universes.html">Universes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pulse/pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+      <li class="breadcrumb-item active">Inductive type definitions</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="inductive-type-definitions">
+<span id="part2-inductives"></span><h1>Inductive type definitions<a class="headerlink" href="#inductive-type-definitions" title="Link to this heading"></a></h1>
+<p>An inductive type definition, sometimes called a <em>datatype</em>, has the
+following general structure.</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathsf{type}~T_1~\overline{(x_1:p_1)} : \overline{y_1:q_1} \rightarrow \mathsf{Type} = \overline{| D_1 : t_1} \\
+\ldots\qquad\qquad\qquad\qquad\\
+\mathsf{and}~T_n~\overline{(x_n:p_n)} : \overline{y_n:q_n} \rightarrow \mathsf{Type} =  \overline{| D_n : t_n} \\\end{split}\]</div>
+<p>This defines <span class="math notranslate nohighlight">\(n\)</span> mutually inductive types, named <span class="math notranslate nohighlight">\(T_1 \ldots
+T_n\)</span>, called the <em>type constructors</em>. Each type constructor <span class="math notranslate nohighlight">\(T_i\)</span>
+has a number of <em>parameters</em>, the <span class="math notranslate nohighlight">\(\overline{x_i : p_i}\)</span>, and a
+number of <em>indexes</em>, the <span class="math notranslate nohighlight">\(\overline{y_i:q_i}\)</span>.</p>
+<p>Each type constructor <span class="math notranslate nohighlight">\(T_i\)</span> has zero or more <em>data constructors</em>
+<span class="math notranslate nohighlight">\(\overline{D_i:t_i}\)</span>. For each data constructor <span class="math notranslate nohighlight">\(D_{ij}\)</span>, its
+type <span class="math notranslate nohighlight">\(t_{ij}\)</span> must be of the form <span class="math notranslate nohighlight">\(\overline{z:s} \rightarrow
+T_i~\bar{x_i}~\bar{e}\)</span>, i.e., it must be a function type returning an
+instance of <span class="math notranslate nohighlight">\(T_i\)</span> with <em>the same parameters</em>
+<span class="math notranslate nohighlight">\(\overline{x_i}\)</span> as in the type constructor’s signature, but with
+any other well-typed terms <span class="math notranslate nohighlight">\(\overline{e}\)</span> for the index
+arguments. This is the main difference between a parameter and an
+index—a parameter of a type constructor <em>cannot</em> vary in the result
+type of the data constructors, while the indexes can.</p>
+<p>Further, in each of the arguments <span class="math notranslate nohighlight">\(\overline{z:s}\)</span> of the data
+constructor, none of the mutually defined type constructors
+<span class="math notranslate nohighlight">\(\overline{T}\)</span> may appear to the left of an arrow. That is, all
+occurrences of the type constructors must be <em>strictly positive</em>. This
+is to ensure that the inductive definitions are well-founded, as
+explained below. Without this restriction, it is easy to break
+soundness by writing non-terminating functions with <code class="docutils literal notranslate"><span class="pre">Tot</span></code> types.</p>
+<p>Also related to ensuring logical consistency is the <em>universe</em> level
+of an inductive type definition. We’ll return to that later, once
+we’ve done a few examples.</p>
+<section id="strictly-positive-definitions">
+<span id="part2-strict-positivity"></span><h2>Strictly positive definitions<a class="headerlink" href="#strictly-positive-definitions" title="Link to this heading"></a></h2>
+<p>As a strawman, consider embedding a small dynamically typed
+programming language within F*. All terms in our language have the
+same static type <code class="docutils literal notranslate"><span class="pre">dyn</span></code>, although at runtime values could have
+type <code class="docutils literal notranslate"><span class="pre">Bool</span></code>, or <code class="docutils literal notranslate"><span class="pre">Int</span></code>, or <code class="docutils literal notranslate"><span class="pre">Function</span></code>.</p>
+<p>One attempt at representing a language like this using a data type in
+F* is as follows:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">noeq</span>
+<span class="k">type</span> dyn =
+  | Bool : bool -&gt; dyn
+  | Int  : int -&gt; dyn
+  | Function : (dyn -&gt; dyn) -&gt; dyn
+</pre></div>
+</div>
+<p>The three cases of the data type represent our three kinds of runtime
+values: <code class="docutils literal notranslate"><span class="pre">Bool</span> <span class="pre">b</span></code>, <code class="docutils literal notranslate"><span class="pre">Int</span> <span class="pre">b</span></code>, and <code class="docutils literal notranslate"><span class="pre">Function</span> <span class="pre">f</span></code>. The <code class="docutils literal notranslate"><span class="pre">Function</span></code>
+case, however, is problematic: The argument <code class="docutils literal notranslate"><span class="pre">f</span></code> is itself a function
+from <code class="docutils literal notranslate"><span class="pre">dyn</span> <span class="pre">-&gt;</span> <span class="pre">dyn</span></code>, and the constructor <code class="docutils literal notranslate"><span class="pre">Function</span></code> allows promoting
+a <code class="docutils literal notranslate"><span class="pre">dyn</span> <span class="pre">-&gt;</span> <span class="pre">dyn</span></code> function into the type <code class="docutils literal notranslate"><span class="pre">dyn</span></code> itself, e.g., one can
+represent the identity function in <code class="docutils literal notranslate"><span class="pre">dyn</span></code> as <code class="docutils literal notranslate"><span class="pre">Function</span> <span class="pre">(fun</span> <span class="pre">(x:dyn)</span>
+<span class="pre">-&gt;</span> <span class="pre">x)</span></code>. However, the <code class="docutils literal notranslate"><span class="pre">Function</span></code> case is problematic: as we will see
+below, it allows circular definitions that enable constructing
+instances of <code class="docutils literal notranslate"><span class="pre">dyn</span></code> without actually providing any base case. F*
+rejects the definition of <code class="docutils literal notranslate"><span class="pre">dyn</span></code>, saying “Inductive type dyn does not
+satisfy the strict positivity condition”.</p>
+<p>Consider again the general shape of an inductive type definition:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathsf{type}~T_1~\overline{(x_1:p_1)} : \overline{y_1:q_1} \rightarrow \mathsf{Type} = \overline{| D_1 : t_1} \\
+\ldots\qquad\qquad\qquad\qquad\\
+\mathsf{and}~T_n~\overline{(x_n:p_n)} : \overline{y_n:q_n} \rightarrow \mathsf{Type} =  \overline{| D_n : t_n} \\\end{split}\]</div>
+<p>This definition is strictly positive when</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>for every type constructor <span class="math notranslate nohighlight">\(T \in T_1, ..., T_n\)</span>,</p></li>
+<li><p>and every data constructor <span class="math notranslate nohighlight">\(D : t \in \overline{D_1},
+... \overline{D_n}\)</span>, where <cite>t</cite> is of the form
+<span class="math notranslate nohighlight">\(x0:s_0 \rightarrow ...  \rightarrow xn:s_n  \rightarrow T_i ...\)</span>,
+and <span class="math notranslate nohighlight">\(s_0, ..., s_n\)</span> are the types of the fields of <span class="math notranslate nohighlight">\(D\)</span></p></li>
+<li><p>and for all instantiations <span class="math notranslate nohighlight">\(\overline{v}\)</span> of the type parameters
+<span class="math notranslate nohighlight">\(\overline{p}\)</span> of the type <span class="math notranslate nohighlight">\(T\)</span>,</p></li>
+<li><p><span class="math notranslate nohighlight">\(T\)</span> does not appear to the left of any arrow in any
+<span class="math notranslate nohighlight">\(s \in (s_0, ..., s_k)[\overline{v}/\overline{p}]\)</span>.</p></li>
+</ul>
+</div></blockquote>
+<p>Our type <code class="docutils literal notranslate"><span class="pre">dyn</span></code> violates this condition, since the defined type
+<code class="docutils literal notranslate"><span class="pre">dyn</span></code> appears to the left of an arrow type in the <code class="docutils literal notranslate"><span class="pre">dyn</span> <span class="pre">-&gt;</span>
+<span class="pre">dyn</span></code>-typed field of the <code class="docutils literal notranslate"><span class="pre">Function</span></code> constructor.</p>
+<p>To see what goes wrong if F* were to accept this definition, we can
+suppress the error reported by using the option <code class="docutils literal notranslate"><span class="pre">__no_positivity</span></code>
+and see what happens.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span>#push-options &quot;--__no_positivity&quot;
+<span class="k">noeq</span>
+<span class="k">type</span> dyn =
+  | Bool : bool -&gt; dyn
+  | Int  : int -&gt; dyn
+  | Function : (dyn -&gt; dyn) -&gt; dyn
+#pop-options
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>F* maintains an internal stack of command line options. The
+<code class="docutils literal notranslate"><span class="pre">#push-options</span></code> pragma pushes additional options at the top of
+the stack, while <code class="docutils literal notranslate"><span class="pre">#pop-options</span></code> pops the stack. The pattern used
+here instructs F* to typecheck <code class="docutils literal notranslate"><span class="pre">dyn</span></code> only with the
+<code class="docutils literal notranslate"><span class="pre">__no_positivity</span></code> option enabled. As we will see, the
+<code class="docutils literal notranslate"><span class="pre">__no_positivity</span></code> option can be used to break soundness, so use
+it only if you really know what you’re doing.</p>
+</div>
+<p>Now, having declared that <code class="docutils literal notranslate"><span class="pre">dyn</span></code> is a well-formed inductive type,
+despite not being strictly positive, we can break the soundness of
+F*. In particular, we can write terms and claim they are total, when
+in fact their execution will loop forever.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> loop&#39; (f:dyn)
+  : dyn
+  = <span class="k">match</span> f <span class="k">with</span>
+    | Function g -&gt; g f
+    | <span class="k">_</span> -&gt; f
+
+<span class="k">let</span> loop
+  : dyn
+  = loop&#39; (Function loop&#39;)
+</pre></div>
+</div>
+<p>Here, the type of <code class="docutils literal notranslate"><span class="pre">loop</span></code> claims that it is a term that always
+evaluates in a finite number of steps to a value of type <code class="docutils literal notranslate"><span class="pre">dyn</span></code>. Yet,
+reducing it produces an infinite chain of calls to <code class="docutils literal notranslate"><span class="pre">loop'</span>
+<span class="pre">(Function</span> <span class="pre">loop')</span></code>. Admitting a non-positive definition like <code class="docutils literal notranslate"><span class="pre">dyn</span></code>
+has allowed us to build a non-terminating loop.</p>
+<p>Such loops can also allow one to prove <code class="docutils literal notranslate"><span class="pre">False</span></code> (breaking soundness),
+as the next example shows.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span>#push-options &quot;--__no_positivity&quot;
+<span class="k">noeq</span>
+<span class="k">type</span> non_positive =
+  | NP : (non_positive -&gt; False) -&gt; non_positive
+#pop-options
+
+<span class="k">let</span> almost_false (f:non_positive)
+  : False
+  = <span class="k">let</span> NP g = f <span class="k">in</span> g f
+
+<span class="k">let</span> ff
+  : False
+  = almost_false (NP almost_false)
+</pre></div>
+</div>
+<p>This example is very similar to <code class="docutils literal notranslate"><span class="pre">dyn</span></code>, except <code class="docutils literal notranslate"><span class="pre">NP</span></code> stores a
+non-positive function that returns <code class="docutils literal notranslate"><span class="pre">False</span></code>, which allows us to
+prove <code class="docutils literal notranslate"><span class="pre">ff</span> <span class="pre">:</span> <span class="pre">False</span></code>, i.e., in this example, not only does the
+violation of strict positivity lead to an infinite loop at runtime, it
+also renders the entire proof system of F* useless, since one can
+prove <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<p>Finally, in the example below, although the type <code class="docutils literal notranslate"><span class="pre">also_non_pos</span></code> does
+not syntactically appear to the left of an arrow in a field of the
+<code class="docutils literal notranslate"><span class="pre">ANP</span></code> constructor, an instantiation of the type parameter <code class="docutils literal notranslate"><span class="pre">f</span></code>
+(e.g., with the type <code class="docutils literal notranslate"><span class="pre">f_false</span></code>) does make it appear to the left of
+an arrow—so this type too is deemed not strictly positive, and can be used
+to prove <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span>#push-options &quot;--__no_positivity&quot;
+<span class="k">noeq</span>
+<span class="k">type</span> also_non_pos (f:Type -&gt; Type) =
+  | ANP : f (also_non_pos f) -&gt; also_non_pos f
+#pop-options
+
+<span class="k">let</span> f_false
+  : Type -&gt; Type
+  = <span class="k">fun</span> a -&gt; (a -&gt; False)
+
+<span class="k">let</span> almost_false_again
+  : f_false (also_non_pos f_false)
+  = <span class="k">fun</span> x -&gt; <span class="k">let</span> ANP h = x <span class="k">in</span> h x
+
+<span class="k">let</span> ff_again
+  : False
+  = almost_false_again (ANP almost_false_again)
+</pre></div>
+</div>
+<p>We hope you are convinced that non-strictly positive types should not
+be admissible in inductive type definitions. In what follows, we will
+no longer use the <code class="docutils literal notranslate"><span class="pre">__no_positivity</span></code> option. In a later section, once
+we’ve introduced the <em>effect of divergence</em>, we will see that
+non-positive definitions can safely be used in a context where
+programs are not expected to terminate, allowing one to safely model
+things like the <code class="docutils literal notranslate"><span class="pre">dyn</span></code> type, without compromising the soundness of
+F*.</p>
+<section id="strictly-positive-annotations">
+<span id="part2-strictly-positive-annotations"></span><h3>Strictly Positive Annotations<a class="headerlink" href="#strictly-positive-annotations" title="Link to this heading"></a></h3>
+<p>Sometimes it is useful to parameterize an inductive definition with a
+type function, without introducing a non-positive definition as we did
+in <code class="docutils literal notranslate"><span class="pre">also_non_pos</span></code> above.</p>
+<p>For example, the definition below introduces a type <code class="docutils literal notranslate"><span class="pre">free</span> <span class="pre">f</span> <span class="pre">a</span></code>, a
+form of a tree whose leaf nodes contain <code class="docutils literal notranslate"><span class="pre">a</span></code> values, and whose
+internal nodes branch according to the type function <code class="docutils literal notranslate"><span class="pre">f</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">noeq</span>
+<span class="k">type</span> free (f:([@@@ strictly_positive] <span class="k">_</span>:Type -&gt; Type))
+          (a:Type) 
+  : Type =
+  | Leaf : a -&gt; free f a
+  | Branch : f (free f a) -&gt; free f a
+</pre></div>
+</div>
+<p>We can instantiate this generic <code class="docutils literal notranslate"><span class="pre">free</span></code> to produce various kinds of
+trees. Note: when instantiating <code class="docutils literal notranslate"><span class="pre">free</span> <span class="pre">list</span> <span class="pre">a</span></code> in
+<code class="docutils literal notranslate"><span class="pre">variable_branching_list</span></code> below, we need to explicitly re-define the
+<code class="docutils literal notranslate"><span class="pre">list</span></code> type with a strict-positivity annotation: F* does not
+correctly support rechecking type constructors to prove that they are
+strictly positive when they are used at higher order.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> binary_tree (a:Type) = free (<span class="k">fun</span> t -&gt; t &amp; t) a
+<span class="k">let</span> list_redef ([@@@strictly_positive] a:Type) = list a
+<span class="k">let</span> variable_branching_list a = free list_redef a
+<span class="k">let</span> infinite_branching_tree a = free (<span class="k">fun</span> t -&gt; nat -&gt; t) a
+</pre></div>
+</div>
+<p>However, we should only be allowed to instantiate <code class="docutils literal notranslate"><span class="pre">f</span></code> with type
+functions that are strictly positive in their argument, since otherwise
+we can build a proof of <code class="docutils literal notranslate"><span class="pre">False</span></code>, as we did with
+<code class="docutils literal notranslate"><span class="pre">also_non_pos</span></code>. The <code class="docutils literal notranslate"><span class="pre">&#64;&#64;&#64;strictly_positive</span></code> attribute on the
+formal parameter of <code class="docutils literal notranslate"><span class="pre">f</span></code> enforces this.</p>
+<p>If we were to try to instantiate <code class="docutils literal notranslate"><span class="pre">free</span></code> with a non-strictly positive
+type function,</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> free_bad = free (<span class="k">fun</span> t -&gt; (t -&gt; False)) int
+</pre></div>
+</div>
+<p>then F* raises an error:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Binder</span> <span class="p">(</span><span class="n">t</span><span class="p">:</span> <span class="n">Type</span><span class="p">)</span> <span class="ow">is</span> <span class="n">marked</span> <span class="n">strictly</span> <span class="n">positive</span><span class="p">,</span> <span class="n">but</span> <span class="n">its</span> <span class="n">use</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">definition</span> <span class="ow">is</span> <span class="ow">not</span>
+</pre></div>
+</div>
+</section>
+<section id="unused-annotations">
+<h3>Unused Annotations<a class="headerlink" href="#unused-annotations" title="Link to this heading"></a></h3>
+<p>Sometimes one indexes a type by another type, though the index has no
+semantic meaning. For example, in several F* developments that model
+mutable state, a heap reference is just a natural number modeling
+its address in the heap. However, one might use the type <code class="docutils literal notranslate"><span class="pre">let</span> <span class="pre">ref</span>
+<span class="pre">(a:Type)</span> <span class="pre">=</span> <span class="pre">nat</span></code> to represent the type of a reference, even though the
+type <code class="docutils literal notranslate"><span class="pre">a</span></code> is not used in the definition. In such cases, it can be
+useful to mark the parameter as unused, to inform F*’s positivity
+checker that the type index is actually irrelevant. The snippet below
+shows an example:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">irreducible</span>
+<span class="k">let</span> ref ([@@@unused] a:Type) = nat
+<span class="k">noeq</span>
+<span class="k">type</span> linked_list (a:Type) =
+  | LL : ref (a &amp; linked_list a) -&gt; linked_list a
+<span class="k">noeq</span>
+<span class="k">type</span> neg_unused =
+  | NU : ref (neg_unused -&gt; bool) -&gt; neg_unused
+</pre></div>
+</div>
+<p>Here, we’ve marked the parameter of <code class="docutils literal notranslate"><span class="pre">ref</span></code> with the <code class="docutils literal notranslate"><span class="pre">unused</span></code>
+attribute. We’ve also marked <code class="docutils literal notranslate"><span class="pre">ref</span></code> as <code class="docutils literal notranslate"><span class="pre">irreducible</span></code> just to
+ensure for this example that F* does not silently unfold the
+definition of <code class="docutils literal notranslate"><span class="pre">ref</span></code>.</p>
+<p>Now, knowing that the parameter of <code class="docutils literal notranslate"><span class="pre">ref</span></code> is unused, one can define
+types like <code class="docutils literal notranslate"><span class="pre">linked_list</span> <span class="pre">a</span></code>, where although <code class="docutils literal notranslate"><span class="pre">linked_list</span> <span class="pre">a</span></code> appears
+as an argument to the <code class="docutils literal notranslate"><span class="pre">ref</span></code> type, the positivity checker accepts it,
+since the parameter is unused. This is similar to the use of a
+<code class="docutils literal notranslate"><span class="pre">strictly_positive</span></code> annotation on a parameter.</p>
+<p>However, with the <code class="docutils literal notranslate"><span class="pre">unused</span></code> attribute, one can go further: e.g., the
+type <code class="docutils literal notranslate"><span class="pre">neg_unused</span></code> shows that even a negative occurrence of the
+defined type is accepted, so long as it appears only as an
+instantiation of an unused parameter.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="part2.html" class="btn btn-neutral float-left" title="Representing Data, Proofs, and Computations with Inductive Types" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="part2_vectors.html" class="btn btn-neutral float-right" title="Length-indexed Lists" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

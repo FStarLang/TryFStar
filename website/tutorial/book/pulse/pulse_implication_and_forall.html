@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Implication and Universal Quantification &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Linked Lists" href="pulse_linked_list.html" />
+    <link rel="prev" title="Higher Order Functions" href="pulse_higher_order.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pulse_getting_started.html">Getting up and running with Codespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ch1.html">Pulse Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ch2.html">Mutable References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_existentials.html">Existential Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_user_defined_predicates.html">User-defined Predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_conditionals.html">Conditionals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_loops.html">Loops &amp; Recursion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_arrays.html">Mutable Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ghost.html">Ghost Computations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_higher_order.html">Higher Order Functions</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Implication and Universal Quantification</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#trades-or-separating-ghost-implication">Trades, or Separating Ghost Implication</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#share-and-gather">Share and Gather</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#universal-quantification">Universal Quantification</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#share-and-gather-again">Share and Gather, Again</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#trades-and-ghost-steps">Trades and Ghost Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_linked_list.html">Linked Lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_atomics_and_invariants.html">Atomic Operations and Invariants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_spin_lock.html">Spin Locks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_parallel_increment.html">Parallel Increment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_extraction.html">Extraction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+      <li class="breadcrumb-item active">Implication and Universal Quantification</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="implication-and-universal-quantification">
+<span id="pulse-implication-and-forall"></span><h1>Implication and Universal Quantification<a class="headerlink" href="#implication-and-universal-quantification" title="Link to this heading"></a></h1>
+<p>In this chapter, we’ll learn about two more separation logic
+connectives, <code class="docutils literal notranslate"><span class="pre">&#64;==&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">forall*</span></code>. We show a few very simple
+examples using them, though these will be almost trivial. In the next
+chapter, on linked lists, we’ll see more significant uses of these
+connectives.</p>
+<section id="trades-or-separating-ghost-implication">
+<h2>Trades, or Separating Ghost Implication<a class="headerlink" href="#trades-or-separating-ghost-implication" title="Link to this heading"></a></h2>
+<p>The library <code class="docutils literal notranslate"><span class="pre">module</span> <span class="pre">I</span> <span class="pre">=</span> <span class="pre">Pulse.Lib.Trade.Util</span></code> defines the operator <em>trade</em>
+<code class="docutils literal notranslate"><span class="pre">(&#64;==&gt;)</span></code> and utilities for using it. In the literature, the operator <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">--*</span>
+<span class="pre">q</span></code> is pronounced “p magic-wand q”; <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">&#64;==&gt;</span> <span class="pre">q</span></code> is similar, though there are
+some important technical differences, as we’ll see. We’ll just pronounce it <code class="docutils literal notranslate"><span class="pre">p</span>
+<span class="pre">for</span> <span class="pre">q</span></code>, <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">trade</span> <span class="pre">q</span></code>, or <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">trades</span> <span class="pre">for</span> <span class="pre">q</span></code>. Here’s an informal description of
+what <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">&#64;==&gt;</span> <span class="pre">q</span></code> means:</p>
+<blockquote>
+<div><p><code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">&#64;==&gt;</span> <span class="pre">q</span></code> says that if you have <code class="docutils literal notranslate"><span class="pre">p</span></code> then you can <em>trade</em> it for
+<code class="docutils literal notranslate"><span class="pre">q</span></code>. In other words, from <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">**</span> <span class="pre">(p</span> <span class="pre">&#64;==&gt;</span> <span class="pre">q)</span></code>, you can derive
+<code class="docutils literal notranslate"><span class="pre">q</span></code>. This step of reasoning is performed using a ghost function
+<code class="docutils literal notranslate"><span class="pre">I.elim</span></code> with the signature below:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span>
+<span class="k">fn</span> I.elim (p q:slprop)
+<span class="k">requires</span> p ** (p @==&gt; q)
+<span class="k">ensures</span> q
+</pre></div>
+</div>
+</div></blockquote>
+<p>Importantly, if you think of <code class="docutils literal notranslate"><span class="pre">p</span></code> as describing permission on a
+resource, the <code class="docutils literal notranslate"><span class="pre">I.elim</span></code> makes you <em>give up</em> the permission <code class="docutils literal notranslate"><span class="pre">p</span></code> and
+get <code class="docutils literal notranslate"><span class="pre">q</span></code> as a result. Note, during this step, you also lose
+permission on the implication, i.e., <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">&#64;==&gt;</span> <span class="pre">q</span></code> lets you trade <code class="docutils literal notranslate"><span class="pre">p</span></code>
+for <code class="docutils literal notranslate"><span class="pre">q</span></code> just once.</p>
+<p>But, how do you create a <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">&#64;==&gt;</span> <span class="pre">q</span></code> in the first place? That’s its
+introduction form, shown below:</p>
+<blockquote>
+<div><div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span>
+<span class="k">fn</span> I.intro (p q r:slprop)
+           (elim: unit -&gt; stt_ghost unit emp_inames (r ** p) (<span class="k">fun</span> <span class="k">_</span> -&gt; q))
+<span class="k">requires</span> r
+<span class="k">ensures</span> p @==&gt; q
+</pre></div>
+</div>
+</div></blockquote>
+<p>That is, to introduce <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">&#64;==&gt;</span> <span class="pre">q</span></code>, one has to show hold permission
+<code class="docutils literal notranslate"><span class="pre">r</span></code>, such that a ghost function can transform <code class="docutils literal notranslate"><span class="pre">r</span> <span class="pre">**</span> <span class="pre">p</span></code> into
+<code class="docutils literal notranslate"><span class="pre">q</span></code>.</p>
+<section id="share-and-gather">
+<h3>Share and Gather<a class="headerlink" href="#share-and-gather" title="Link to this heading"></a></h3>
+<p>Here’s a small example to see <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">&#64;==&gt;</span> <span class="pre">q</span></code> at work.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> regain_half (#a: Type0) (x:GR.ref a) (v:a) =
+  pts_to x #0.5R v @==&gt; pts_to x v
+</pre></div>
+</div>
+<p>The predicate <code class="docutils literal notranslate"><span class="pre">regain_half</span></code> says that you can trade a
+half-permission <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">x</span> <span class="pre">#one_half</span> <span class="pre">v</span></code> for a full permission
+<code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">x</span> <span class="pre">v</span></code>. At first, this may seem counter-intuitive: how can you
+gain a full permission from half-permission. The thing to remember is
+that <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">&#64;==&gt;</span> <span class="pre">q</span></code> itself holds permissions internally. In particular,
+<code class="docutils literal notranslate"><span class="pre">regain_half</span> <span class="pre">x</span> <span class="pre">v</span></code> holds <code class="docutils literal notranslate"><span class="pre">exists*</span> <span class="pre">u.</span> <span class="pre">pts_to</span> <span class="pre">x</span> <span class="pre">#one_half</span> <span class="pre">u</span></code>
+internally, such that if the context presents the other half, the
+eliminator can combine the two to return the full permission.</p>
+<p>Let’s look at how to introduce <code class="docutils literal notranslate"><span class="pre">regain_half</span></code>:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span> 
+<span class="k">fn</span> intro_regain_half (x:GR.ref int)
+<span class="k">requires</span> pts_to x &#39;v
+<span class="k">ensures</span> pts_to x #0.5R &#39;v
+<span class="k">ensures</span> regain_half x &#39;v
+{
+  GR.share x;
+  intro (pts_to x #0.5R &#39;v @==&gt; pts_to x &#39;v) #(pts_to x #0.5R &#39;v) <span class="k">fn</span> <span class="k">_</span>
+  {
+    GR.gather x;
+  };
+  <span class="k">fold</span> regain_half;
+}
+</pre></div>
+</div>
+<p>The specification says that if we start out with <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">x</span> <span class="pre">'v</span></code> then
+we can split it into <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">x</span> <span class="pre">#one_half</span> <span class="pre">v</span></code> and a <code class="docutils literal notranslate"><span class="pre">regain_half</span> <span class="pre">x</span>
+<span class="pre">'v</span></code>. The normal way of splitting a permission a reference would split
+it into two halves—here, we just package the second half in a ghost
+function that allows us to gather the permission back when we need it.</p>
+<p>In the implementation, we define an auxiliary ghost function that
+corresponds to the eliminator for <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">x</span> <span class="pre">#one_half</span> <span class="pre">'v</span> <span class="pre">&#64;==&gt;</span> <span class="pre">pts_to</span> <span class="pre">x</span>
+<span class="pre">'v</span></code>—it’s just a <code class="docutils literal notranslate"><span class="pre">gather</span></code>. Then, we split <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">x</span> <span class="pre">'v</span></code> into
+halves, call <code class="docutils literal notranslate"><span class="pre">I.intro</span></code> passing the eliminator, and then fold it into
+a <code class="docutils literal notranslate"><span class="pre">regain_half</span></code>. All <code class="docutils literal notranslate"><span class="pre">regain_half</span></code> has done is to package the
+ghost function <code class="docutils literal notranslate"><span class="pre">aux</span></code>, together the half permission on <code class="docutils literal notranslate"><span class="pre">x</span></code>, and put
+it into a <code class="docutils literal notranslate"><span class="pre">slprop</span></code>.</p>
+<p>Later on, if want to use <code class="docutils literal notranslate"><span class="pre">regain_half</span></code>, we can call its
+eliminator—which, effectively, calls <code class="docutils literal notranslate"><span class="pre">aux</span></code> with the needed
+permission, as shown below.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span>
+<span class="k">fn</span> use_regain_half (x:GR.ref int)
+<span class="k">requires</span> pts_to x #0.5R &#39;v
+<span class="k">requires</span> regain_half x &#39;v
+<span class="k">ensures</span> pts_to x &#39;v
+{
+  <span class="k">unfold</span> regain_half;
+  I.elim <span class="k">_</span> <span class="k">_</span>;
+}
+</pre></div>
+</div>
+<p>At this point, you may be wondering why we bother to use a
+<code class="docutils literal notranslate"><span class="pre">regain_half</span> <span class="pre">x</span> <span class="pre">'v</span></code> in the first place, since one might as well have
+just used <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">x</span> <span class="pre">#one_half</span> <span class="pre">'v</span></code> and <code class="docutils literal notranslate"><span class="pre">gather</span></code>, and you’d be right
+to wonder that! In this simple usage, the <code class="docutils literal notranslate"><span class="pre">(&#64;==&gt;)</span></code> hasn’t bought us
+much.</p>
+</section>
+</section>
+<section id="universal-quantification">
+<h2>Universal Quantification<a class="headerlink" href="#universal-quantification" title="Link to this heading"></a></h2>
+<p>Let’s look at our <code class="docutils literal notranslate"><span class="pre">regain_half</span></code> predicate again:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> regain_half (#a: Type0) (x:GR.ref a) (v:a) =
+  pts_to x #0.5R v @==&gt; pts_to x v
+</pre></div>
+</div>
+<p>This predicate is not as general as it could be: to eliminate it, it
+requires the caller to prove that they holds <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">x</span> <span class="pre">#one_half</span> <span class="pre">v</span></code>,
+for the same <code class="docutils literal notranslate"><span class="pre">v</span></code> as was used when the trade was introduced.</p>
+<p>One could try to generalize <code class="docutils literal notranslate"><span class="pre">regain_half</span></code> a bit by changing it to:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> regain_half #a (x:GR.ref a) (v:a) =
+  (<span class="k">exists</span>* u. pts_to x #one_half u) @==&gt; pts_to x v
+</pre></div>
+</div>
+<p>This is an improvement, but it still is not general enough, since it
+does not relate <code class="docutils literal notranslate"><span class="pre">v</span></code> to the existentially bound <code class="docutils literal notranslate"><span class="pre">u</span></code>. What we really
+need is a universal quantifier.</p>
+<p>Here’s the right version of <code class="docutils literal notranslate"><span class="pre">regain_half</span></code>:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> regain_half_q (#a: Type0) (x:GR.ref a) =
+  <span class="k">forall</span>* u. pts_to x #0.5R u @==&gt; pts_to x u 
+</pre></div>
+</div>
+<p>This says that no matter what <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">x</span> <span class="pre">#one_half</span> <span class="pre">u</span></code> the context
+has, they can recover full permission to it, <em>with the same witness</em>
+<code class="docutils literal notranslate"><span class="pre">u</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">forall*</span></code> quantifier and utilities to manipulate it are defined
+in <code class="docutils literal notranslate"><span class="pre">Pulse.Lib.Forall.Util</span></code>. The introduction and elimination forms
+have a similar shape to what we saw earlier for <code class="docutils literal notranslate"><span class="pre">&#64;==&gt;</span></code>:</p>
+<blockquote>
+<div><div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span>
+<span class="k">fn</span> FA.elim (#a:Type) (#p:a-&gt;slprop) (v:a)
+<span class="k">requires</span> (<span class="k">forall</span>* x. p x)
+<span class="k">ensures</span> p v
+</pre></div>
+</div>
+</div></blockquote>
+<p>The eliminator allows a <em>single</em> instantiation of the universally
+bound <code class="docutils literal notranslate"><span class="pre">x</span></code> to <code class="docutils literal notranslate"><span class="pre">v</span></code>.</p>
+<blockquote>
+<div><div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span>
+<span class="k">fn</span> FA.intro (#a:Type) (#p:a-&gt;slprop)
+     (v:slprop)
+     (f_elim : (x:a -&gt; stt_ghost unit emp_inames v (<span class="k">fun</span> <span class="k">_</span> -&gt; p x)))
+<span class="k">requires</span> v
+<span class="k">ensures</span> (<span class="k">forall</span>* x. p x)
+</pre></div>
+</div>
+</div></blockquote>
+<p>The introduction form requires proving that one holds <code class="docutils literal notranslate"><span class="pre">v</span></code>, and that
+with <code class="docutils literal notranslate"><span class="pre">v</span></code> a ghost function can produce <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">x</span></code>, for any <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<p>Note, it’s very common to have universal quantifiers and trades
+together, so the library also provides the following combined forms:</p>
+<blockquote>
+<div><div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span>
+<span class="k">fn</span> elim_forall_imp (#a:Type0) (p q: a -&gt; slprop) (x:a)
+<span class="k">requires</span> (<span class="k">forall</span>* x. p x @==&gt; q x) ** p x
+<span class="k">ensures</span> q x
+</pre></div>
+</div>
+</div></blockquote>
+<p>and</p>
+<blockquote>
+<div><div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span>
+<span class="k">fn</span> intro_forall_imp (#a:Type0) (p q: a -&gt; slprop) (r:slprop)
+         (elim: (u:a -&gt; stt_ghost unit emp_inames
+                          (r ** p u)
+                          (<span class="k">fun</span> <span class="k">_</span> -&gt; q u)))
+<span class="k">requires</span> r
+<span class="k">ensures</span> <span class="k">forall</span>* x. p x @==&gt; q x
+</pre></div>
+</div>
+</div></blockquote>
+<section id="share-and-gather-again">
+<h3>Share and Gather, Again<a class="headerlink" href="#share-and-gather-again" title="Link to this heading"></a></h3>
+<p>Here’s how one introduces <code class="docutils literal notranslate"><span class="pre">regain_half_q</span></code>:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span> 
+<span class="k">fn</span> intro_regain_half_q (x:GR.ref int)
+<span class="k">requires</span> pts_to x &#39;v
+<span class="k">ensures</span> pts_to x #0.5R &#39;v
+<span class="k">ensures</span> regain_half_q x
+{
+  GR.share x;
+  intro (<span class="k">forall</span>* u. pts_to x #0.5R u @==&gt; pts_to x u)
+      #(pts_to x #0.5R &#39;v) <span class="k">fn</span> <span class="k">_</span> u {
+    gather x;
+  };
+  <span class="k">fold</span> regain_half_q;
+}
+</pre></div>
+</div>
+<p>Now, when we want to use it, we can trade in any half-permission on
+<code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">x</span> <span class="pre">#one_half</span> <span class="pre">u</span></code>, for a full permission with the same <code class="docutils literal notranslate"><span class="pre">u</span></code>.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span>
+<span class="k">fn</span> use_regain_half_q (x:GR.ref int)
+<span class="k">requires</span> pts_to x #0.5R &#39;u
+<span class="k">requires</span> regain_half_q x
+<span class="k">ensures</span> pts_to x &#39;u
+{
+  <span class="k">unfold</span> regain_half_q;
+  FA.elim #<span class="k">_</span> #(<span class="k">fun</span> u -&gt; pts_to x #0.5R u @==&gt; pts_to x u) &#39;u;
+  I.elim <span class="k">_</span> <span class="k">_</span>;
+}
+</pre></div>
+</div>
+<p>Note using the eliminator for <code class="docutils literal notranslate"><span class="pre">FA.elim</span></code> is quite verbose: we need to
+specify the quantifier term again. The way Pulse uses F*’s unifier
+currently does not allow it to properly find solutions to some
+higher-order unification problems. We expect to fix this soon.</p>
+</section>
+</section>
+<section id="trades-and-ghost-steps">
+<h2>Trades and Ghost Steps<a class="headerlink" href="#trades-and-ghost-steps" title="Link to this heading"></a></h2>
+<p>As a final example in this section, we show that one can use package
+any ghost computation into a trade, including steps that may modify
+the ghost state. In full generality, this makes <code class="docutils literal notranslate"><span class="pre">&#64;==&gt;</span></code> behave more
+like a view shift (in Iris terminology) than a wand.</p>
+<p>Here’s a predicate <code class="docutils literal notranslate"><span class="pre">can_update</span></code> which says that one can trade a half
+permission to <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">x</span> <span class="pre">#one_half</span> <span class="pre">u</span></code> for a full permission to a
+<em>different value</em> <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">x</span> <span class="pre">v</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> can_update (x:GR.ref int) = 
+  <span class="k">forall</span>* u v. pts_to x #0.5R u @==&gt;
+               pts_to x v
+</pre></div>
+</div>
+<p>In <code class="docutils literal notranslate"><span class="pre">make_can_update</span></code>, we package a ghost-state update function into
+a binary quantifier <code class="docutils literal notranslate"><span class="pre">forall*</span> <span class="pre">u</span> <span class="pre">v.</span> <span class="pre">...</span></code>.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span>
+<span class="k">fn</span> make_can_update (x:GR.ref int)
+<span class="k">requires</span> pts_to x &#39;w
+<span class="k">ensures</span> pts_to x #0.5R &#39;w
+<span class="k">ensures</span> can_update x
+{
+  share x;
+  intro (<span class="k">forall</span>* u v. pts_to x #0.5R u @==&gt; pts_to x v)
+      #(pts_to x #0.5R &#39;w) <span class="k">fn</span> <span class="k">_</span> u v {
+    gather x;
+    x := v;
+  };
+  <span class="k">fold</span> (can_update x);
+}
+</pre></div>
+</div>
+<p>And in <code class="docutils literal notranslate"><span class="pre">update</span></code>, below, we instantiate it to update the reference
+<code class="docutils literal notranslate"><span class="pre">x</span></code> from <code class="docutils literal notranslate"><span class="pre">'u</span></code> to <code class="docutils literal notranslate"><span class="pre">k</span></code>, and also return back a <code class="docutils literal notranslate"><span class="pre">can_update</span></code>
+predicate to the caller, for further use.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span>
+<span class="k">fn</span> update (x:GR.ref int) (k:int)
+<span class="k">requires</span> pts_to x #0.5R &#39;u
+preserves can_update x
+<span class="k">ensures</span> pts_to x #0.5R k
+{
+  <span class="k">unfold</span> can_update;
+  FA.elim #<span class="k">_</span> #(<span class="k">fun</span> u -&gt; <span class="k">forall</span>* v. pts_to x #0.5R u @==&gt; pts_to x v) &#39;u;
+  FA.elim #<span class="k">_</span> #(<span class="k">fun</span> v -&gt; pts_to x #0.5R &#39;u @==&gt; pts_to x v) k;
+  I.elim <span class="k">_</span> <span class="k">_</span>;
+  make_can_update x;
+}
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pulse_higher_order.html" class="btn btn-neutral float-left" title="Higher Order Functions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pulse_linked_list.html" class="btn btn-neutral float-right" title="Linked Lists" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

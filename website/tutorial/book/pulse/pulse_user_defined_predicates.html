@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>User-defined Predicates &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Conditionals" href="pulse_conditionals.html" />
+    <link rel="prev" title="Existential Quantification" href="pulse_existentials.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pulse_getting_started.html">Getting up and running with Codespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ch1.html">Pulse Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ch2.html">Mutable References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_existentials.html">Existential Quantification</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">User-defined Predicates</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fold-and-unfold-with-diagonal-pairs">Fold and Unfold with Diagonal Pairs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mutable-points">Mutable Points</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rewriting">Rewriting</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_conditionals.html">Conditionals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_loops.html">Loops &amp; Recursion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_arrays.html">Mutable Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ghost.html">Ghost Computations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_higher_order.html">Higher Order Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_implication_and_forall.html">Implication and Universal Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_linked_list.html">Linked Lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_atomics_and_invariants.html">Atomic Operations and Invariants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_spin_lock.html">Spin Locks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_parallel_increment.html">Parallel Increment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_extraction.html">Extraction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+      <li class="breadcrumb-item active">User-defined Predicates</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="user-defined-predicates">
+<span id="pulse-definedvprops"></span><h1>User-defined Predicates<a class="headerlink" href="#user-defined-predicates" title="Link to this heading"></a></h1>
+<p>In addition to the slprop predicates and connectives that the Pulse
+libraries provide, users very commonly define their own <code class="docutils literal notranslate"><span class="pre">slprops</span></code>. We
+show a few simple examples here—subsequent examples will make heavy
+use of user-defined predicates. For example, see this section for
+<a class="reference internal" href="pulse_ghost.html#pulse-recursive-predicates"><span class="std std-ref">recursively defined predicates</span></a>.</p>
+<section id="fold-and-unfold-with-diagonal-pairs">
+<h2>Fold and Unfold with Diagonal Pairs<a class="headerlink" href="#fold-and-unfold-with-diagonal-pairs" title="Link to this heading"></a></h2>
+<p>A simple example of a user-defined abstraction is shown below.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> pts_to_diag 
+        (#a:Type0)
+        ([@@@mkey] r:ref (a &amp; a))
+        (v:a)
+: slprop
+= pts_to r (v, v)
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">pts_to_diag</span> <span class="pre">r</span> <span class="pre">v</span></code> is a <code class="docutils literal notranslate"><span class="pre">slprop</span></code> defined in F* representing a
+reference to a pair whose components are equal.</p>
+<p>We can use this abstraction in a Pulse program, though we have to be
+explicit about folding and unfolding the predicate.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> double (r:ref (int &amp; int))
+<span class="k">requires</span> pts_to_diag r &#39;v
+<span class="k">ensures</span> pts_to_diag r (2 * &#39;v)
+{
+  <span class="k">unfold</span> (pts_to_diag r &#39;v);
+  <span class="k">let</span> v = !r;
+  <span class="k">let</span> v2 = fst v + snd v;
+  r := (v2, v2);
+  <span class="k">fold</span> (pts_to_diag r v2);
+}
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">unfold</span> <span class="pre">p</span></code> command checks that <code class="docutils literal notranslate"><span class="pre">p</span></code> is provable in the current
+context by some term <code class="docutils literal notranslate"><span class="pre">q</span></code>, and then rewrites the context by replacing
+that occurrence of <code class="docutils literal notranslate"><span class="pre">q</span></code> with the term that results from unfolding the
+head symbol of <code class="docutils literal notranslate"><span class="pre">p</span></code>. A <code class="docutils literal notranslate"><span class="pre">show_proof_state</span></code> after the <code class="docutils literal notranslate"><span class="pre">unfold</span></code>
+shows that we have a <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">r</span> <span class="pre">(reveal</span> <span class="pre">'v,</span> <span class="pre">reveal</span> <span class="pre">'v)</span></code> in the
+context, exposing the abstraction of the <code class="docutils literal notranslate"><span class="pre">pts_to_diag</span></code> predicate.</p>
+<p>At the end of function, we use the <code class="docutils literal notranslate"><span class="pre">fold</span> <span class="pre">p</span></code> command: this checks
+that the unfolding of <code class="docutils literal notranslate"><span class="pre">p</span></code> is provable in the context by some term
+<code class="docutils literal notranslate"><span class="pre">q</span></code> and then replaces <code class="docutils literal notranslate"><span class="pre">q</span></code> in the context with <code class="docutils literal notranslate"><span class="pre">p</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">fold</span></code> and <code class="docutils literal notranslate"><span class="pre">unfold</span></code> is currently very manual in Pulse. While in
+the general case, including with recursively defined predicates,
+automating the placement of folds and unfolds is challenging, many
+common cases (such as the ones here) can be easily automated. We are
+currently investigating adding support for this.</p>
+<p>Some initial support for this is already available, inasmuch as Pulse
+can sometimes figure out the arguments to the slprops that need to be
+folded/unfolded. For instance, in the code below, we just mention the
+name of the predicate to be unfolded/folded, without needing to
+provide all the arguments.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> double_alt (r:ref (int &amp; int))
+<span class="k">requires</span> pts_to_diag r &#39;v
+<span class="k">ensures</span> pts_to_diag r (2 * &#39;v)
+{
+  <span class="k">unfold</span> pts_to_diag;
+  <span class="k">let</span> v = !r;
+  <span class="k">let</span> v2 = fst v + snd v;
+  r := (v2, v2);
+  <span class="k">fold</span> pts_to_diag;
+}
+</pre></div>
+</div>
+</section>
+<section id="mutable-points">
+<h2>Mutable Points<a class="headerlink" href="#mutable-points" title="Link to this heading"></a></h2>
+<p>As a second, perhaps more realistic example of a user-defined
+abstraction, we look at defining a simple mutable data structure: a
+structure with two mutable integer fields, representing a
+2-dimensional point.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">noeq</span>
+<span class="k">type</span> point = {
+    x:ref int;
+    y:ref int;
+}
+
+<span class="k">let</span> is_point (p:point) (xy: int &amp; int) =
+    pts_to p.x (fst xy) **
+    pts_to p.y (snd xy)
+</pre></div>
+</div>
+<p>A <code class="docutils literal notranslate"><span class="pre">point</span></code> is just an F* record containing two
+references. Additionally, we define <code class="docutils literal notranslate"><span class="pre">is_point</span></code>, a <code class="docutils literal notranslate"><span class="pre">slprop</span></code>,
+sometimes called a “representation predicate”, for a
+<code class="docutils literal notranslate"><span class="pre">point</span></code>. <code class="docutils literal notranslate"><span class="pre">is_point</span> <span class="pre">p</span> <span class="pre">xy</span></code> says that <code class="docutils literal notranslate"><span class="pre">p</span></code> is a representation of
+the logical point <code class="docutils literal notranslate"><span class="pre">xy</span></code>, where <code class="docutils literal notranslate"><span class="pre">xy</span></code> is pure, mathematical pair.</p>
+<p>We can define a function <code class="docutils literal notranslate"><span class="pre">move</span></code>, which translates a point by some
+offset <code class="docutils literal notranslate"><span class="pre">dx,</span> <span class="pre">dy</span></code>.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> move (p:point) (dx:int) (dy:int)
+<span class="k">requires</span> is_point p &#39;xy
+<span class="k">ensures</span> is_point p (fst &#39;xy + dx, snd &#39;xy + dy)
+{
+  <span class="k">unfold</span> is_point;
+  <span class="k">let</span> x = !p.x;
+  <span class="k">let</span> y = !p.y;
+  p.x := x + dx;
+  p.y := y + dy;
+  <span class="k">fold</span> (is_point p (x + dx, y + dy));
+}
+</pre></div>
+</div>
+<p>Implementing <code class="docutils literal notranslate"><span class="pre">move</span></code> is straightforward, but like before, we have to
+<code class="docutils literal notranslate"><span class="pre">unfold</span></code> the <code class="docutils literal notranslate"><span class="pre">is_point</span></code> predicate first, and then fold it back up
+before returning.</p>
+<p>Unfortunately, Pulse cannot infer the instantiation of <code class="docutils literal notranslate"><span class="pre">is_point</span></code>
+when folding it. A <code class="docutils literal notranslate"><span class="pre">show_proof_state</span></code> prior to the fold should help
+us see why:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>We have <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">p.x</span> <span class="pre">(x</span> <span class="pre">+</span> <span class="pre">dx)</span> <span class="pre">**</span> <span class="pre">pts_to</span> <span class="pre">p.y</span> <span class="pre">(y</span> <span class="pre">+</span> <span class="pre">dy)</span></code></p></li>
+<li><p>For <code class="docutils literal notranslate"><span class="pre">fold</span> <span class="pre">(is_point</span> <span class="pre">p.x</span> <span class="pre">?w)</span></code> to succeed, we rely on F*’s type
+inference to find a solution for the unsolved witness <code class="docutils literal notranslate"><span class="pre">?w</span></code> such
+that <code class="docutils literal notranslate"><span class="pre">fst</span> <span class="pre">?w</span> <span class="pre">==</span> <span class="pre">(x</span> <span class="pre">+</span> <span class="pre">dx)</span></code> and <code class="docutils literal notranslate"><span class="pre">snd</span> <span class="pre">?w</span> <span class="pre">==</span> <span class="pre">(y</span> <span class="pre">+</span> <span class="pre">dy)</span></code>. This
+requires an eta-expansion rule for pairs to solve <code class="docutils literal notranslate"><span class="pre">?w</span> <span class="pre">:=</span> <span class="pre">(x</span> <span class="pre">+</span> <span class="pre">dx,</span>
+<span class="pre">y</span> <span class="pre">+</span> <span class="pre">dy)</span></code>, but F*’s type inference does not support such a rule
+for pairs.</p></li>
+</ul>
+</div></blockquote>
+<p>So, sadly, we have to provide the full instantiation <code class="docutils literal notranslate"><span class="pre">is_point</span> <span class="pre">p</span> <span class="pre">(x</span> <span class="pre">+</span>
+<span class="pre">dx,</span> <span class="pre">y</span> <span class="pre">+</span> <span class="pre">dy)</span></code> to complete the proof.</p>
+<p>This pattern is a common problem when working with representation
+predicates that are indexed by complex values, e.g., pairs or
+records. It’s common enough that it is usually more convenient to
+define a helper function to fold the predicate, as shown below.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span>
+<span class="k">fn</span> fold_is_point (p:point)
+<span class="k">requires</span> pts_to p.x &#39;x
+<span class="k">requires</span> pts_to p.y &#39;y
+<span class="k">ensures</span> is_point p (reveal &#39;x, reveal &#39;y)
+{
+  <span class="k">fold</span> (is_point p (reveal &#39;x, reveal &#39;y))
+}
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We’ve marked this helper function <code class="docutils literal notranslate"><span class="pre">ghost</span></code>. We’ll look into
+<code class="docutils literal notranslate"><span class="pre">ghost</span></code> functions in much more detail in a later chapter.</p>
+</div>
+<p>This allows  type inference to work better, as shown below.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> move_alt (p:point) (dx:int) (dy:int)
+<span class="k">requires</span> is_point p &#39;xy
+<span class="k">ensures</span> is_point p (fst &#39;xy + dx, snd &#39;xy + dy)
+{
+  <span class="k">unfold</span> is_point;
+  <span class="k">let</span> x = !p.x;
+  <span class="k">let</span> y = !p.y;
+  p.x := x + dx;
+  p.y := y + dy;
+  fold_is_point p;
+}
+</pre></div>
+</div>
+</section>
+<section id="rewriting">
+<span id="pulse-rewriting"></span><h2>Rewriting<a class="headerlink" href="#rewriting" title="Link to this heading"></a></h2>
+<p>In addition to <code class="docutils literal notranslate"><span class="pre">fold</span></code> and <code class="docutils literal notranslate"><span class="pre">unfold</span></code>, one also often uses the
+<code class="docutils literal notranslate"><span class="pre">rewrite</span></code> command when working with defined predicates. Its general
+form is:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">x1</span> <span class="o">...</span> <span class="n">xn</span><span class="o">.</span> <span class="n">rewrite</span> <span class="n">p</span> <span class="k">as</span> <span class="n">q</span><span class="p">;</span>
+<span class="n">rest</span>
+</pre></div>
+</div>
+<p>Its behavior is to find a substitution <code class="docutils literal notranslate"><span class="pre">subst</span></code> that instantiates the
+<code class="docutils literal notranslate"><span class="pre">x1</span> <span class="pre">...</span> <span class="pre">xn</span></code> as <code class="docutils literal notranslate"><span class="pre">v1</span> <span class="pre">...</span> <span class="pre">vn</span></code>, such that <code class="docutils literal notranslate"><span class="pre">subst(p)</span></code> is supported by
+<code class="docutils literal notranslate"><span class="pre">c</span></code> in the context, Pulse aims to prove that <code class="docutils literal notranslate"><span class="pre">subst(p)</span> <span class="pre">==</span>
+<span class="pre">subst(q)</span></code> and replaces <code class="docutils literal notranslate"><span class="pre">c</span></code> in the context by <code class="docutils literal notranslate"><span class="pre">subst(q)</span></code> and
+proceeds to check <code class="docutils literal notranslate"><span class="pre">subst(rest)</span></code>.</p>
+<p>To illustrate this at work, consider the program below:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> create_and_move ()
+{
+    <span class="k">let</span> <span class="k">mut</span> x = 0;
+    <span class="k">let</span> <span class="k">mut</span> y = 0;
+    <span class="k">let</span> p = { x; y };
+    <span class="c">//pts_to x 0 ** pts_to y 0</span>
+    <span class="k">with</span> _v. <span class="k">rewrite</span> pts_to x _v as pts_to p.x _v;
+    <span class="k">with</span> _v. <span class="k">rewrite</span> pts_to y _v as pts_to p.y _v;
+    <span class="c">//pts_to p.x 0 ** pts_to p.y 0</span>
+    fold_is_point p;
+    move p 1 1;
+    <span class="k">assert</span> (is_point p (1, 1));
+    <span class="k">unfold</span> is_point;
+    <span class="c">//pts_to p.x (fst (1, 1)) ** pts_to p.y (snd (1, 1))</span>
+    <span class="k">with</span> _v. <span class="k">rewrite</span> pts_to p.x _v as pts_to x _v;
+    <span class="k">with</span> _v. <span class="k">rewrite</span> pts_to p.y _v as pts_to y _v;
+    <span class="c">//pts_to x (fst (1, 1)) ** pts_to y (snd (1, 1))</span>
+}
+</pre></div>
+</div>
+<p>We allocate two references and put them in the structure <code class="docutils literal notranslate"><span class="pre">p</span></code>. Now,
+to call <code class="docutils literal notranslate"><span class="pre">fold_is_point</span></code>, we need <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">p.x</span> <span class="pre">_</span></code> and <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">p.y</span>
+<span class="pre">_</span></code>, but the context only contains <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">x</span> <span class="pre">_</span></code> and <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">y</span>
+<span class="pre">_</span></code>. The <code class="docutils literal notranslate"><span class="pre">rewrite</span></code> command transforms the context as needed.</p>
+<p>At the end of the function, we need to prove that <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">x</span> <span class="pre">_</span></code> and
+<code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">y</span> <span class="pre">_</span></code> as we exit the scope of <code class="docutils literal notranslate"><span class="pre">y</span></code> and <code class="docutils literal notranslate"><span class="pre">x</span></code>, so that they
+can be reclaimed. Using <code class="docutils literal notranslate"><span class="pre">rewrite</span></code> in the other direction
+accomplishes this.</p>
+<p>This is quite verbose. As with <code class="docutils literal notranslate"><span class="pre">fold</span></code> and <code class="docutils literal notranslate"><span class="pre">unfold</span></code>, fully
+automated <code class="docutils literal notranslate"><span class="pre">rewrite</span></code> in the general case is hard, but many common
+cases are easy and we expect to add support for that to the Pulse
+checker.</p>
+<p>In the meantime, Pulse provides a shorthand to make some common
+rewrites easier.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">rewrite</span> <span class="pre">each</span></code> command has the most general form:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> x1 ... xn. <span class="k">rewrite</span> <span class="k">each</span> e1 as e1&#39;, ..., en as en&#39; <span class="k">in</span> goal
+</pre></div>
+</div>
+<p>This is equivalent to:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> x1 ... xn. <span class="k">assert</span> goal;
+<span class="k">rewrite</span> <span class="k">each</span> e1 as e1&#39;, ..., en as en&#39; <span class="k">in</span> goal
+</pre></div>
+</div>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">rewrite</span> <span class="k">each</span> e1 as e1&#39;, ..., en as en&#39; <span class="k">in</span> goal
+</pre></div>
+</div>
+<p>is equivalent to</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">rewrite</span> goal as goal&#39;
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">goal'</span></code> is computed by rewriting, in parallel, every
+occurrence of <code class="docutils literal notranslate"><span class="pre">ei</span></code> as <code class="docutils literal notranslate"><span class="pre">ei'</span></code> in <code class="docutils literal notranslate"><span class="pre">goal</span></code>.</p>
+<p>Finally, one can also write:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">rewrite</span> <span class="k">each</span> e1 as e1&#39;, ..., en as en&#39;
+</pre></div>
+</div>
+<p>omitting the <code class="docutils literal notranslate"><span class="pre">goal</span></code> term. In this case, the <code class="docutils literal notranslate"><span class="pre">goal</span></code> is taken to be
+the entire current <code class="docutils literal notranslate"><span class="pre">slprop</span></code> context.</p>
+<p>Using <code class="docutils literal notranslate"><span class="pre">rewrite</span> <span class="pre">each</span> <span class="pre">...</span></code> makes the code somewhat shorter:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> create_and_move_alt ()
+{
+    <span class="k">let</span> <span class="k">mut</span> x = 0;
+    <span class="k">let</span> <span class="k">mut</span> y = 0;
+    <span class="k">let</span> p = { x; y };
+    <span class="k">rewrite</span> <span class="k">each</span> x as p.x, y as p.y;
+    fold_is_point p;
+    move p 1 1;
+    <span class="k">assert</span> (is_point p (1, 1));
+    <span class="k">unfold</span> is_point;
+    <span class="k">rewrite</span> <span class="k">each</span> p.x as x, p.y as y;
+}
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pulse_existentials.html" class="btn btn-neutral float-left" title="Existential Quantification" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pulse_conditionals.html" class="btn btn-neutral float-right" title="Conditionals" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rubrics, Templates, and Audits &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="On Abstraction &amp; Rubrics" href="agentic_sorting_algorithms.html" />
+    <link rel="prev" title="Getting Started" href="agentic_getting_started.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pulse/pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="agentic.html">Agentic Proof-Oriented Programming</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="agentic_getting_started.html">Getting Started</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Rubrics, Templates, and Audits</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#agentic-proof-automation">Agentic Proof Automation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="agentic_sorting_algorithms.html">On Abstraction &amp; Rubrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agentic_rubrics_as_templates.html">Rubrics as Templates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agentic_state_machines.html">Stateful Services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agentic_tls.html">A Verified TLS-1.3 Client and Server</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="agentic.html">Agentic Proof-Oriented Programming</a></li>
+      <li class="breadcrumb-item active">Rubrics, Templates, and Audits</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="rubrics-templates-and-audits">
+<span id="agentic-rubrics-templates-audits"></span><h1>Rubrics, Templates, and Audits<a class="headerlink" href="#rubrics-templates-and-audits" title="Link to this heading"></a></h1>
+<p>As we have already seen from our very simple first example, agents excel when
+provided with closed feedback loops, allowing them to repeatedly seek feedback
+on partial solutions and iterate until the task is complete. Finding ways to
+structure such feedback loops is key to productive agentic programming. Where
+feedback is automatable (e.g., with program analysis tools), one should do so,
+but there will inevitably be steps in which a human has to inspect a proposed
+solution and offer some qualitative feedback.</p>
+<p>Implicitly, with proof-oriented programming, we embrace the use of automated,
+objective feedback loops using proof checkers and also more traditional
+programming tools like compilers and test frameworks. There is a large design
+space to explore for the future of such tools, geared to towards agentic use.
+But, we will not address this here: we use F* and Pulse as they are, out of the
+box, though we are considering ways to evolve them to provide interfaces that
+are better suited for agentic programming.</p>
+<p>We are instead mostly interested for now in how to structure interactions
+between humans and agents, since it is much more open ended. We offer three
+principles to this end, and while these principles ought to apply to a variety
+of agentic automation tasks, we offer them primarily from our experience with
+proof-oriented programming, where we have found them to be effective. These
+principle are:</p>
+<ul class="simple">
+<li><p>Rubrics, to more easily understand and vet agentic output</p></li>
+<li><p>Templates, to steer agents to produce effective solutions, and,</p></li>
+<li><p>Audits, to confirm that provided solutions match their intent</p></li>
+</ul>
+<p><strong>Rubrics:</strong> Teachers are accustomed to setting <em>rubrics</em>, which (from
+Merriam-Webster) are “a guide listing specific criteria for grading or scoring
+academic papers, projects, or tests”. In our context, setting a rubric allows a
+human to assess the quality of a agent’s proposed solution to a problem. Setting
+well-designed rubrics, especially while incorporating insights from the
+abstractions used for modular programming and proving, is key to setting strong
+feedback loops, and producing outcomes that are easy to assess.</p>
+<p><strong>Templates:</strong> A template (again, from Merriam-Webster) is “something that
+establishes or serves as a pattern”. Whereas rubrics provide a way for a human
+to assess an agent’s output, a template is provided by a human to an agent to
+hint at the expected solution. Templates are part of a rich area of work in the
+AI community on “in-context learning”, where an agent learns to solve by a
+problem based on examples provided in the prompt. Automated ways to construct
+such templates are also often proposed under the banner of <em>retrieval
+augmentation</em> (RAG). These techniques are very useful, though we focus primarily
+on the problem of interactively crafting useful templates with the assistance of
+agents.</p>
+<p><strong>Audits:</strong> One also needs various ways to confirm that an agent-authored
+artifact matches one’s expectations. Rubrics serve this purpose, but there are
+often aspects of solutions that cannot easily be captured by a rubric. For such
+cases, one employs a range of ad hoc auditing techniques, ranging from
+old-fashioned code review to testing. We discuss several auditing techniques,
+including a new technique for intent confirmation that we call <em>small
+proof-oriented tests</em> (SPOTs).</p>
+<p>We foresee curating a library of rubrics, templates, and audits for a variety of
+programming and proving tasks, one that agents can refer to, and where one could
+apply retrieval augmentation techniques to automatically steer agents to produce
+solutions that are more likely to match a user’s intent. The beginnings of such
+a library is at <a class="reference external" href="https://github.com/FStarLang/AlgoStar">AlgoStar</a>, and we hope
+to see it grow over time.</p>
+<p>We start by illustrating these ideas in the context of a very simple first
+example, one that doesn’t quite exploit the full power of agentic programming,
+but which is instructive anyway.</p>
+<section id="agentic-proof-automation">
+<h2>Agentic Proof Automation<a class="headerlink" href="#agentic-proof-automation" title="Link to this heading"></a></h2>
+<p>A natural first step is to use agents for traditional proof automation. Whereas
+automation in various proof frameworks has traditionally employed symbolic proof
+search (e.g., using SMT solvers), one can now delegate the entire
+construction of a proof (e.g., a lemma body in F*) to an agent.</p>
+<p>Going back to our first example from the previous chapter, a task could be
+something like the following, including the code snippet below with a prompt to
+complete the proof of <code class="docutils literal notranslate"><span class="pre">rev_involutive</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> rev_aux (#a: Type) (acc: list a) (l: list a) : <span class="k">Tot</span> (list a) (<span class="k">decreases</span> l) =
+    <span class="k">match</span> l <span class="k">with</span>
+    | [] -&gt; acc
+    | hd :: tl -&gt; rev_aux (hd :: acc) tl
+
+<span class="k">let</span> rev (#a: Type) (l: list a) : list a = rev_aux [] l
+
+<span class="k">val</span> rev_involutive (#a: Type) (l: list a) : <span class="k">Lemma</span> (<span class="k">ensures</span> rev (rev l) == l)
+</pre></div>
+</div>
+<p><em>Rubric</em>: In this case, the rubric is very explicit. We have a fixed statement
+of the lemma, and any well-typed definition of <code class="docutils literal notranslate"><span class="pre">rev_involutive</span></code> is acceptable,
+where judgment against the rubric is fully automated. This is the type of
+scenario is the sweet spot for programming with agents in a proof-capable
+language.</p>
+<p><em>Template</em>: This example is simple enough that a template is not necessary—the
+agents have enough background knowledge of F* to solve this problem without
+further assistance. However the prompt above itself contains some template-like
+information, e.g., the use of <code class="docutils literal notranslate"><span class="pre">decreases</span></code> annotation to prove the recursive
+functions terminating, etc. The template could also include hints about things
+surrounding the code, e.g., how to correctly invoke fstar.exe on this file?
+Which flags to pass (e.g., <code class="docutils literal notranslate"><span class="pre">--report_assumes</span> <span class="pre">error</span></code> could make it a hard error
+for a solution to use any escape hatch like <code class="docutils literal notranslate"><span class="pre">assume</span></code> or <code class="docutils literal notranslate"><span class="pre">admit</span></code>. etc.)</p>
+<p><em>Audit</em>: An audit of the solution would have to judge a few things, e.g., were
+any of the definitions and signatures above changed by the agent? Did the
+agent’s invocation of <code class="docutils literal notranslate"><span class="pre">fstar.exe</span></code> match the template? Is the definition of
+<code class="docutils literal notranslate"><span class="pre">rev</span></code> the expected one? E.g., can one prove that <code class="docutils literal notranslate"><span class="pre">rev</span> <span class="pre">[1;2;3]</span> <span class="pre">==</span> <span class="pre">[3;2;1]</span></code>?</p>
+<p>While the previous example may seem tiny, this style of agentic proof automation
+is powerful and scales to scenarios well beyond the small reverse-a-list style
+problem above. For instance, expert-human authored rubrics formalized as
+dependently typed APIs enabled agents to author a <a class="reference external" href="https://github.com/project-everest/everparse/pull/291">253 commit pull request</a>, changing 100s of
+files. The dependently typed rubric ensured that the result is correct. Existing
+proofs in the repository served as templates for the agent to build on. And the
+PR was audited as usual for non-functional properties that are not captured by
+the specifications, e.g., by performance benchmarking the generated C code.</p>
+<p>Setting rubrics for this style of proof automation requires knowing what one
+wants to prove, and the expertise to formalize requirements in the notation of a
+proof assistant</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="agentic_getting_started.html" class="btn btn-neutral float-left" title="Getting Started" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="agentic_sorting_algorithms.html" class="btn btn-neutral float-right" title="On Abstraction &amp; Rubrics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

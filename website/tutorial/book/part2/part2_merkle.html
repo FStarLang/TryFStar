@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Merkle Trees &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Equality Types" href="part2_equality.html" />
+    <link rel="prev" title="Length-indexed Lists" href="part2_vectors.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="part2.html">Representing Data, Proofs, and Computations with Inductive Types</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="part2_inductive_type_families.html">Inductive type definitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_vectors.html">Length-indexed Lists</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Merkle Trees</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#setting">Setting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#intuitions">Intuitions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#preliminaries">Preliminaries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#defining-the-merkle-tree">Defining the Merkle tree</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#accessing-an-element-in-the-tree">Accessing an element in the tree</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#exercise">Exercise</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#the-prover">The Prover</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-verifier">The Verifier</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#correctness">Correctness</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#security">Security</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#part2-merkle-insert">Exercise</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#summary-and-further-reading">Summary and Further Reading</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="part2_equality.html">Equality Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_logical_connectives.html">Constructive &amp; Classical Connectives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_stlc.html">Simply Typed Lambda Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_phoas.html">Higher-order Abstract Syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_well_founded.html">Well-founded Relations and Termination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_par.html">A First Model of Computational Effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_universes.html">Universes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pulse/pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+      <li class="breadcrumb-item active">Merkle Trees</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="merkle-trees">
+<span id="part2-merkle"></span><h1>Merkle Trees<a class="headerlink" href="#merkle-trees" title="Link to this heading"></a></h1>
+<p>A <a class="reference external" href="https://en.wikipedia.org/wiki/Merkle_tree">Merkle tree</a> is a
+cryptographic data structure designed by <a class="reference external" href="https://en.wikipedia.org/wiki/Ralph_Merkle">Ralph Merkle</a> in the late 1970s and
+has grown dramatically in prominence in the last few years, inasmuch
+as variants of Merkle trees are at the core of most <a class="reference external" href="https://en.wikipedia.org/wiki/Blockchain">blockchain
+systems</a>.</p>
+<p>A Merkle tree makes use of cryptographic hashes to enable efficient
+cryptographic proofs of the authenticity of data stored in the
+tree. In particular, for a Merkle tree containing <span class="math notranslate nohighlight">\(2^n\)</span> data
+items, it only takes <span class="math notranslate nohighlight">\(n\)</span> hash computations to prove that a
+particular item is in the tree.</p>
+<p>In this section, we build a very simple, but canonical, Merkle tree
+and prove it correct and cryptographically secure. And we’ll use
+several indexed inductive types to do it. Thanks to Aseem Rastogi for
+this example!</p>
+<section id="setting">
+<h2>Setting<a class="headerlink" href="#setting" title="Link to this heading"></a></h2>
+<p>Merkle trees have many applications. To motivate our presentation
+here, consider the following simple scenario.</p>
+<p>A content provider (someone like, say, the New York Times) has a large
+archive of digital artifacts—documents, multimedia files, etc. These
+artifacts are circulated among users, but when receiving an artifact
+one may question its authenticity. One way to ensure the authenticity
+of received artifacts is for the content provider to use a digital
+signature based on a public-key cryptosystem and for users to verify
+these signatures upon receiving an artifact. However, signatures can
+be quite heavyweight for certain applications.</p>
+<p>Instead, the content provider can organize their archive into a Merkle
+tree, a tree of hashes with the artifacts themselves stored at the
+leaves, such that a single hash associated with the root node of the
+tree authenticates <em>all</em> the artifacts in the tree. By publishing just
+this root hash, and associating with each artifact a path in the tree
+from the root to it, a skeptical client can quickly check using a
+small number of hash computations (logarithmic in the size of the
+entire archive) whether or not a given artifact is authentic (by
+recomputing the root hash and checking if it matches the known
+published root hash).</p>
+</section>
+<section id="intuitions">
+<h2>Intuitions<a class="headerlink" href="#intuitions" title="Link to this heading"></a></h2>
+<p>Our Merkle tree will be a full binary tree of height <span class="math notranslate nohighlight">\(n\)</span> storing
+<span class="math notranslate nohighlight">\(2^n\)</span> data items and their corresponding hashes at the
+nodes. The main idea of a Merkle tree is for each internal node to
+also maintain a <em>hash of the hashes</em> stored at each of its
+children. If the hash algorithm being used is cryptographically
+secure, in the sense that it is collision resistant (i.e., it is
+computationally hard to find two strings that hash to the same value),
+then the hash associated with the root node authenticates the content
+of the entire tree.</p>
+<p>Informally, a Merkle tree is an authenticated data structure in that
+it is computationally hard to tamper with any of the data items in the
+tree while still producing the same root hash. Further, to prove that
+a particular data item <code class="docutils literal notranslate"><span class="pre">d</span></code> is in the tree, it suffices to provide
+the hashes associated with the nodes in the path from the root to that
+the leaf containing that item <code class="docutils literal notranslate"><span class="pre">d</span></code>, and one can easily check by
+comparing hashes that the claimed path is accurate. In fact, we can
+prove that if a claimed path through the tree attests to the presence
+of some other item <code class="docutils literal notranslate"><span class="pre">d'</span> <span class="pre">&lt;&gt;</span> <span class="pre">d</span></code>, then we can construct a collision on
+the underlying hash algorithm—this property will be our main proof of
+security.</p>
+</section>
+<section id="preliminaries">
+<h2>Preliminaries<a class="headerlink" href="#preliminaries" title="Link to this heading"></a></h2>
+<p>We’ll model the resources and the hashes we store in our tree as
+strings of characters. F* standard library <code class="docutils literal notranslate"><span class="pre">FStar.String</span></code> provides
+some utilities to work with strings.</p>
+<p>In the code listing below, we define the following</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">lstring</span> <span class="pre">n</span></code>, the type of strings of length <code class="docutils literal notranslate"><span class="pre">n</span></code>. Like the
+<code class="docutils literal notranslate"><span class="pre">vec</span></code> type, <code class="docutils literal notranslate"><span class="pre">lstring</span></code> is a length-indexed type; unlike
+<code class="docutils literal notranslate"><span class="pre">vector</span></code> it is defined using a refinement type rather than an
+indexed inductive type. Defining indexed types using refinements
+is quite common in F*.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">concat</span></code>, a utility to concatenate strings, with its type
+proving that the resulting string’s length is the sum of the lengths
+of the input strings.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hash_size</span></code> and <code class="docutils literal notranslate"><span class="pre">hash</span></code>, a parameter of our development
+describing the length in characters of a <code class="docutils literal notranslate"><span class="pre">hash</span></code> function. The F*
+keyword <code class="docutils literal notranslate"><span class="pre">assume</span></code> allows you to assume the existence of a symbol
+at a given type. Use it with care, since you can trivially prove
+anything by including an <code class="docutils literal notranslate"><span class="pre">assume</span> <span class="pre">nonsense</span> <span class="pre">:</span> <span class="pre">False</span></code>.</p></li>
+<li><p>The type of resources we store in the tree will just be
+<code class="docutils literal notranslate"><span class="pre">resource</span></code>, an alias for <code class="docutils literal notranslate"><span class="pre">string</span></code>.</p></li>
+</ul>
+</div></blockquote>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="c">//Length-indexed strings</span>
+<span class="k">let</span> lstring (n:nat) = s:string{String.length s == n}
+
+<span class="c">//Concatenating strings sums their lengths</span>
+<span class="k">let</span> concat #n #m (s0:lstring n) (s1:lstring m)
+  : lstring (m + n)
+  = FStar.String.concat_length s0 s1;
+    s0 ^ s1
+
+<span class="c">//A parameter, length of the hash in characters, </span>
+<span class="c">//e.g., this would be 32, if a character is 1 byte</span>
+<span class="c">//and we&#39;re using SHA-256</span>
+<span class="k">assume</span>
+<span class="k">val</span> hash_size:nat
+
+<span class="c">//The type of a hashed value</span>
+<span class="k">let</span> hash_t = lstring hash_size
+
+<span class="c">//The hash function itself</span>
+<span class="k">assume</span>
+<span class="k">val</span> hash (m:string) : hash_t
+
+<span class="c">//The type of resources stored in the tree</span>
+<span class="k">let</span> resource = string
+</pre></div>
+</div>
+</section>
+<section id="defining-the-merkle-tree">
+<h2>Defining the Merkle tree<a class="headerlink" href="#defining-the-merkle-tree" title="Link to this heading"></a></h2>
+<p>The inductive type <code class="docutils literal notranslate"><span class="pre">mtree</span></code> below defines our Merkle tree. The type
+has <em>two</em> indices, such that <code class="docutils literal notranslate"><span class="pre">mtree</span> <span class="pre">n</span> <span class="pre">h</span></code> is the type of a Merkle
+tree of height <code class="docutils literal notranslate"><span class="pre">n</span></code> whose root node is associated with the hash
+<code class="docutils literal notranslate"><span class="pre">h</span></code>.</p>
+<p>Leaves are trees of height <code class="docutils literal notranslate"><span class="pre">0</span></code> and are constructed using <code class="docutils literal notranslate"><span class="pre">L</span> <span class="pre">res</span></code>,
+where the hash associated with this node is just <code class="docutils literal notranslate"><span class="pre">hash</span> <span class="pre">res</span></code>, the
+hash of the resource stored at the leaf.</p>
+<p>Internal nodes of the tree are constructed using <code class="docutils literal notranslate"><span class="pre">N</span> <span class="pre">left</span> <span class="pre">right</span></code>,
+where both the <code class="docutils literal notranslate"><span class="pre">left</span></code> and <code class="docutils literal notranslate"><span class="pre">right</span></code> trees have the same height
+<code class="docutils literal notranslate"><span class="pre">n</span></code>, producing a tree of height <code class="docutils literal notranslate"><span class="pre">n</span> <span class="pre">+</span> <span class="pre">1</span></code>. More interestingly, the
+hash associated with <code class="docutils literal notranslate"><span class="pre">N</span> <span class="pre">left</span> <span class="pre">right</span></code> is <code class="docutils literal notranslate"><span class="pre">hash</span> <span class="pre">(concat</span> <span class="pre">hl</span> <span class="pre">hr)</span></code>, the
+hash of the concatenation of hashes of the left and right subtrees.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> mtree: nat -&gt; hash_t -&gt; Type =
+  | L:
+     res:resource -&gt;
+     mtree 0 (hash res)
+       
+  | N:
+     #n:nat -&gt;
+     #hl:hash_t -&gt;
+     #hr:hash_t -&gt;
+     left:mtree n hl -&gt;
+     right:mtree n hr -&gt;
+     mtree (n + 1) (hash (concat hl hr))
+</pre></div>
+</div>
+<p>In our previous examples like vectors, the index of the type
+abstracts, or summarizes, some property of the type, e.g., the
+length. This is also the case with <code class="docutils literal notranslate"><span class="pre">mtree</span></code>, where the first index is
+an abstraction summarizing only the height of the tree; the second
+index, being a cryptographic hash, summarizes the entire contents of
+the tree.</p>
+</section>
+<section id="accessing-an-element-in-the-tree">
+<h2>Accessing an element in the tree<a class="headerlink" href="#accessing-an-element-in-the-tree" title="Link to this heading"></a></h2>
+<p>A resource identifier <code class="docutils literal notranslate"><span class="pre">resource_id</span></code> is a path in the tree from the
+root to the leaf storing that resource. A path is just a list of
+booleans describing whether to descend left or right from a node.</p>
+<p>Just like a regular binary tree, it’s easy to access an element in the
+tree by specifying its <code class="docutils literal notranslate"><span class="pre">resource_id</span></code>.</p>
+<section id="exercise">
+<h3>Exercise<a class="headerlink" href="#exercise" title="Link to this heading"></a></h3>
+<p>Implement a function to access an element in a <code class="docutils literal notranslate"><span class="pre">mtree</span></code> in given a
+<code class="docutils literal notranslate"><span class="pre">rid</span> <span class="pre">:</span> <span class="pre">list</span> <span class="pre">bool</span></code>. Figuring out its type, including its decreases
+clause, is the most interesting part. The function itself is
+straightforward.</p>
+<p><a class="reference external" href="../code/exercises/Part2.MerkleTreeGet.fst">Exercise file</a></p>
+<div class="toggle docutils container">
+<div class="header docutils container">
+<p><strong>Answer</strong></p>
+</div>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> resource_id = list bool
+
+<span class="k">let</span> <span class="k">rec</span> get #h 
+            (ri:resource_id)
+            (tree:mtree (L.length ri) h)
+  : <span class="k">Tot</span> resource (<span class="k">decreases</span> ri)
+  = <span class="k">match</span> ri <span class="k">with</span>
+    | [] -&gt; L?.res tree
+    | b::ri&#39; -&gt;
+      <span class="k">if</span> b <span class="k">then</span>
+	get ri&#39; (N?.left tree)
+      <span class="k">else</span>
+	get ri&#39; (N?.right tree)
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="the-prover">
+<h2>The Prover<a class="headerlink" href="#the-prover" title="Link to this heading"></a></h2>
+<p>Unlike the ordinary <code class="docutils literal notranslate"><span class="pre">get</span></code> function, we can define a function
+<code class="docutils literal notranslate"><span class="pre">get_with_evidence</span></code> that retrieves a resource from the tree together
+with some evidence that that resource really is present in the tree.
+The evidence contains the resource identifier and the hashes of
+sibling nodes along the path from root to that item.</p>
+<p>First, we define <code class="docutils literal notranslate"><span class="pre">resource_with_evidence</span> <span class="pre">n</span></code>, an indexed type that
+packages a <code class="docutils literal notranslate"><span class="pre">res:resource</span></code> with its <code class="docutils literal notranslate"><span class="pre">rid:resource_id</span></code> and
+<code class="docutils literal notranslate"><span class="pre">hashes:list</span> <span class="pre">hash_t</span></code>—both <code class="docutils literal notranslate"><span class="pre">rid</span></code> and <code class="docutils literal notranslate"><span class="pre">hashes</span></code> have the same
+length, which is the index of the constructed type.</p>
+<p>The function <code class="docutils literal notranslate"><span class="pre">get_with_evidence</span></code> is similar to <code class="docutils literal notranslate"><span class="pre">get</span></code>, except as it
+returns from descending into a child node, it adds the hash of the
+other child node to the list of hashes.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> resource_with_evidence : nat -&gt; Type =
+  | RES:
+      res:resource -&gt;
+      ri:resource_id -&gt;
+      hashes:list hash_t { L.length ri == L.length hashes } -&gt;
+      resource_with_evidence (L.length ri)
+
+<span class="c">/// Retrieves data references by the path, together with the hashes</span>
+<span class="c">/// of the sibling nodes along that path</span>
+<span class="k">let</span> <span class="k">rec</span> get_with_evidence (#h:<span class="k">_</span>)
+                          (rid:resource_id)
+                          (tree:mtree (L.length rid) h)
+  : <span class="k">Tot</span> (resource_with_evidence (L.length rid))
+	(<span class="k">decreases</span> rid)
+  = <span class="k">match</span> rid <span class="k">with</span>
+    | [] -&gt;
+      RES (L?.res tree) [] []
+
+    | bit::rid&#39; -&gt;
+      <span class="k">let</span> N #<span class="k">_</span> #hl #hr left right = tree <span class="k">in</span>
+      <span class="k">let</span> p = get_with_evidence rid&#39; left <span class="k">in</span>
+      <span class="k">if</span> bit <span class="k">then</span>
+	<span class="k">let</span> p = get_with_evidence rid&#39; left <span class="k">in</span>
+	RES p.res rid (hr :: p.hashes)
+      <span class="k">else</span>
+	<span class="k">let</span> p = get_with_evidence rid&#39; right <span class="k">in</span>
+	RES p.res rid (hl :: p.hashes)
+</pre></div>
+</div>
+<p>In the cryptographic literature, this function is sometimes called
+<em>the prover</em>. A <code class="docutils literal notranslate"><span class="pre">RES</span> <span class="pre">r</span> <span class="pre">ri</span> <span class="pre">hs</span></code> is a claimed proof of the membership
+of <code class="docutils literal notranslate"><span class="pre">r</span></code> in the tree at the location specified by <code class="docutils literal notranslate"><span class="pre">ri</span></code>.</p>
+<p>Going back to our motivating scenario, artifacts distributed by our
+content provider would be elements of the type
+<code class="docutils literal notranslate"><span class="pre">resource_with_evidence</span> <span class="pre">n</span></code>, enabling clients to verify that a given
+artifact is authentic, as shown next.</p>
+</section>
+<section id="the-verifier">
+<h2>The Verifier<a class="headerlink" href="#the-verifier" title="Link to this heading"></a></h2>
+<p>Our next step is to build a checker of claimed proofs, sometimes
+called <em>a verifier</em>. The function <code class="docutils literal notranslate"><span class="pre">verify</span></code> below takes a
+<code class="docutils literal notranslate"><span class="pre">p:resource_with_evidence</span> <span class="pre">n</span></code>, re-computes the root hash from the
+evidence presented, and checks that that hash matches the root hash of
+a given Merkle tree. Note, the <code class="docutils literal notranslate"><span class="pre">tree</span></code> itself is irrelevant: all
+that’s needed to verify the evidence is <em>the root hash</em> of the Merkle
+tree.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> verify #h #n (p:resource_with_evidence n) 
+                 (tree:mtree n h)
+  : bool
+  = compute_root_hash p = h
+</pre></div>
+</div>
+<p>The main work is done by <code class="docutils literal notranslate"><span class="pre">compute_root_hash</span></code>, shown below.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>In the first branch, we simply hash the resource itself.</p></li>
+<li><p>In the second branch, we recompute the hash from the tail of the
+path, and then based on which direction was taken, we either
+concatenate sibling hash on the left or the right, and hash the
+result.</p></li>
+</ul>
+</div></blockquote>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> tail #n (p:resource_with_evidence n { n &gt; 0 })
+  : resource_with_evidence (n - 1)
+  = RES p.res (L.tail p.ri) (L.tail p.hashes)
+
+<span class="k">let</span> <span class="k">rec</span> compute_root_hash (#n:nat)
+                          (p:resource_with_evidence n)
+  : hash_t
+  = <span class="k">let</span> RES d ri hashes = p <span class="k">in</span>
+    <span class="k">match</span> ri <span class="k">with</span>
+    | [] -&gt; hash p.res
+
+    | bit::ri&#39; -&gt;
+      <span class="k">let</span> h&#39; = compute_root_hash (tail p) <span class="k">in</span>
+      <span class="k">if</span> bit <span class="k">then</span>
+        hash (concat h&#39; (L.hd hashes))
+      <span class="k">else</span>
+        hash (concat (L.hd hashes) h&#39;)
+</pre></div>
+</div>
+<p>Convince yourself of why this is type-correct—refer back to the
+description of <a class="reference internal" href="part2_vectors.html#part2-vectors"><span class="std std-ref">vectors</span></a>, if needed. For example,
+why is it safe to call <code class="docutils literal notranslate"><span class="pre">L.hd</span></code> to access the first element of
+<code class="docutils literal notranslate"><span class="pre">hashes</span></code>?</p>
+</section>
+<section id="correctness">
+<h2>Correctness<a class="headerlink" href="#correctness" title="Link to this heading"></a></h2>
+<p>Now, we can prove our main correctness theorem, namely that
+<code class="docutils literal notranslate"><span class="pre">get_with_evidence</span></code> returns a resource with verifiable
+evidence.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="c">// Correctness theorem: </span>
+<span class="c">//</span>
+<span class="c">// Using get_with_evidence&#39;s with compute_root_hash correctly</span>
+<span class="c">// reconstructs the root hash</span>
+<span class="k">let</span> <span class="k">rec</span> correctness (#h:hash_t)
+                    (rid:resource_id)
+                    (tree:mtree (L.length rid) h)
+  : <span class="k">Lemma</span> (<span class="k">ensures</span> (verify (get_with_evidence rid tree) tree))
+          (<span class="k">decreases</span> rid)
+  = <span class="k">match</span> rid <span class="k">with</span>
+    | [] -&gt; ()
+    | bit::rid&#39; -&gt;
+      <span class="k">let</span> N left right = tree <span class="k">in</span>
+      <span class="k">if</span> bit <span class="k">then</span>
+	correctness rid&#39; left
+      <span class="k">else</span>
+	correctness rid&#39; right
+</pre></div>
+</div>
+<p>The proof is a simple proof by induction on the height of the tree, or
+equivalently, the length of the resource id.</p>
+<p>In other words, evidence constructed by an honest prover is accepted by
+our verifier.</p>
+</section>
+<section id="security">
+<h2>Security<a class="headerlink" href="#security" title="Link to this heading"></a></h2>
+<p>The main security theorem associated with this construction is the
+following: if the verifier can be convinced to accept a resource with
+evidence of the form <code class="docutils literal notranslate"><span class="pre">RES</span> <span class="pre">r</span> <span class="pre">rid</span> <span class="pre">hs</span></code>, and if the resource in the
+Merkle tree associated with <code class="docutils literal notranslate"><span class="pre">rid</span></code> is <em>not</em> <code class="docutils literal notranslate"><span class="pre">r</span></code>, then we can easily
+construct a collision on the underlying cryptographic hash. Since the
+hash is meant to be collision resistant, one should conclude that it
+is at least as hard to convince our verifier to accept incorrect
+evidence as it is to find collisions on the underlying hash.</p>
+<p>We start by defining the type of a <code class="docutils literal notranslate"><span class="pre">hash_collision</span></code>, a pair of
+distinct strings that hash to the same value.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> hash_collision =
+  | Collision :
+      s1:string -&gt;
+      s2:string {hash s1 = hash s2 /\ not (s1 = s2)} -&gt;
+      hash_collision
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">security</span></code> theorem shown below takes a <code class="docutils literal notranslate"><span class="pre">tree</span></code> and
+<code class="docutils literal notranslate"><span class="pre">p:resource_with_evidence</span> <span class="pre">n</span></code>, where the refinement on <code class="docutils literal notranslate"><span class="pre">p</span></code> states
+that the verifier accepts the evidence (<code class="docutils literal notranslate"><span class="pre">verify</span> <span class="pre">p</span> <span class="pre">tree</span></code>) although
+the resource associated with <code class="docutils literal notranslate"><span class="pre">p.ri</span></code> is not <code class="docutils literal notranslate"><span class="pre">p.res</span></code>: in this case,
+we can build a function, by induction on the height of the tree, that
+returns a hash collision.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="c">(* </span>
+<span class="c"> * If [verify] can be tricked into accepting the evidence of [p] when</span>
+<span class="c"> * [p.res] is not actually present in the tree at [p.ri], then</span>
+<span class="c"> * we can exhibit a hash collision</span>
+<span class="c"> *)</span>
+<span class="k">let</span> <span class="k">rec</span> security (#n:nat) (#h:hash_t)
+                 (tree:mtree n h)
+                 (p:resource_with_evidence n {
+                   verify p tree /\
+                   not (get p.ri tree = p.res)
+                 })
+  : hash_collision
+  = <span class="k">match</span> p.ri <span class="k">with</span>
+    | [] -&gt; Collision p.res (L?.res tree)
+    | bit::rid&#39; -&gt;
+      <span class="k">let</span> N #<span class="k">_</span> #h1 #h2 left right = tree <span class="k">in</span>
+      <span class="k">let</span> h&#39; = compute_root_hash (tail p) <span class="k">in</span>
+      <span class="k">let</span> hd :: <span class="k">_</span> = p.hashes <span class="k">in</span>
+      <span class="k">if</span> bit <span class="k">then</span>
+	<span class="k">if</span> h&#39; = h1 <span class="k">then</span>
+	  security left (tail p)
+	<span class="k">else</span> (
+          String.concat_injective h1 h&#39; h2 hd;
+          Collision (concat h1 h2) (concat h&#39; hd)
+        )
+      <span class="k">else</span>
+	<span class="k">if</span> h&#39; = h2 <span class="k">then</span>
+	  security right (tail p)
+	<span class="k">else</span> (
+          String.concat_injective h1 hd h2 h&#39;;
+	  Collision (concat h1 h2) (concat hd h&#39;)
+        )
+</pre></div>
+</div>
+<p>We look at its cases in detail:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>In the base case, it’s easy to construct a hash collision
+directly from the differing resources.</p></li>
+<li><p>Otherwise, we recompute the hash associated with the current node
+from the tail of the evidence presented, and the two cases of the
+left and right subtrees are symmetric.</p>
+<ul>
+<li><p>If the recomputed hash matches the hash of the node, then we
+can generate a collision just by the induction hypothesis on
+the left or right subtree.</p></li>
+<li><p>Otherwise, we can build a hash collision, relying on
+<code class="docutils literal notranslate"><span class="pre">String.concat_injective</span></code>, a lemma from the library stating
+that the concatenation of two pairs of equal length strings are
+equal only if their components are. Knowing that <code class="docutils literal notranslate"><span class="pre">h'</span> <span class="pre">&lt;&gt;</span> <span class="pre">h1</span></code>
+(or, symmetrically, <code class="docutils literal notranslate"><span class="pre">h'</span> <span class="pre">&lt;&gt;</span> <span class="pre">h2</span></code>) this allows us to prove that
+the concatenations are unequal, although their hashes are, by
+assumption, equal.</p></li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+</section>
+<section id="part2-merkle-insert">
+<span id="id1"></span><h2>Exercise<a class="headerlink" href="#part2-merkle-insert" title="Link to this heading"></a></h2>
+<p>Implement a function to update an <code class="docutils literal notranslate"><span class="pre">mtree</span></code> at a given
+<code class="docutils literal notranslate"><span class="pre">rid:resource_id</span></code> with a new resource <code class="docutils literal notranslate"><span class="pre">res:resource</span></code>. The
+resulting tree will have a new root hash, so you will have to return
+the new hash along with the updated tree.</p>
+<p><a class="reference external" href="../code/exercises/Part2.MerkleTreeUpdate_V0.fst">Exercise file</a></p>
+<div class="toggle docutils container">
+<div class="header docutils container">
+<p><strong>Hint</strong></p>
+</div>
+<p>One type of the <code class="docutils literal notranslate"><span class="pre">update</span></code> function could be as follows:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> mtree&#39; (n:nat) =
+  | MTree : h:hash_t -&gt; mtree n h -&gt; mtree&#39; n
+
+<span class="k">val</span> update_mtree&#39;  (#h:hash_t)
+                   (rid:resource_id)
+                   (res:resource) 
+                   (tree:mtree (L.length rid) h)
+   : mtree&#39; (L.length rid)
+</pre></div>
+</div>
+</div>
+<hr class="docutils" />
+<div class="toggle docutils container">
+<div class="header docutils container">
+<p><strong>Answer</strong></p>
+</div>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> update_mtree&#39; #h 
+                      (rid:resource_id)
+                      (res:resource) 
+                      (tree:mtree (L.length rid) h)
+   : <span class="k">Tot</span> (mtree&#39; (L.length rid))
+         (<span class="k">decreases</span> rid)
+   = <span class="k">match</span> rid <span class="k">with</span>
+     | [] -&gt; MTree <span class="k">_</span> (L res)
+     | hd :: rid&#39; -&gt; 
+       <span class="k">if</span> hd
+       <span class="k">then</span> (
+         <span class="k">let</span> MTree <span class="k">_</span> t = update_mtree&#39; rid&#39; res (N?.left tree) <span class="k">in</span>
+         MTree <span class="k">_</span> (N t (N?.right tree))
+       )
+       <span class="k">else</span> (
+         <span class="k">let</span> MTree <span class="k">_</span> t = update_mtree&#39; rid&#39; res (N?.right tree) <span class="k">in</span>
+         MTree <span class="k">_</span> (N (N?.left tree) t)
+       )
+</pre></div>
+</div>
+<p>One interesting part of our solution is that we never explicitly
+construct the hash of the nodes. Instead, we just use <code class="docutils literal notranslate"><span class="pre">_</span></code> and
+let F* infer the calls to the hash functions.</p>
+</div>
+</section>
+<hr class="docutils" />
+<section id="summary-and-further-reading">
+<h2>Summary and Further Reading<a class="headerlink" href="#summary-and-further-reading" title="Link to this heading"></a></h2>
+<p>In summary, we’ve built a simple but powerful authenticated data
+structure with a proof of its correctness and cryptographic security.</p>
+<p>In practice, Merkle trees can be much more sophisticated than our the
+most basic one shown here. For instance, they can support incremental
+updates, contain optimizations for different kinds of workloads,
+including sparse trees, and be implemented using high-performance,
+mutable structures.</p>
+<p>You can read more about various flavors of Merkle trees implemented in
+F* in the following papers.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://project-everest.github.io/assets/evercrypt.pdf">EverCrypt, Section VII (B)</a>,
+describes a high-performance Merkle tree with fast incremental
+updates.</p></li>
+<li><p><a class="reference external" href="https://dl.acm.org/doi/10.1145/3448016.3457312">FastVer</a>
+describes the design and use of hybrid authenticated data structures,
+including sparse Merkle trees, for applications such as verifiable
+key-value stores.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="part2_vectors.html" class="btn btn-neutral float-left" title="Length-indexed Lists" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="part2_equality.html" class="btn btn-neutral float-right" title="Equality Types" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

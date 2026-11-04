@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>An Overview of Tactics &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Pulse: Proof-oriented Programming in Concurrent Separation Logic" href="../pulse/pulse.html" />
+    <link rel="prev" title="Tactics and Metaprogramming with Meta-F*" href="part5.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="part5.html">Tactics and Metaprogramming with Meta-F*</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">An Overview of Tactics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#decorating-assertions-with-tactics">Decorating assertions with tactics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-tac-effect">The <code class="docutils literal notranslate"><span class="pre">Tac</span></code> effect</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#goals">Goals</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#quotations">Quotations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#basic-logic">Basic logic</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#normalizing-and-unfolding">Normalizing and unfolding</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#inspecting-and-building-syntax">Inspecting and building syntax</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#usual-gotchas">Usual gotchas</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#coming-soon">Coming soon</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../pulse/pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+      <li class="breadcrumb-item active">An Overview of Tactics</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="an-overview-of-tactics">
+<span id="metafstar-intro"></span><h1>An Overview of Tactics<a class="headerlink" href="#an-overview-of-tactics" title="Link to this heading"></a></h1>
+<p>In this chapter, we quickly introduce several of the main concepts
+underlying Meta-F* and its use in writing tactics for proof
+automation. The goal is to get you quickly up to speed on basic uses
+of tactics. Subsequent chapters will revisit the concepts covered here
+in more detail, introduce more advanced aspects of Meta-F*, and show
+them at use in several case studies.</p>
+<section id="decorating-assertions-with-tactics">
+<h2>Decorating assertions with tactics<a class="headerlink" href="#decorating-assertions-with-tactics" title="Link to this heading"></a></h2>
+<p>As you know already, F* verifies programs by computing verification
+conditions (VCs) and calling an SMT solver (Z3) to prove them. Most
+simple proof obligations are handled completely automatically by Z3,
+and for more complex statements we can help the solver find a proof
+via lemma calls and intermediate assertions. Even when using lemma
+calls and assertions, the VC for a definition is sent to Z3 in one
+single piece (though <a class="reference internal" href="../under_the_hood/uth_smt.html#splitting-queries"><span class="std std-ref">SMT queries can be split via an option</span></a>.). This “monolithic” style of proof can become
+unwieldy rapidly, particularly when the solver is being pushed to its
+limits.</p>
+<p>The first ability Meta-F* provides is allowing one to attach specific
+tactics to assertions. These tactics operate on the “goal” that we
+want to prove, and can “massage” the assertion by simplifying it,
+splitting it into several sub-goals, tweaking particular SMT options,
+etc.</p>
+<p>For instance, let us take the following example, where we want to
+guarantee that <code class="docutils literal notranslate"><span class="pre">pow2</span> <span class="pre">x</span></code> is less than one million given that <code class="docutils literal notranslate"><span class="pre">x</span></code> is
+at most <code class="docutils literal notranslate"><span class="pre">19</span></code>. One way of going about this proof is by noting that
+<code class="docutils literal notranslate"><span class="pre">pow2</span></code> is an increasing function, and that <code class="docutils literal notranslate"><span class="pre">pow2</span> <span class="pre">19</span></code> is less than
+one million, so we try to write something like this:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> pow2_bound_19 (x:nat{x &lt;= 19}) : <span class="k">Lemma</span> (pow2 x &lt; 1000000) =
+  <span class="k">assert</span> (<span class="k">forall</span> (x y : nat). x &lt;= y ==&gt; pow2 x &lt;= pow2 y);
+  <span class="k">assert</span> (pow2 19 ==  524288);
+  <span class="k">assert</span> (pow2 x &lt; 1000000);
+  ()
+</pre></div>
+</div>
+<p>Sadly, this doesn’t work. First of all, Z3 cannot automatically
+prove that <code class="docutils literal notranslate"><span class="pre">pow2</span></code> is increasing, but that is to be expected.
+We could prove this by a straightforward induction. However, we
+only need this fact for <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">19</span></code>, so we can simply call
+<code class="docutils literal notranslate"><span class="pre">FStar.Math.Lemmas.pow2_le_compat</span></code> from the library:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> pow2_bound_19&#39; (x:nat{x &lt;= 19}) : <span class="k">Lemma</span> (pow2 x &lt; 1000000) =
+  FStar.Math.Lemmas.pow2_le_compat 19 x;
+  <span class="k">assert</span> (pow2 19 == 524288);
+  <span class="k">assert</span> (pow2 x &lt; 1000000);
+  ()
+</pre></div>
+</div>
+<p>Now, the second assertion fails. Z3 will not, with the default fuel
+limits, unfold pow2 enough times to compute <code class="docutils literal notranslate"><span class="pre">pow2</span> <span class="pre">19</span></code>
+precisely. (You can read more about how F* <a class="reference internal" href="../under_the_hood/uth_smt.html#uth-smt-fuel"><span class="std std-ref">uses “fuel” to
+control the SMT solver’s ability to unfold recursive definitions</span></a>.)  Here we will use our first call into Meta-F*: via
+the <code class="docutils literal notranslate"><span class="pre">by</span></code> keyword, we can attach a tactic to an assertion. In this
+case, we’ll ask Meta-F* to <code class="docutils literal notranslate"><span class="pre">compute()</span></code> over the goal, simplifying as
+much as it can via F*’s normalizer, like this:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> pow2_bound_19&#39;&#39; (x:nat{x &lt;= 19}) : <span class="k">Lemma</span> (pow2 x &lt; 1000000) =
+  FStar.Math.Lemmas.pow2_le_compat 19 x;
+  <span class="k">assert</span> (pow2 19 == 524288) <span class="k">by</span> compute ();
+  <span class="k">assert</span> (pow2 x &lt; 1000000);
+  ()
+</pre></div>
+</div>
+<p>Now the lemma verifies! Meta-F* reduced the proof obligation into a
+trivial equality. Crucially, however, the <code class="docutils literal notranslate"><span class="pre">pow2</span> <span class="pre">19</span> <span class="pre">==</span> <span class="pre">524288</span></code> shape is
+kept as-is in the postcondition of the assertion, so we can make use of
+it! If we were just to rewrite the assertion into <code class="docutils literal notranslate"><span class="pre">524288</span> <span class="pre">==</span> <span class="pre">524288</span></code>
+that would not be useful at all.</p>
+<p>How can we know what Meta-F* is doing? We can use the <code class="docutils literal notranslate"><span class="pre">dump</span></code> tactic to
+print the state of the proof after the call to <code class="docutils literal notranslate"><span class="pre">compute()</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> pow2_bound_19&#39;&#39;&#39; (x:nat{x &lt;= 19}) : <span class="k">Lemma</span> (pow2 x &lt; 1000000) =
+  FStar.Math.Lemmas.pow2_le_compat 19 x;
+  <span class="k">assert</span> (pow2 19 == 524288) <span class="k">by</span> (compute (); dump &quot;after compute&quot;);
+  <span class="k">assert</span> (pow2 x &lt; 1000000);
+  ()
+</pre></div>
+</div>
+<p>With this version, you should see something like:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span>Goal 1/1
+x: x: nat{x &lt; 20}
+p: pure_post unit
+uu___: <span class="k">forall</span> (pure_result: unit). pow2 x &lt; 1000000 ==&gt; p pure_result
+pure_result: unit
+uu___&#39;0: pow2 x &lt;= pow2 19
+--------------------------------------------------------------------------------
+squash (524288 == 524288)
+<span class="c">(*?u144*)</span> <span class="k">_</span>
+</pre></div>
+</div>
+<p>as output from F* (or in the goals buffer if you are using emacs with fstar-mode.el).
+The <code class="docutils literal notranslate"><span class="pre">print</span></code> primitive can also be useful.</p>
+<p>A “goal” is some proof obligation that is yet to be solved. Meta-F*
+allows you to capture goals (e.g. via <code class="docutils literal notranslate"><span class="pre">assert..by</span></code>), modify them (such
+as with <code class="docutils literal notranslate"><span class="pre">compute</span></code>), and even to completely solve them. In this case, we
+can solve the goal (without Z3) by calling <code class="docutils literal notranslate"><span class="pre">trivial()</span></code>, a helper
+tactic that discharges trivial goals (such as trivial equalities).</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> pow2_bound_19&#39;&#39;&#39;&#39; (x:nat{x &lt;= 19}) : <span class="k">Lemma</span> (pow2 x &lt; 1000000) =
+  FStar.Math.Lemmas.pow2_le_compat 19 x;
+  <span class="k">assert</span> (pow2 19 == 524288) <span class="k">by</span> (
+    compute ();
+    trivial ();
+    qed ()
+   );
+  <span class="k">assert</span> (pow2 x &lt; 1000000);
+  ()
+</pre></div>
+</div>
+<p>If you <code class="docutils literal notranslate"><span class="pre">dump</span></code> the state just after the <code class="docutils literal notranslate"><span class="pre">trivial()</span></code> call, you should
+see no more goals remain (this is what <code class="docutils literal notranslate"><span class="pre">qed()</span></code> checks).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Meta-F* does not yet allow a fully interactive style of proof, and
+hence we need to re-check the entire proof after every edit. We hope
+to improve this soon.</p>
+</div>
+<p>There is still the “rest” of the proof, namely that <code class="docutils literal notranslate"><span class="pre">pow2</span> <span class="pre">x</span> <span class="pre">&lt;</span> <span class="pre">1000000</span></code>
+given the hypothesis and the fact that the assertion holds. We call
+this the <em>skeleton</em> of the proof, and it is (by default) not handled by
+Meta-F*. In general, we only use tactics on those assertions that are
+particularly hard for the SMT solver, but leave all the rest to it.</p>
+</section>
+<section id="the-tac-effect">
+<h2>The <code class="docutils literal notranslate"><span class="pre">Tac</span></code> effect<a class="headerlink" href="#the-tac-effect" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although we have seen a bit about <a class="reference internal" href="../part2/part2_par.html#part2-par"><span class="std std-ref">monads and computational
+effects in a previous chapter</span></a>, we have yet to fully
+describe F*’s effect system. So, some of what follows may be a bit
+confusing. However, you don’t need to fully understand how the
+<code class="docutils literal notranslate"><span class="pre">Tac</span></code> effect is implemented to use tactics. Feel free to skip
+ahead, if this section doesn’t make much sense to you.</p>
+</div>
+<p>What, concretely, are tactics? So far we’ve written a few simple ones,
+without too much attention to their structure.</p>
+<p>Tactics and metaprograms in F* are really just F* terms, but <em>in a
+particular effect</em>, namely <code class="docutils literal notranslate"><span class="pre">Tac</span></code>. To construct interesting
+metaprograms, we have to use the set of <em>primitives</em> provided by Meta-F*.
+Their full list is in the <code class="docutils literal notranslate"><span class="pre">FStar.Tactics.Builtins</span></code> module.
+So far, we have actually not used any primitive directly, but
+only <em>derived</em> metaprograms present in the standard library.</p>
+<p>Internally, <code class="docutils literal notranslate"><span class="pre">Tac</span></code> is implemented via a combination of 1) a state
+monad, over a <code class="docutils literal notranslate"><span class="pre">proofstate</span></code>, 2) exceptions and 3) divergence or
+non-termination.  The state monad is used to implicitly carry the
+proofstate, without us manually having to handle all goals
+explicitly. Exceptions are a useful way of doing error handling. Any
+declared exception can be <code class="docutils literal notranslate"><span class="pre">raise</span></code>’d within a metaprogram, and the
+<code class="docutils literal notranslate"><span class="pre">try..with</span></code> construct works exactly as for normal programs. There
+are also <code class="docutils literal notranslate"><span class="pre">fail</span></code>, <code class="docutils literal notranslate"><span class="pre">catch</span></code> and <code class="docutils literal notranslate"><span class="pre">recover</span></code> primitives.</p>
+<p>Metaprograms cannot be run directly. This is needed to retain the
+soundness of pure computations, in the same way that stateful and
+exception-raising computations are isolated from the <code class="docutils literal notranslate"><span class="pre">Pure</span></code> fragment
+(and from each other). Metaprograms can only be used where F* expects
+them , such as in an <code class="docutils literal notranslate"><span class="pre">assert..by</span></code> construct. Here, F* will run the
+metaprogram on an initial proofstate consisting (usually) of a single
+goal, and allow the metaprogram to modify it.</p>
+<p>To guarantee soundness, i.e., that metaprograms do not prove false
+things, all of the primitives are designed to perform small and
+correct modifications of the goals. Any metaprogram constructed from
+them cannot do anything to the proofstate (which is abstract) except
+modifying it via the primitives.</p>
+<p>Having divergence as part of the <code class="docutils literal notranslate"><span class="pre">Tac</span></code> effect may seem a bit odd,
+since allowing for diverging terms usually implies that one can form a
+proof of false, via a non-well-founded recursion. However, we should
+note that this possible divergence happens at the <em>meta</em> level. If we
+call a divergent tactic, F* will loop forever waiting for it to finish,
+never actually accepting the assertion being checked.</p>
+<p>As you know, F* already has exceptions and divergence. All <code class="docutils literal notranslate"><span class="pre">Dv</span></code> and
+<code class="docutils literal notranslate"><span class="pre">Ex</span></code> functions can readily be used in Meta-F* metaprograms, as well as
+all <code class="docutils literal notranslate"><span class="pre">Tot</span></code> and <code class="docutils literal notranslate"><span class="pre">Pure</span></code> functions. For instance, you can use all of the
+<code class="docutils literal notranslate"><span class="pre">FStar.List.Tot</span></code> module if your metaprogram uses lists.</p>
+</section>
+<section id="goals">
+<h2>Goals<a class="headerlink" href="#goals" title="Link to this heading"></a></h2>
+<p>Essentially, a Meta-F* tactic manipulates a <em>proofstate</em>, which is
+essentially a set of <em>goals</em>. Tactic primitives usually work on the
+goals, for example by simplifying (like <code class="docutils literal notranslate"><span class="pre">compute()</span></code>) or by breaking
+them down into smaller <em>sub</em>-goals.</p>
+<p>When proving assertions, all of our goals will be of the shape <code class="docutils literal notranslate"><span class="pre">squash</span>
+<span class="pre">phi</span></code>, where <code class="docutils literal notranslate"><span class="pre">phi</span></code> is some logical formula we must prove. One way to
+break down a goal into subparts is by using the <code class="docutils literal notranslate"><span class="pre">mapply</span></code> tactic, which
+attempts to prove the goal by instantiating the given lemma or function,
+perhaps adding subgoals for the hypothesis and arguments of the lemma.
+This “working backwards” style is very common in tactics frameworks.</p>
+<p>For instance, we could have proved the assertion that <code class="docutils literal notranslate"><span class="pre">pow2</span> <span class="pre">x</span> <span class="pre">&lt;=</span> <span class="pre">pow2</span> <span class="pre">19</span></code>
+in the following way:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">assert</span> (pow2 x &lt;= pow2 19) <span class="k">by</span> (mapply (`FStar.Math.Lemmas.pow2_le_compat));
+</pre></div>
+</div>
+<p>This reduces the proof of <code class="docutils literal notranslate"><span class="pre">pow2</span> <span class="pre">x</span> <span class="pre">&lt;=</span> <span class="pre">pow2</span> <span class="pre">19</span></code> to <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">&lt;=</span> <span class="pre">19</span></code> (the
+precondition of the lemma), which is trivially provably by Z3 in this
+context. Note that we do not have to provide the arguments to the lemma:
+they are inferred by F* through <em>unification</em>. In a nutshell, this means
+F* finds there is an obvious instantiation of the arguments to make the
+postcondition of the lemma and the current assertion coincide. When some
+argument is <em>not</em> found via unification, Meta-F* will present a new goal
+for it.</p>
+<p>This style of proof is more <em>surgical</em> than the one above, since the
+proof that <code class="docutils literal notranslate"><span class="pre">pow2</span> <span class="pre">x</span> <span class="pre">&lt;=</span> <span class="pre">pow2</span> <span class="pre">19</span></code> does not “leak” into the rest of the
+function. If the proof of this assertion required several auxiliary
+lemmas, or a tweak to the solver’s options, etc, this kind of style can
+pay off in robustness.</p>
+<p>Most tactics works on the <em>current</em> goal, which is the first one in
+the proofstate. When a tactic reduces a goal <code class="docutils literal notranslate"><span class="pre">g</span></code> into <code class="docutils literal notranslate"><span class="pre">g1,...,gn</span></code>, the
+new <code class="docutils literal notranslate"><span class="pre">g1,..,gn</span></code> will (usually) be added to the beginning of the list of
+goals.</p>
+<p>In the following simplified example, we are looking to prove <code class="docutils literal notranslate"><span class="pre">s</span></code>
+from <code class="docutils literal notranslate"><span class="pre">p</span></code> given some lemmas. The first thing we do is apply the
+<code class="docutils literal notranslate"><span class="pre">qr_s</span></code> lemma, which gives us two subgoals, for <code class="docutils literal notranslate"><span class="pre">q</span></code> and <code class="docutils literal notranslate"><span class="pre">r</span></code>
+respectively. We then need to proceed to solve the first goal for
+<code class="docutils literal notranslate"><span class="pre">q</span></code>. In order to isolate the proofs of both goals, we can <code class="docutils literal notranslate"><span class="pre">focus</span></code>
+on the current goal making all others temporarily invisible. To prove
+<code class="docutils literal notranslate"><span class="pre">q</span></code>, we then just use the <code class="docutils literal notranslate"><span class="pre">p_r</span></code> lemma and obtain a subgoal for
+<code class="docutils literal notranslate"><span class="pre">p</span></code>. This one we will just just leave to the SMT solver, hence we
+call <code class="docutils literal notranslate"><span class="pre">smt()</span></code> to move it to the list of SMT goals. We prove <code class="docutils literal notranslate"><span class="pre">r</span></code>
+similarly, using <code class="docutils literal notranslate"><span class="pre">p_r</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">assume</span> <span class="k">val</span> p : prop
+<span class="k">assume</span> <span class="k">val</span> q : prop
+<span class="k">assume</span> <span class="k">val</span> r : prop
+<span class="k">assume</span> <span class="k">val</span> s : prop
+
+<span class="k">assume</span> <span class="k">val</span> p_q : unit -&gt; <span class="k">Lemma</span> (<span class="k">requires</span> p) (<span class="k">ensures</span> q)
+<span class="k">assume</span> <span class="k">val</span> p_r : squash p -&gt; <span class="k">Lemma</span> r
+<span class="k">assume</span> <span class="k">val</span> qr_s : unit -&gt; <span class="k">Lemma</span> (q ==&gt; r ==&gt; s)
+
+<span class="k">let</span> test () : <span class="k">Lemma</span> (<span class="k">requires</span> p) (<span class="k">ensures</span> s) =
+  <span class="k">assert</span> s <span class="k">by</span> (
+    mapply (`qr_s);
+    focus (<span class="k">fun</span> () -&gt;
+      mapply (`p_q);
+      smt());
+    focus (<span class="k">fun</span> () -&gt;
+      mapply (`p_r);
+      smt());
+    ()
+  )
+</pre></div>
+</div>
+<p>Once this tactic runs, we are left with SMT goals to prove <code class="docutils literal notranslate"><span class="pre">p</span></code>, which Z3
+discharges immediately.</p>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">mapply</span></code> works with lemmas that ensure an implication, or
+that have a precondition (<code class="docutils literal notranslate"><span class="pre">requires</span></code>/<code class="docutils literal notranslate"><span class="pre">ensures</span></code>), and even those that take a
+squashed proof as argument. Internally, <code class="docutils literal notranslate"><span class="pre">mapply</span></code> is implemented via the
+<code class="docutils literal notranslate"><span class="pre">apply_lemma</span></code> and <code class="docutils literal notranslate"><span class="pre">apply</span></code> primitives, but ideally you should not need to
+use them directly.</p>
+<p>Note, also, that the proofs of each part are completely isolated from
+each other. It is also possible to prove the <code class="docutils literal notranslate"><span class="pre">p_gives_s</span></code> lemma by calling
+the sublemmas directly, and/or adding SMT patterns. While that style of
+proof works, it can quickly become unwieldy.</p>
+</section>
+<section id="quotations">
+<h2>Quotations<a class="headerlink" href="#quotations" title="Link to this heading"></a></h2>
+<p>In the last few examples, you might have noted the backticks, such as
+in <code class="docutils literal notranslate"><span class="pre">(`FStar.Math.Lemmas.pow2_le_compat)</span></code>. This is a <em>quotation</em>: it
+represents the <em>syntax</em> for this lemma instead of the lemma itself. It
+is called a quotation since the idea is analogous to the word “sun”
+being syntax representing the sun.</p>
+<p>A quotation always has type <code class="docutils literal notranslate"><span class="pre">term</span></code>, an abstract type representing
+the AST of F*.</p>
+<p>Meta-F* also provides <em>antiquotations</em>, which are a convenient way of
+modifying an existing term. For instance, if <code class="docutils literal notranslate"><span class="pre">t</span></code> is a term, we can write
+<code class="docutils literal notranslate"><span class="pre">`(1</span> <span class="pre">+</span> <span class="pre">`#t)</span></code> to form the syntax of “adding 1” to <code class="docutils literal notranslate"><span class="pre">t</span></code>. The part inside
+the antiquotation (<code class="docutils literal notranslate"><span class="pre">`#</span></code>) can be anything of type <code class="docutils literal notranslate"><span class="pre">term</span></code>.</p>
+<p>Many metaprogramming primitives, however, do take a <code class="docutils literal notranslate"><span class="pre">term</span></code> as an
+argument to use it in proof, like <code class="docutils literal notranslate"><span class="pre">apply_lemma</span></code> does. In this case,
+the primitives will typecheck the term in order to use it in proofs
+(to make sure that the syntax actually corresponds to a meaningful
+well-typed F* term), though other primitives, such as
+<code class="docutils literal notranslate"><span class="pre">term_to_string</span></code>, won’t typecheck anything.</p>
+<p>We will see ahead that quotations are just a convenient way of
+constructing syntax, instead of doing it step by step via <code class="docutils literal notranslate"><span class="pre">pack</span></code>.</p>
+</section>
+<section id="basic-logic">
+<h2>Basic logic<a class="headerlink" href="#basic-logic" title="Link to this heading"></a></h2>
+<p>Meta-F* provides some predefined tactics to handle “logical” goals.</p>
+<p>For instance, to prove an implication <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">==&gt;</span> <span class="pre">q</span></code>, we can “introduce” the
+hypothesis via <code class="docutils literal notranslate"><span class="pre">implies_intro</span></code> to obtain instead a goal for <code class="docutils literal notranslate"><span class="pre">q</span></code> in a
+context that assumes <code class="docutils literal notranslate"><span class="pre">p</span></code>.</p>
+<p>For experts in Coq and other provers, this tactic is simply called
+<code class="docutils literal notranslate"><span class="pre">intro</span></code> and creates a lambda abstraction. In F* this is slightly
+more contrived due to squashed types, hence the need for an
+<code class="docutils literal notranslate"><span class="pre">implies_intro</span></code> different from the <code class="docutils literal notranslate"><span class="pre">intro</span></code>, explained ahead, that
+introduces a binder.</p>
+<p>Other basic logical tactics include:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">forall_intro</span></code>: for a goal <code class="docutils literal notranslate"><span class="pre">forall</span> <span class="pre">x.</span> <span class="pre">p</span></code>, introduce a fresh <code class="docutils literal notranslate"><span class="pre">x</span></code> into
+the context and present a goal for <code class="docutils literal notranslate"><span class="pre">p</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">l_intros</span></code>: introduce both implications and foralls as much as
+possible.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">split</span></code>: split a conjunction (<code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">/\</span> <span class="pre">q</span></code>) into two goals</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">left</span></code>/<code class="docutils literal notranslate"><span class="pre">right</span></code>: prove a disjunction <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">\/</span> <span class="pre">q</span></code> by proving <code class="docutils literal notranslate"><span class="pre">p</span></code> or <code class="docutils literal notranslate"><span class="pre">q</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">assumption</span></code>: prove the goal from a hypothesis in the context.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pose_lemma</span></code>: given a term <code class="docutils literal notranslate"><span class="pre">t</span></code> representing a lemma call, add its
+postcondition to the context. If the lemma has a precondition, it is
+presented as a separate goal.</p></li>
+</ul>
+</div></blockquote>
+<p>See the <a class="reference external" href="https://github.com/FStarLang/FStar/blob/master/ulib/FStar.Tactics.Logic.fst">FStar.Tactics.Logic</a>
+module for more.</p>
+</section>
+<section id="normalizing-and-unfolding">
+<h2>Normalizing and unfolding<a class="headerlink" href="#normalizing-and-unfolding" title="Link to this heading"></a></h2>
+<p>We have previously seen <code class="docutils literal notranslate"><span class="pre">compute()</span></code>, which blasts a goal with F*’s
+normalizer to reduce it into a <em>normal form</em>. We sometimes need a
+bit more control than that, and hence there are several tactics to
+normalize goals in different ways. Most of them are implemented via a
+few configurable primitives (you can look up their definitions in the
+standard library)</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">compute()</span></code>: calls the normalizer with almost all steps enabled</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">simpl()</span></code>: simplifies logical operations (e.g. reduces <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">/\</span> <span class="pre">True</span></code>
+to <code class="docutils literal notranslate"><span class="pre">p</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">whnf()</span></code> (short for “weak head normal form”): reduces the goal
+until its “head” is evident.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unfold_def</span> <span class="pre">`t</span></code>: unfolds the definition of the name <code class="docutils literal notranslate"><span class="pre">t</span></code> in the goal,
+fully normalizing its body.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">trivial()</span></code>: if the goal is trivial after normalization and simplification,
+solve it.</p></li>
+</ul>
+</div></blockquote>
+<p>The <code class="docutils literal notranslate"><span class="pre">norm</span></code> primitive provides fine-grained control. Its type is
+<code class="docutils literal notranslate"><span class="pre">list</span> <span class="pre">norm_step</span> <span class="pre">-&gt;</span> <span class="pre">Tac</span> <span class="pre">unit</span></code>. The full list of <code class="docutils literal notranslate"><span class="pre">norm_step</span></code> s can
+be found in the <code class="docutils literal notranslate"><span class="pre">FStar.Pervasives</span></code> module, and it is the same one
+available for the <code class="docutils literal notranslate"><span class="pre">norm</span></code> marker in <code class="docutils literal notranslate"><span class="pre">Pervasives</span></code> (beware of the
+name clash between <code class="docutils literal notranslate"><span class="pre">Tactics.norm</span></code> and <code class="docutils literal notranslate"><span class="pre">Pervasives.norm</span></code>!).</p>
+</section>
+<section id="inspecting-and-building-syntax">
+<h2>Inspecting and building syntax<a class="headerlink" href="#inspecting-and-building-syntax" title="Link to this heading"></a></h2>
+<p>As part of automating proofs, we often need to inspect the syntax of
+the goal and the hypotheses in the context to decide what to do. For
+instance, instead of blindly trying to apply the <code class="docutils literal notranslate"><span class="pre">split</span></code> tactic (and
+recovering if it fails), we could instead look at the <em>shape</em> of the
+goal and apply <code class="docutils literal notranslate"><span class="pre">split</span></code> only if the goal has the shape <code class="docutils literal notranslate"><span class="pre">p1</span> <span class="pre">/\</span> <span class="pre">p2</span></code>.</p>
+<p>Note: inspecting syntax is, perhaps obviously, not something we can
+just do everywhere. If a function was allowed to inspect the syntax of
+its argument, it could behave differently on <code class="docutils literal notranslate"><span class="pre">1+2</span></code> and <code class="docutils literal notranslate"><span class="pre">3</span></code>, which
+is bad, since <code class="docutils literal notranslate"><span class="pre">1+2</span> <span class="pre">==</span> <span class="pre">3</span></code> in F*, and functions are expected to map
+equal arguments to the same result. So, for the most part, we cannot
+simply turn a value of type <code class="docutils literal notranslate"><span class="pre">a</span></code> into its syntax. Hence, quotations
+are <em>static</em>, they simply represent the syntax of a term and one
+cannot turn values into terms.  There is a more powerful mechanism of
+<em>dynamic quotations</em> that will be explained later, but suffice it to
+say for now that this can only be done in the <code class="docutils literal notranslate"><span class="pre">Tac</span></code> effect.</p>
+<p>As an example, the <code class="docutils literal notranslate"><span class="pre">cur_goal()</span></code> tactic will return a value of type
+<code class="docutils literal notranslate"><span class="pre">typ</span></code> (an alias for <code class="docutils literal notranslate"><span class="pre">term</span></code> indicating that the term is really the
+representation of an F* type) representing the syntax of the current
+goal.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">term</span></code> type is <em>abstract</em>: it has no observable structure
+itself. Think of it as an opaque “box” containing a term inside. A
+priori, all that can be done with a <code class="docutils literal notranslate"><span class="pre">term</span></code> is pass it to primitives
+that expect one, such as <code class="docutils literal notranslate"><span class="pre">tc</span></code> to type-check it or <code class="docutils literal notranslate"><span class="pre">norm_term</span></code> to
+normalize it. But none of those give us full, programmatic access to
+the structure of the term.</p>
+<p>That’s where the <code class="docutils literal notranslate"><span class="pre">term_view</span></code> comes in: following <a class="reference external" href="https://dl.acm.org/doi/10.1145/41625.41653">a classic idea
+introduced by Phil Wadler</a>, there is function
+called <code class="docutils literal notranslate"><span class="pre">inspect</span></code> that turns a <code class="docutils literal notranslate"><span class="pre">term</span></code> into a <code class="docutils literal notranslate"><span class="pre">term_view</span></code>. The
+<code class="docutils literal notranslate"><span class="pre">term_view</span></code> type resembles an AST, but crucially it is not
+recursive: its subterms have type <code class="docutils literal notranslate"><span class="pre">term</span></code> rather than <code class="docutils literal notranslate"><span class="pre">term_view</span></code>.</p>
+<div class="literal-block-wrapper docutils container" id="id1">
+<div class="code-block-caption"><span class="caption-text">Part of the <code class="docutils literal notranslate"><span class="pre">term_view</span></code> type.</span><a class="headerlink" href="#id1" title="Link to this code"></a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">noeq</span>
+ <span class="nb">type</span> <span class="n">term_view</span> <span class="o">=</span>
+   <span class="o">|</span> <span class="n">Tv_FVar</span>   <span class="p">:</span> <span class="n">v</span><span class="p">:</span><span class="n">fv</span> <span class="o">-&gt;</span> <span class="n">term_view</span>
+   <span class="o">|</span> <span class="n">Tv_App</span>    <span class="p">:</span> <span class="n">hd</span><span class="p">:</span><span class="n">term</span> <span class="o">-&gt;</span> <span class="n">a</span><span class="p">:</span><span class="n">argv</span> <span class="o">-&gt;</span> <span class="n">term_view</span>
+   <span class="o">|</span> <span class="n">Tv_Abs</span>    <span class="p">:</span> <span class="n">bv</span><span class="p">:</span><span class="n">binder</span> <span class="o">-&gt;</span> <span class="n">body</span><span class="p">:</span><span class="n">term</span> <span class="o">-&gt;</span> <span class="n">term_view</span>
+   <span class="o">|</span> <span class="n">Tv_Arrow</span>  <span class="p">:</span> <span class="n">bv</span><span class="p">:</span><span class="n">binder</span> <span class="o">-&gt;</span> <span class="n">c</span><span class="p">:</span><span class="n">comp</span> <span class="o">-&gt;</span> <span class="n">term_view</span>
+   <span class="o">...</span>
+</pre></div>
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">inspect</span></code> primitive “peels away” one level of the abstraction
+layer, giving access to the top-level shape of the term.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">Tv_FVar</span></code> node above represents (an occurrence of) a global name.
+The <code class="docutils literal notranslate"><span class="pre">fv</span></code> type is also abstract, and can be viewed as a <code class="docutils literal notranslate"><span class="pre">name</span></code> (which
+is just <code class="docutils literal notranslate"><span class="pre">list</span> <span class="pre">string</span></code>) via <code class="docutils literal notranslate"><span class="pre">inspect_fv</span></code>.</p>
+<p>For instance, if we were to inspect <code class="docutils literal notranslate"><span class="pre">`qr_s</span></code> (which we used above)
+we would obtain a <code class="docutils literal notranslate"><span class="pre">Tv_FVar</span> <span class="pre">v</span></code>, where <code class="docutils literal notranslate"><span class="pre">inspect_fv</span> <span class="pre">v</span></code> is something
+like <code class="docutils literal notranslate"><span class="pre">[&quot;Path&quot;;</span> <span class="pre">&quot;To&quot;;</span> <span class="pre">&quot;Module&quot;;</span> <span class="pre">&quot;qr_s&quot;]</span></code>, that is, an “exploded”
+representation of the fully-qualified name <code class="docutils literal notranslate"><span class="pre">Path.To.Module.qr-s</span></code>.</p>
+<p>Every syntactic construct (terms, free variables, bound variables,
+binders, computation types, etc) is modeled abstractly like <code class="docutils literal notranslate"><span class="pre">term</span></code> and
+<code class="docutils literal notranslate"><span class="pre">fv</span></code>, and has a corresponding inspection function. A list can be found
+in <code class="docutils literal notranslate"><span class="pre">FStar.Reflection.Builtins</span></code>.</p>
+<p>If the inspected term is an application, <code class="docutils literal notranslate"><span class="pre">inspect</span></code> will return a
+<code class="docutils literal notranslate"><span class="pre">Tv_App</span> <span class="pre">f</span> <span class="pre">a</span></code> node. Here <code class="docutils literal notranslate"><span class="pre">f</span></code> is a <code class="docutils literal notranslate"><span class="pre">term</span></code>, so if we want to know its
+structure we must recursively call <code class="docutils literal notranslate"><span class="pre">inspect</span></code> on it. The <code class="docutils literal notranslate"><span class="pre">a</span></code> part
+is an <em>argument</em>, consisting of a <code class="docutils literal notranslate"><span class="pre">term</span></code> and an argument qualifier
+(<code class="docutils literal notranslate"><span class="pre">aqualv</span></code>). The qualifier specifies if the application is implicit or
+explicit.</p>
+<p>Of course, in the case of a nested application such as <code class="docutils literal notranslate"><span class="pre">f</span> <span class="pre">x</span> <span class="pre">y</span></code>, this
+is nested as <code class="docutils literal notranslate"><span class="pre">(f</span> <span class="pre">x)</span> <span class="pre">y</span></code>, so inspecting it would return a <code class="docutils literal notranslate"><span class="pre">Tv_App</span></code>
+node containing <code class="docutils literal notranslate"><span class="pre">f</span> <span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> (with a <code class="docutils literal notranslate"><span class="pre">Q_Explicit</span></code> qualifier).
+There are some helper functions defined to make inspecting applications
+easier, like <code class="docutils literal notranslate"><span class="pre">collect_app</span></code>, which decompose a term into its “head” and
+all of the arguments the head is applied to.</p>
+<p>Now, knowing this, we would then like a function to check if the goal is
+a conjunction.
+Naively, we need to inspect the goal to check that it is of the shape
+<code class="docutils literal notranslate"><span class="pre">squash</span> <span class="pre">((/\)</span> <span class="pre">a1</span> <span class="pre">a2)</span></code>, that is, an application with two arguments
+where the head is the symbol for a conjunction, i.e. <code class="docutils literal notranslate"><span class="pre">(/\)</span></code>. This can
+already be done with the <code class="docutils literal notranslate"><span class="pre">term_view</span></code>, but is quite inconvenient due to
+there being <em>too much</em> information in it.</p>
+<p>Meta-F* therefore provides another type, <code class="docutils literal notranslate"><span class="pre">formula</span></code>, to represent logical
+formulas more directly. Hence it suffices for us to call <code class="docutils literal notranslate"><span class="pre">term_as_formula</span></code>
+and match on the result, like so:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="c">(* Check if a given term is a conjunction, via term_as_formula. *)</span>
+<span class="k">let</span> isconj_t (t:term) : Tac bool =
+  <span class="k">match</span> term_as_formula t <span class="k">with</span>
+  | And <span class="k">_</span> <span class="k">_</span> -&gt; <span class="k">true</span>
+  | <span class="k">_</span> -&gt; <span class="k">false</span>
+
+<span class="c">(* Check if the goal is a conjunction. *)</span>
+<span class="k">let</span> isconj () : Tac bool = isconj_t (cur_goal ())
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">term_as_formula</span></code> function, and all others that work on syntax,
+are defined in “userspace” (that is, as library tactics/metaprograms) by
+using <code class="docutils literal notranslate"><span class="pre">inspect</span></code>.</p>
+<div class="literal-block-wrapper docutils container" id="id2">
+<div class="code-block-caption"><span class="caption-text">Part of the <code class="docutils literal notranslate"><span class="pre">formula</span></code> type.</span><a class="headerlink" href="#id2" title="Link to this code"></a></div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">noeq</span>
+<span class="nb">type</span> <span class="n">formula</span> <span class="o">=</span>
+  <span class="o">|</span> <span class="n">True_</span>  <span class="p">:</span> <span class="n">formula</span>
+  <span class="o">|</span> <span class="n">False_</span> <span class="p">:</span> <span class="n">formula</span>
+  <span class="o">|</span> <span class="n">And</span>    <span class="p">:</span> <span class="n">term</span> <span class="o">-&gt;</span> <span class="n">term</span> <span class="o">-&gt;</span> <span class="n">formula</span>
+  <span class="o">|</span> <span class="n">Or</span>     <span class="p">:</span> <span class="n">term</span> <span class="o">-&gt;</span> <span class="n">term</span> <span class="o">-&gt;</span> <span class="n">formula</span>
+  <span class="o">|</span> <span class="n">Not</span>    <span class="p">:</span> <span class="n">term</span> <span class="o">-&gt;</span> <span class="n">formula</span>
+  <span class="o">|</span> <span class="n">Implies</span><span class="p">:</span> <span class="n">term</span> <span class="o">-&gt;</span> <span class="n">term</span> <span class="o">-&gt;</span> <span class="n">formula</span>
+  <span class="o">|</span> <span class="n">Forall</span> <span class="p">:</span> <span class="n">bv</span> <span class="o">-&gt;</span> <span class="n">term</span> <span class="o">-&gt;</span> <span class="n">formula</span>
+  <span class="o">...</span>
+</pre></div>
+</div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For experts: F* terms are (internally) represented with a
+locally-nameless representation, meaning that variables do not have
+a name under binders, but a de Bruijn index instead. While this has
+many advantages, it is likely to be counterproductive when doing
+tactics and metaprogramming, hence <code class="docutils literal notranslate"><span class="pre">inspect</span></code> <em>opens</em> variables when
+it traverses a binder, transforming the term into a fully-named
+representation. This is why <code class="docutils literal notranslate"><span class="pre">inspect</span></code> is effectful: it requires
+freshness to avoid name clashes. If you prefer to work with a
+locally-nameless representation, and avoid the effect label, you can
+use <code class="docutils literal notranslate"><span class="pre">inspect_ln</span></code> instead (which will return <code class="docutils literal notranslate"><span class="pre">Tv_BVar</span></code> nodes instead
+of <code class="docutils literal notranslate"><span class="pre">Tv_Var</span></code> ones).</p>
+</div>
+<p>Dually, a <code class="docutils literal notranslate"><span class="pre">term_view</span></code> can be transformed into a <code class="docutils literal notranslate"><span class="pre">term</span></code> via the
+<code class="docutils literal notranslate"><span class="pre">pack</span></code> primitive, in order to build the syntax of any term. However,
+it is usually more comfortable to use antiquotations (see above) for
+building terms.</p>
+</section>
+<section id="usual-gotchas">
+<h2>Usual gotchas<a class="headerlink" href="#usual-gotchas" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">smt</span></code> tactic does <em>not</em> immediately call the SMT solver. It merely
+places the current goal into the “SMT Goal” list, all of which are sent
+to the solver when the tactic invocation finishes. If any of these fail,
+there is currently no way to “try again”.</p></li>
+<li><p>If a tactic is natively compiled and loaded as a plugin, editing its
+source file may not have any effect (it depends on the build
+system). You should recompile the tactic, just delete its object
+file, or use the F* option <code class="docutils literal notranslate"><span class="pre">--no_plugins</span></code> to run it via the
+interpreter temporarily,</p></li>
+<li><p>When proving a lemma, we cannot just use <code class="docutils literal notranslate"><span class="pre">_</span> <span class="pre">by</span> <span class="pre">...</span></code> since the expected
+type is just <code class="docutils literal notranslate"><span class="pre">unit</span></code>. Workaround: assert the postcondition again,
+or start without any binder.</p></li>
+</ul>
+</section>
+<section id="coming-soon">
+<h2>Coming soon<a class="headerlink" href="#coming-soon" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p>Metaprogramming</p></li>
+<li><p>Meta arguments and typeclasses</p></li>
+<li><p>Plugins (efficient tactics and metaprograms, <code class="docutils literal notranslate"><span class="pre">--codegen</span> <span class="pre">Plugin</span></code> and <code class="docutils literal notranslate"><span class="pre">--load</span></code>)</p></li>
+<li><p>Tweaking the SMT options</p></li>
+<li><p>Automated coercions inspect/pack</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">e</span> <span class="pre">&lt;:</span> <span class="pre">C</span> <span class="pre">by</span> <span class="pre">...</span></code></p></li>
+<li><p>Tactics can be used as steps of calc proofs.</p></li>
+<li><p>Solving implicits (Steel)</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="part5.html" class="btn btn-neutral float-left" title="Tactics and Metaprogramming with Meta-F*" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../pulse/pulse.html" class="btn btn-neutral float-right" title="Pulse: Proof-oriented Programming in Concurrent Separation Logic" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

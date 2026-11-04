@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pulse: Proof-oriented Programming in Concurrent Separation Logic &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Getting up and running with Codespaces" href="pulse_getting_started.html" />
+    <link rel="prev" title="An Overview of Tactics" href="../part5/part5_meta.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pulse_getting_started.html">Getting up and running with Codespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ch1.html">Pulse Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ch2.html">Mutable References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_existentials.html">Existential Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_user_defined_predicates.html">User-defined Predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_conditionals.html">Conditionals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_loops.html">Loops &amp; Recursion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_arrays.html">Mutable Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ghost.html">Ghost Computations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_higher_order.html">Higher Order Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_implication_and_forall.html">Implication and Universal Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_linked_list.html">Linked Lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_atomics_and_invariants.html">Atomic Operations and Invariants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_spin_lock.html">Spin Locks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_parallel_increment.html">Parallel Increment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_extraction.html">Extraction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Pulse: Proof-oriented Programming in Concurrent Separation Logic</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="pulse-proof-oriented-programming-in-concurrent-separation-logic">
+<span id="partpulse"></span><h1>Pulse: Proof-oriented Programming in Concurrent Separation Logic<a class="headerlink" href="#pulse-proof-oriented-programming-in-concurrent-separation-logic" title="Link to this heading"></a></h1>
+<p>Many F* projects involve building domain-specific languages with
+specialized programming and proving support. For example, <a class="reference external" href="https://github.com/project-everest/vale">Vale</a> supports program proofs
+for a structured assembly language; <a class="reference external" href="https://fstarlang.github.io/lowstar/html/">Low*</a> provides effectful
+programming in F* with a C-like memory model; <a class="reference external" href="https://github.com/project-everest/everparse">EverParse</a> is a DSL for writing
+low-level parsers and serializers. Recently, F* has gained new
+features for building DSLs embedded in F* with customized syntax, type
+checker plugins, extraction support, etc., with <em>Pulse</em> as a showcase
+example of such a DSL.</p>
+<p>Pulse is a new programming language embedded in F*, inheriting many of
+its features (notably, it is higher order and has dependent types),
+but with built-in support for programming with mutable state and
+concurrency, with specifications and proofs in <a class="reference external" href="https://en.wikipedia.org/wiki/Separation_logic">Concurrent Separation
+Logic</a>.</p>
+<p>As a first taste of Pulse, here’s a function to increment a mutable
+integer reference.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> incr (x:ref int)
+<span class="k">requires</span> pts_to x &#39;i
+<span class="k">ensures</span> pts_to x (&#39;i + 1)
+{
+    <span class="k">let</span> v = !x;
+    x := v + 1;
+}
+</pre></div>
+</div>
+<p>And here’s a function to increment two references in parallel.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> par_incr (x y:ref int)
+<span class="k">requires</span> pts_to x &#39;i
+<span class="k">requires</span> pts_to y &#39;j
+<span class="k">ensures</span> pts_to x (&#39;i + 1)
+<span class="k">ensures</span> pts_to y (&#39;j + 1)
+{
+   par (<span class="k">fun</span> <span class="k">_</span> -&gt; incr x #&#39;i)
+       (<span class="k">fun</span> <span class="k">_</span> -&gt; incr y #&#39;j)
+}
+</pre></div>
+</div>
+<p>You may not have heard about separation logic before—but perhaps
+these specifications already make intuitive sense to you. The type of
+<code class="docutils literal notranslate"><span class="pre">incr</span></code> says that if “x points to ‘i” initially, then when <code class="docutils literal notranslate"><span class="pre">incr</span></code>
+returns, “x points to ‘i + 1”; while <code class="docutils literal notranslate"><span class="pre">par_incr</span></code> increments the
+contents of <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code> in parallel by using the <code class="docutils literal notranslate"><span class="pre">par</span></code>
+combinator.</p>
+<p>Concurrent separation logic is an active research area and there are many such
+logics to use, all with different tradeoffs. The state of the art in concurrent
+separation logic is <a class="reference external" href="https://iris-project.org/">Iris</a>, a higher-order,
+impredicative separation logic. Drawing inspiration from Iris, Pulse’s logic is
+similar in many ways to Iris, but is based on a logic called PulseCore,
+formalized entirely within F*—you can find the formalization <a class="reference external" href="https://github.com/FStarLang/pulse/tree/main/lib/pulse/core">here</a>. Proofs of
+programs in Pulse’s surface language correspond to proofs of correctness in the
+PulseCore program logic. But, you should not need to know much about how the
+logic is formalized to use Pulse effectively. We’ll start from the basics and
+explain what you need to know about concurrent separation logic to start
+programming and proving in Pulse. Additionally, Pulse is an extension of F*, so
+all you’ve learned about F*, lemmas, dependent types, refinement types, etc.
+will be of use again.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Why is it called Pulse? Because it grew from a prior logic called
+<a class="reference external" href="https://fstar-lang.org/papers/steel/">Steel</a>, and one of the
+authors and his daughter are big fans of a classic reggae band
+called <a class="reference external" href="https://steelpulse.com/">Steel Pulse</a>. We wanted a name
+that was softer than Steel, and, well, a bit playful. So, Pulse!</p>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="pulse_getting_started.html">Getting up and running with Codespaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pulse_ch1.html">Pulse Basics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pulse_ch2.html">Mutable References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pulse_existentials.html">Existential Quantification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pulse_user_defined_predicates.html">User-defined Predicates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pulse_conditionals.html">Conditionals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pulse_loops.html">Loops &amp; Recursion</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pulse_arrays.html">Mutable Arrays</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pulse_ghost.html">Ghost Computations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pulse_higher_order.html">Higher Order Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pulse_implication_and_forall.html">Implication and Universal Quantification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pulse_linked_list.html">Linked Lists</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pulse_atomics_and_invariants.html">Atomic Operations and Invariants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pulse_spin_lock.html">Spin Locks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pulse_parallel_increment.html">Parallel Increment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pulse_extraction.html">Extraction</a></li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../part5/part5_meta.html" class="btn btn-neutral float-left" title="An Overview of Tactics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pulse_getting_started.html" class="btn btn-neutral float-right" title="Getting up and running with Codespaces" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

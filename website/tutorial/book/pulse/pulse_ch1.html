@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pulse Basics &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Mutable References" href="pulse_ch2.html" />
+    <link rel="prev" title="Getting up and running with Codespaces" href="pulse_getting_started.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pulse_getting_started.html">Getting up and running with Codespaces</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Pulse Basics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#a-separation-logic-primer">A Separation Logic Primer</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ch2.html">Mutable References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_existentials.html">Existential Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_user_defined_predicates.html">User-defined Predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_conditionals.html">Conditionals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_loops.html">Loops &amp; Recursion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_arrays.html">Mutable Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ghost.html">Ghost Computations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_higher_order.html">Higher Order Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_implication_and_forall.html">Implication and Universal Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_linked_list.html">Linked Lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_atomics_and_invariants.html">Atomic Operations and Invariants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_spin_lock.html">Spin Locks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_parallel_increment.html">Parallel Increment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_extraction.html">Extraction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+      <li class="breadcrumb-item active">Pulse Basics</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="pulse-basics">
+<span id="id1"></span><h1>Pulse Basics<a class="headerlink" href="#pulse-basics" title="Link to this heading"></a></h1>
+<p>A Pulse program is embedded in an F* program by including the
+directive <code class="docutils literal notranslate"><span class="pre">#lang-pulse</span></code> in an F* file. The rest of the file can
+then use a mixture of Pulse and F* syntax, as shown below.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span>#lang-pulse
+<span class="k">open</span> Pulse.Lib.Pervasives
+<span class="k">let</span> fstar_five : int = 5
+
+<span class="k">fn</span> five ()
+  <span class="k">returns</span> n:int
+  <span class="k">ensures</span> pure (n == 5)
+{ 
+  fstar_five
+}
+
+
+<span class="k">let</span> pulse_five_in_fstar = five ()
+</pre></div>
+</div>
+<p>This program starts with a bit of regular F* defining <code class="docutils literal notranslate"><span class="pre">fstar_five</span></code>
+followed by a Pulse function <code class="docutils literal notranslate"><span class="pre">five</span></code> that references that F*
+definition and proves that it always returns the constant
+<code class="docutils literal notranslate"><span class="pre">5</span></code>. Finally, we have a bit of regular F* referencing the <code class="docutils literal notranslate"><span class="pre">five</span></code>
+defined in Pulse. This is a really simple program, but it already
+illustrates how Pulse and F* interact in both directions.</p>
+<p>In what follows, unless we really want to emphasize that a fragment of code is
+Pulse embedded in a larger F* context, we just assume that we’re working in a
+context where <code class="docutils literal notranslate"><span class="pre">#lang-pulse</span></code> is enabled.</p>
+<section id="a-separation-logic-primer">
+<h2>A Separation Logic Primer<a class="headerlink" href="#a-separation-logic-primer" title="Link to this heading"></a></h2>
+<p>Separation Logic was invented by John Reynolds, Peter O’Hearn, and
+others in the late 1990s as a way to reason about imperative programs
+that use shared, mutable data structures, e.g., linked lists and
+graphs—see this paper for <a class="reference external" href="https://www.cs.cmu.edu/~jcr/seplogic.pdf">an introduction to separation logic</a>. In the subsequent
+decades, several innovations were added to separation logic by many
+people, generalizing it beyond just sequential heap-manipulating
+programs to distributed programs, concurrent programs, asynchronous
+programs, etc. that manipulate abstract resources of various kinds,
+including time and space, messages sent over communication channels,
+etc.</p>
+<p>Much like other Hoare Logics, which we reviewed in <a class="reference internal" href="../part4/part4_pure.html#part4-floyd-hoare"><span class="std std-ref">an earlier
+section</span></a>, separation logic comes in two parts.</p>
+<p><strong>Separation Logic Propositions</strong> First, we have a language of propositions that
+describe properties about program resources, e.g., the heap. These propositions
+have the type <code class="docutils literal notranslate"><span class="pre">slprop</span></code> in Pulse, and, under the covers in the PulseCore
+semantics of Pulse, a <code class="docutils literal notranslate"><span class="pre">slprop</span> <span class="pre">=</span> <span class="pre">state</span> <span class="pre">-&gt;</span> <span class="pre">prop</span></code>, where <code class="docutils literal notranslate"><span class="pre">state</span></code> represents the
+state of a program, e.g., the contents of memory. It is useful (at least at
+first) to think of a <code class="docutils literal notranslate"><span class="pre">slprop</span></code> as a memory property, though we will eventually
+treat it more abstractly and use it to model many other kinds of resources.</p>
+<p><strong>Separation Logic Hoare Triples</strong> To connect <code class="docutils literal notranslate"><span class="pre">slprop</span></code>’s to programs,
+separation logics use Hoare triples to describe the action of a
+program on its state. For example, the Hoare triple <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">p</span> <span class="pre">}</span> <span class="pre">c</span> <span class="pre">{</span> <span class="pre">n.</span> <span class="pre">q</span>
+<span class="pre">}</span></code> describes a program <code class="docutils literal notranslate"><span class="pre">c</span></code> which when run in an initial state
+<code class="docutils literal notranslate"><span class="pre">s0</span></code> satisfying <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">s0</span></code> (i.e., <code class="docutils literal notranslate"><span class="pre">p</span></code> is a precondition); <code class="docutils literal notranslate"><span class="pre">c</span></code>
+returns a value <code class="docutils literal notranslate"><span class="pre">n</span></code> while transforming the state to <code class="docutils literal notranslate"><span class="pre">s1</span></code>
+satisfying <code class="docutils literal notranslate"><span class="pre">q</span> <span class="pre">n</span> <span class="pre">s1</span></code> (i.e., <code class="docutils literal notranslate"><span class="pre">q</span></code> is a postcondition). Pulse’s
+program logic is a partial-correctness logic, meaning that <code class="docutils literal notranslate"><span class="pre">c</span></code> may
+also loop forever, deadlock with other threads, etc.</p>
+<dl>
+<dt><strong>Some simple slprops and triples</strong>: Here are two of the simplest</dt><dd><p><code class="docutils literal notranslate"><span class="pre">slprops</span></code> (defined in <code class="docutils literal notranslate"><span class="pre">Pulse.Lib.Pervasives</span></code>):</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">emp</span></code>, the trivial proposition (equivalent to <code class="docutils literal notranslate"><span class="pre">fun</span> <span class="pre">s</span> <span class="pre">-&gt;</span> <span class="pre">True</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pure</span> <span class="pre">p</span></code>, heap-independent predicate <code class="docutils literal notranslate"><span class="pre">fun</span> <span class="pre">s</span> <span class="pre">-&gt;</span> <span class="pre">p</span></code>. <code class="docutils literal notranslate"><span class="pre">emp</span></code> is
+equivalent to <code class="docutils literal notranslate"><span class="pre">pure</span> <span class="pre">True</span></code>.</p></li>
+</ul>
+</div></blockquote>
+</dd>
+</dl>
+<p>The type of the program <code class="docutils literal notranslate"><span class="pre">five</span></code> illustrates how these <code class="docutils literal notranslate"><span class="pre">slprop</span></code>’s are
+used in program specifications:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>It is a function with a single unit argument—Pulse functions use
+the keyword <code class="docutils literal notranslate"><span class="pre">fn</span></code>.</p></li>
+<li><p>The precondition is just <code class="docutils literal notranslate"><span class="pre">emp</span></code>, the trivial assertion in
+separation logic, i.e., <code class="docutils literal notranslate"><span class="pre">five</span></code> can be called in any initial
+state.</p></li>
+<li><p>The return value is an integer <code class="docutils literal notranslate"><span class="pre">n:int</span></code></p></li>
+<li><p>The postcondition may refer to the name of the return value (<code class="docutils literal notranslate"><span class="pre">n</span></code>
+in this case) and here claims that the final state satisfies the
+<code class="docutils literal notranslate"><span class="pre">pure</span></code> proposition, <code class="docutils literal notranslate"><span class="pre">n</span> <span class="pre">==</span> <span class="pre">5</span></code>.</p></li>
+</ul>
+</div></blockquote>
+<p>In other words, the type signature in Pulse is a convenient way to
+write the Hoare triple <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">emp</span> <span class="pre">}</span> <span class="pre">five</span> <span class="pre">()</span> <span class="pre">{</span> <span class="pre">n:int.</span> <span class="pre">pure</span> <span class="pre">(n</span> <span class="pre">==</span> <span class="pre">5)</span> <span class="pre">}</span></code>.</p>
+<p><strong>Ownership</strong> At this point you may wonder if the postcondition of
+<code class="docutils literal notranslate"><span class="pre">five</span></code> is actually strong enough. We’ve only said that the return
+value <code class="docutils literal notranslate"><span class="pre">n</span> <span class="pre">==</span> <span class="pre">5</span></code> but have not said anything about the state that
+results from calling <code class="docutils literal notranslate"><span class="pre">five</span> <span class="pre">()</span></code>. Perhaps this specification allows
+<code class="docutils literal notranslate"><span class="pre">five</span></code> to arbitrarily change any memory location in the state, since <code class="docutils literal notranslate"><span class="pre">pure</span>
+<span class="pre">(5</span> <span class="pre">==</span> <span class="pre">5)</span></code> is true of any state. <a class="footnote-reference brackets" href="#id5" id="id2" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> If you’re familiar with Low*,
+Dafny, or other languages based on Hoare logic for heaps, you may be
+wondering about how come we haven’t specified a <code class="docutils literal notranslate"><span class="pre">modifies</span></code>-clause,
+describing exactly which part of the state a function may have
+changed. The nice thing in separation logic is that there is no need
+to describe what parts of the state you may have modified. This is
+because a central idea in logic is the concept of <em>ownership</em>. To a
+first approximation, a computation can only access those resources
+that it is explicitly granted access to in its precondition or those
+that it creates itself. <a class="footnote-reference brackets" href="#id6" id="id3" role="doc-noteref"><span class="fn-bracket">[</span>2<span class="fn-bracket">]</span></a> In this case, with a precondition of
+<code class="docutils literal notranslate"><span class="pre">emp</span></code>, the function <code class="docutils literal notranslate"><span class="pre">five</span></code> does not have permission to access
+<em>any</em> resources, and so <code class="docutils literal notranslate"><span class="pre">five</span></code> simply cannot modify the state in any
+observable way.</p>
+<p><strong>Separating Conjunction and the Frame Rule</strong> Let’s go back to
+<code class="docutils literal notranslate"><span class="pre">incr</span></code> and <code class="docutils literal notranslate"><span class="pre">par_incr</span></code> that we saw in the previous section and look
+at their types closely. We’ll need to introduce two more common
+<code class="docutils literal notranslate"><span class="pre">slprop</span></code>’s, starting with the “points-to” predicate:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">x</span> <span class="pre">v</span></code> asserts that the reference <code class="docutils literal notranslate"><span class="pre">x</span></code> points to a cell
+in the current state that holds the value <code class="docutils literal notranslate"><span class="pre">v</span></code>.</p></li>
+</ul>
+</div></blockquote>
+<p><code class="docutils literal notranslate"><span class="pre">slprop</span></code>’s can also be combined in various ways, the most common one
+being the “separating conjunction”, written <code class="docutils literal notranslate"><span class="pre">**</span></code> in Pulse. <a class="footnote-reference brackets" href="#id7" id="id4" role="doc-noteref"><span class="fn-bracket">[</span>3<span class="fn-bracket">]</span></a></p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">**</span> <span class="pre">q</span></code>, means that the state can be split into two <em>disjoint</em>
+fragments satisfying <code class="docutils literal notranslate"><span class="pre">p</span></code> and <code class="docutils literal notranslate"><span class="pre">q</span></code>, respectively. Alternatively,
+one could read <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">**</span> <span class="pre">q</span></code> as meaning that one holds the
+permissions associated with both <code class="docutils literal notranslate"><span class="pre">p</span></code> and <code class="docutils literal notranslate"><span class="pre">q</span></code> separately in a
+given state. The <code class="docutils literal notranslate"><span class="pre">**</span></code> operator satisfies the following laws:</p>
+<ul>
+<li><p>Commutativity: <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">**</span> <span class="pre">q</span></code> is equivalent to <code class="docutils literal notranslate"><span class="pre">q</span> <span class="pre">**</span> <span class="pre">p</span></code></p></li>
+<li><p>Associativity: <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">**</span> <span class="pre">(q</span> <span class="pre">**</span> <span class="pre">r)</span></code> is equivalent to <code class="docutils literal notranslate"><span class="pre">(p</span> <span class="pre">**</span> <span class="pre">q)</span> <span class="pre">**</span> <span class="pre">r</span></code></p></li>
+<li><p>Left and right unit: <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">**</span> <span class="pre">emp</span></code> is equivalent to <code class="docutils literal notranslate"><span class="pre">p</span></code>. Since
+<code class="docutils literal notranslate"><span class="pre">**</span></code> is commutative, this also means that <code class="docutils literal notranslate"><span class="pre">emp</span> <span class="pre">**</span> <span class="pre">p</span></code> is
+equivalent to <code class="docutils literal notranslate"><span class="pre">p</span></code></p></li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+<p>Now, perhaps the defining characteristic of separation logic is how
+the <code class="docutils literal notranslate"><span class="pre">**</span></code> operator works in the program logic, via a key rule known
+as the <em>frame</em> rule. The rule says that if you can prove the Hoare
+triple <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">p</span> <span class="pre">}</span> <span class="pre">c</span> <span class="pre">{</span> <span class="pre">n.</span> <span class="pre">q</span> <span class="pre">}</span></code>, then, for any other <code class="docutils literal notranslate"><span class="pre">f</span> <span class="pre">:</span> <span class="pre">slprop</span></code>, you
+can also prove <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">p</span> <span class="pre">**</span> <span class="pre">f</span> <span class="pre">}</span> <span class="pre">c</span> <span class="pre">{</span> <span class="pre">n.</span> <span class="pre">q</span> <span class="pre">**</span> <span class="pre">f</span> <span class="pre">}</span></code>—<code class="docutils literal notranslate"><span class="pre">f</span></code> is often called
+the “frame”. It might take some time to appreciate, but the frame rule
+captures the essence of local, modular reasoning. Roughly, it states
+that if a program is correct when it only has permission <code class="docutils literal notranslate"><span class="pre">p</span></code> on the
+input state, then it remains correct when run in a larger state and is
+guaranteed to preserve any property (<code class="docutils literal notranslate"><span class="pre">f</span></code>) on the part of the state
+that it doesn’t touch.</p>
+<p>With this in mind, let’s look again at the type of <code class="docutils literal notranslate"><span class="pre">incr</span></code>, which
+requires permission only to <code class="docutils literal notranslate"><span class="pre">x</span></code> and increments it:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> incr (x:ref int)
+<span class="k">requires</span> pts_to x &#39;i
+<span class="k">ensures</span> pts_to x (&#39;i + 1)
+{
+    <span class="k">let</span> v = !x;
+    x := v + 1;
+}
+</pre></div>
+</div>
+<p>Because of the frame rule, we can also call <code class="docutils literal notranslate"><span class="pre">incr</span></code> in a context like
+<code class="docutils literal notranslate"><span class="pre">incr_frame</span></code> below, and we can prove without any additional work
+that <code class="docutils literal notranslate"><span class="pre">y</span></code> is unchanged.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> incr_frame (x y:ref int)
+<span class="k">requires</span> pts_to x &#39;i
+preserves pts_to y &#39;j
+<span class="k">ensures</span> pts_to x (&#39;i + 1)
+{
+   incr x;
+}
+</pre></div>
+</div>
+<p>In fact, Pulse lets us use the frame rule with any <code class="docutils literal notranslate"><span class="pre">f:slprop</span></code>, and we
+get, for free, that <code class="docutils literal notranslate"><span class="pre">incr</span> <span class="pre">x</span></code> does not disturb <code class="docutils literal notranslate"><span class="pre">f</span></code>.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> incr_frame_any (x:ref int) (f:slprop)
+<span class="k">requires</span> pts_to x &#39;i
+preserves f
+<span class="k">ensures</span> pts_to x (&#39;i + 1)
+{
+   incr x;
+}
+</pre></div>
+</div>
+<p>A point about the notation: The variable <code class="docutils literal notranslate"><span class="pre">'i</span></code> is an implicitly bound
+logical variable, representing the value held in the ref-cell <code class="docutils literal notranslate"><span class="pre">x</span></code> in
+the initial state. In this case, <code class="docutils literal notranslate"><span class="pre">'i</span></code> has type <code class="docutils literal notranslate"><span class="pre">FStar.Ghost.erased</span>
+<span class="pre">int</span></code>—we learned about <a class="reference internal" href="../part4/part4_ghost.html#part4-ghost"><span class="std std-ref">erased types in a previous section</span></a>. One can also bind logical variables explicitly, e.g.,
+this is equivalent:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> incr_explicit_i (x:ref int) (i:erased int)
+<span class="k">requires</span> pts_to x i
+<span class="k">ensures</span> pts_to x (i + 1)
+{
+    <span class="k">let</span> v = !x;
+    x := v + 1;
+}
+</pre></div>
+</div>
+<p><strong>Other slprop connectives</strong> In addition to the separating conjunction,
+Pulse, like other separation logics, provides other ways to combine
+<code class="docutils literal notranslate"><span class="pre">slprops</span></code>. We’ll look at these in detail in the subsequent chapters,
+but we list the most common other connectives below just to give you a
+taste of the logic.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">exists*</span> <span class="pre">(x1:t1)</span> <span class="pre">...</span> <span class="pre">(xn:tn).</span> <span class="pre">p</span></code>: Existential quantification is
+used extensively in the Pulse libraries, and the language provides
+many tools to make existentials convenient to use. <code class="docutils literal notranslate"><span class="pre">exists</span> <span class="pre">x.</span> <span class="pre">p</span></code>
+is valid in a state <code class="docutils literal notranslate"><span class="pre">s</span></code> if there is a witness <code class="docutils literal notranslate"><span class="pre">w</span></code> such that
+<code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">[w/x]</span></code> is valid in <code class="docutils literal notranslate"><span class="pre">s</span></code>. For experts, existential
+quantification is impredicative, in the sense that one can quantify
+over <code class="docutils literal notranslate"><span class="pre">slprops</span></code> themselves, i.e., <code class="docutils literal notranslate"><span class="pre">exists*</span> <span class="pre">(p:slprop).</span> <span class="pre">q</span></code> is
+allowed.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">forall*</span> <span class="pre">(x1:t1)</span> <span class="pre">...</span> <span class="pre">(xn:tn).</span> <span class="pre">p</span></code>: Universal quantification is
+also supported, though less commonly used. <code class="docutils literal notranslate"><span class="pre">forall</span> <span class="pre">(x:t).</span> <span class="pre">p</span></code> is
+valid in <code class="docutils literal notranslate"><span class="pre">s</span></code> if <code class="docutils literal notranslate"><span class="pre">p[w/x]</span></code> is valid for all values <code class="docutils literal notranslate"><span class="pre">w:t</span></code>.
+Like existential quantification, it is also impredicative.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">&#64;==&gt;</span> <span class="pre">q</span></code> is a form of separating implication similar to an
+operator called a <em>magic wand</em> or a <em>view shift</em> in other
+separation logics.</p></li>
+</ul>
+</div></blockquote>
+<p>Pulse does not yet provide libraries for conjunction or
+disjunction. However, since Pulse is embedded in F*, new slprops can
+also be defined by the user and it is common to do so, e.g.,
+recursively defined predicates, or variants of the connectives
+described above.</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id5" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id2">1</a><span class="fn-bracket">]</span></span>
+<p>For experts, Pulse’s separation logic is <em>affine</em>.</p>
+</aside>
+<aside class="footnote brackets" id="id6" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id3">2</a><span class="fn-bracket">]</span></span>
+<p>When we get to things like invariants and locks, we’ll see how
+permissions can be acquired by other means.</p>
+</aside>
+<aside class="footnote brackets" id="id7" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id4">3</a><span class="fn-bracket">]</span></span>
+<p>In the separation logic literature, separating conjunction is
+written <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">*</span> <span class="pre">q</span></code>, with just a single star. We use two stars
+<code class="docutils literal notranslate"><span class="pre">**</span></code> to avoid a clash with multiplication.</p>
+</aside>
+</aside>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pulse_getting_started.html" class="btn btn-neutral float-left" title="Getting up and running with Codespaces" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pulse_ch2.html" class="btn btn-neutral float-right" title="Mutable References" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

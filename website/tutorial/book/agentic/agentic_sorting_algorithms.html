@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>On Abstraction &amp; Rubrics &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Rubrics as Templates" href="agentic_rubrics_as_templates.html" />
+    <link rel="prev" title="Rubrics, Templates, and Audits" href="agentic_rubrics_templates_audits.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pulse/pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="agentic.html">Agentic Proof-Oriented Programming</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="agentic_getting_started.html">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agentic_rubrics_templates_audits.html">Rubrics, Templates, and Audits</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">On Abstraction &amp; Rubrics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#shared-rubrics">Shared Rubrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ghost-state-for-complexity-proofs">Ghost State for Complexity Proofs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#better-rubrics-with-abstraction">Better Rubrics with Abstraction</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#monotonic-ghost-state">Monotonic Ghost State</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#instrumenting-comparisons-with-ticks">Instrumenting Comparisons with Ticks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#tying-it-together-with-parametricity">Tying it Together with Parametricity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#using-the-rubric">Using the Rubric</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#auditing-implementations-what-is-an-algorithm">Auditing Implementations: What is an Algorithm?</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="agentic_rubrics_as_templates.html">Rubrics as Templates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agentic_state_machines.html">Stateful Services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agentic_tls.html">A Verified TLS-1.3 Client and Server</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="agentic.html">Agentic Proof-Oriented Programming</a></li>
+      <li class="breadcrumb-item active">On Abstraction &amp; Rubrics</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="on-abstraction-rubrics">
+<span id="agentic-sorting"></span><h1>On Abstraction &amp; Rubrics<a class="headerlink" href="#on-abstraction-rubrics" title="Link to this heading"></a></h1>
+<p><a class="reference external" href="https://risemsr.github.io/blog/2026-03-06-autoclrs/">A recent blog post</a>
+describes “AutoCLRS”, where agents using F* and Pulse were able to formalize
+more than 50 algorithms and data structures from <a class="reference external" href="https://mitpress.mit.edu/9780262046305/">Introduction to Algorithms</a>, a classic textbook by Cormen,
+Leiserson, Rivest, and Stein (CLRS).  The formalization includes functional
+correctness and worst-case complexity analysis, with the development
+available at this <a class="reference external" href="https://github.com/FStarLang/AlgoStar">repository</a>.  In
+this chapter, we review the style of proofs developed in AutoCLRS, particularly
+for some of the sorting algorithms, and consider how might do them using better
+rubrics, templates, and audits.</p>
+<section id="shared-rubrics">
+<h2>Shared Rubrics<a class="headerlink" href="#shared-rubrics" title="Link to this heading"></a></h2>
+<p>AutoCLRS includes proofs of several sorting algorithms: insertion sort, merge
+sort, heap sort, and quicksort (as well as some counting sort variants, which
+we’ll get to shortly). These four algorithms make use of some shared definitions
+for sortedness and permutations, reusing the notion of permutation from an F*
+library (Seq.Properties.permutation).</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> sorted (s: Seq.seq int) : prop
+  = <span class="k">forall</span> (i j: nat). i &lt;= j /\ j &lt; Seq.length s ==&gt; Seq.index s i &lt;= Seq.index s j
+
+<span class="k">let</span> permutation (s1 s2: Seq.seq int) : prop = (Seq.Properties.permutation int s1 s2)
+</pre></div>
+</div>
+<p>Notice that these definitions are specialized to sequences of mathematical
+integers: this is perhaps an artifact of formalizing the CLRS textbook as it is,
+where the sorting algorithms are presented for integer arrays only.</p>
+<p>Each of the four algorithms is implemented in imperative Pulse code with a
+specification showing functional correctness. Here below is the specification of
+<code class="docutils literal notranslate"><span class="pre">insertion_sort</span></code> and <code class="docutils literal notranslate"><span class="pre">heapsort</span></code> (slightly simplified):</p>
+<p>Insertion sort, which says in its preconditions</p>
+<ul class="simple">
+<li><p>The array <code class="docutils literal notranslate"><span class="pre">a</span></code> points to a sequence of integers <code class="docutils literal notranslate"><span class="pre">s0</span></code>; and,</p></li>
+<li><p>The length of the array is <code class="docutils literal notranslate"><span class="pre">len</span></code>, and <code class="docutils literal notranslate"><span class="pre">len</span></code> is less than or equal to the
+length of the sequence <code class="docutils literal notranslate"><span class="pre">s0</span></code></p></li>
+</ul>
+<p>Then, the postcondition ensures</p>
+<ul class="simple">
+<li><p>The array <code class="docutils literal notranslate"><span class="pre">a</span></code> points to a sequence of integers <code class="docutils literal notranslate"><span class="pre">s</span></code>; and,</p></li>
+<li><p>The sequence <code class="docutils literal notranslate"><span class="pre">s</span></code> is sorted, and is a permutation of the original sequence
+<code class="docutils literal notranslate"><span class="pre">s0</span></code>, and has the same length as <code class="docutils literal notranslate"><span class="pre">s0</span></code>.</p></li>
+</ul>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> insertion_sort
+    (a: array int)
+    (#s0: Ghost.erased (Seq.seq int))
+    (len: SZ.t)
+<span class="k">requires</span>
+    a |-&gt; s0 **
+    pure (
+        SZ.v len == Seq.length s0 /\
+        Seq.length s0 &lt;= A.length a)
+<span class="k">ensures</span>
+    a |-&gt; s **
+    pure (
+        Seq.length s == Seq.length s0 /\
+        sorted s /\
+        permutation s0 s)
+</pre></div>
+</div>
+<p>Now, if we look at the specification of heapsort, it says much the same thing,
+but with some small differences. For some reason, <code class="docutils literal notranslate"><span class="pre">heapsort</span></code> has an additional
+precondition on the length, the provided length <code class="docutils literal notranslate"><span class="pre">n</span></code> is a lower bound on the
+length of the array, and the postcondition is more complicated too, proving only
+that the sub-array up to <code class="docutils literal notranslate"><span class="pre">n</span></code> is sorted, and that the rest of the array is
+unchanged.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> heapsort
+    (a: A.array int)
+    (n: SZ.t)
+    (#s0: erased (Seq.seq int) {
+        SZ.v n &lt;= A.length a /\
+        Seq.length s0 == A.length a /\
+        SZ.fits (op_Star 2 (Seq.length s0) + 2)
+    })
+<span class="k">requires</span>
+    a |-&gt; s0
+<span class="k">ensures</span> <span class="k">exists</span>* s.
+    a |-&gt; s **
+    pure (
+        Seq.length s == Seq.length s0 /\
+        sorted_upto s (SZ.v n) /\
+        permutation s0 s /\
+        (<span class="k">forall</span> (k:nat). SZ.v n &lt;= k /\ k &lt; Seq.length s ==&gt; Seq.index s k == Seq.index s0 k)
+    )
+</pre></div>
+</div>
+<p>Although the agents at least used some common definitions of sortedness and
+permutation, these differences in the top-level specifications double the
+reviewing work—in fact, all four algorithms have subtly different
+specifications.</p>
+<p>Of course, one shouldn’t tolerate this. A more uniform specification is easier
+to vet and review, and it is also easier to reuse in other proofs. Let’s write
+one:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> array_sort = {
+    sort:
+        (<span class="k">fn</span> (#a:Type)
+            (arr:array a)
+            (len:SZ.t)
+            (ord:Pulse.Lib.TotalOrder.total_order a)
+            (#s:erased (Seq.seq a))
+            <span class="k">requires</span> arr |-&gt; s ** pure (A.length arr == SZ.v len)
+            <span class="k">ensures</span> <span class="k">exists</span>* s&#39;.
+                arr |-&gt; s&#39; **
+                pure (sorted #<span class="k">_</span> #ord s&#39; /\ permutation s s&#39;))
+}
+</pre></div>
+</div>
+<p>A few things to note about this specification:</p>
+<ul class="simple">
+<li><p>We use a <code class="docutils literal notranslate"><span class="pre">class</span></code> (see <a class="reference internal" href="../part3/part3_typeclasses.html#part3-typeclasses"><span class="std std-ref">this section on typeclasses</span></a>) to indicate that we expect to provide multiple instances
+of this signature, one for each sorting algorithm. This is a nice way to group
+together the specifications of all sorting algorithms, and to indicate that
+they should all have the same specification.</p></li>
+<li><p>Unlike the types shown previously, this type is <em>polymorphic</em> in:</p>
+<ul>
+<li><p>The type of elements <code class="docutils literal notranslate"><span class="pre">a</span></code></p></li>
+<li><p>And, a total order <code class="docutils literal notranslate"><span class="pre">Pulse.Lib.TotalOrder.total_order</span> <span class="pre">a</span></code>, a pure function
+to compare elements of type <code class="docutils literal notranslate"><span class="pre">a</span></code> from the library.</p></li>
+<li><p>The postcondition states that the contents of the array at the end (<code class="docutils literal notranslate"><span class="pre">s'</span></code>)
+is a sorted permutation of the original contents (<code class="docutils literal notranslate"><span class="pre">s</span></code>).</p></li>
+</ul>
+</li>
+</ul>
+<p>Writing this specification once and having the agents prove that all the sorting
+algorithms satisfy this specification makes for a much better rubric. It’s also
+just good software engineering practice (better, as usual, for common
+abstractions to be factored and reused) and it remains good practice for agentic
+proof engineering.</p>
+<p>But, let’s keep going, we can do more with polymorphic specifications.</p>
+</section>
+<section id="ghost-state-for-complexity-proofs">
+<h2>Ghost State for Complexity Proofs<a class="headerlink" href="#ghost-state-for-complexity-proofs" title="Link to this heading"></a></h2>
+<p>A large part of the CLRS textbook is devoted to the worst-case complexity
+analysis of algorithms. Accordingly, the AutoCLRS development also includes such
+complexity analysis for many (though not all) of the algorithms. The complexity
+analysis is done in a very similar way to the functional correctness proofs,
+with the general idea being to</p>
+<ol class="arabic simple">
+<li><p>Instrument the implementation with a <strong>ghost counter</strong>, incrementing the
+counter for each operation that contributes to the complexity measure (e.g.,
+comparisons, swaps, etc.)</p></li>
+<li><p>Enriching invariants to track bounds on these ghost counters.</p></li>
+<li><p>Proving that the ghost counter is bounded by a function of the input size
+(e.g., <code class="docutils literal notranslate"><span class="pre">n</span> <span class="pre">log</span> <span class="pre">n</span></code> for heapsort).</p></li>
+</ol>
+<p>Note, the proofs do not include any reasoning about asymptotic complexity, e.g.,
+the proofs do not say that heapsort is O(n log n), but rather that the ghost
+counter is bounded by a specific function of the input size.</p>
+<p>Let’s look at the complexity enriched version of the <code class="docutils literal notranslate"><span class="pre">insertion_sort</span></code>:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">module</span> GR = Pulse.Lib.GhostReference
+
+<span class="k">let</span> complexity_bounded (cf c0: nat) (n: nat) : prop =
+    cf &gt;= c0 /\
+    cf - c0 &lt;= n * (n - 1) / 2
+
+<span class="k">fn</span> insertion_sort
+    (a: array int)
+    (#s0: Ghost.erased (Seq.seq int))
+    (len: SZ.t)
+    (ctr: GR.ref nat)
+    (#c0: erased nat)
+<span class="k">requires</span> a |-&gt; s0 ** ctr |-&gt; c0
+<span class="k">requires</span> pure (SZ.v len == Seq.length s0 /\ Seq.length s0 &lt;= A.length a)
+<span class="k">ensures</span> <span class="k">exists</span>* s (cf: nat).
+    a |-&gt; s ** ctr |-&gt; cf **
+    pure (Seq.length s == Seq.length s0 /\
+          sorted s /\
+          permutation s0 s /\
+          complexity_bounded cf c0 (SZ.v len))
+</pre></div>
+</div>
+<p>This type is very similar to the previous type of <code class="docutils literal notranslate"><span class="pre">insertion_sort</span></code>. The new elements are:</p>
+<ol class="arabic simple">
+<li><p>The function has an additional parameter, <code class="docutils literal notranslate"><span class="pre">ctr</span> <span class="pre">:</span> <span class="pre">GR.ref</span> <span class="pre">nat</span></code>, a ghost
+reference to a natural number—we learned about ghost references in
+<a class="reference internal" href="../pulse/pulse_ghost.html#pulse-ghost"><span class="std std-ref">this section</span></a>. The ghost reference is used to count the
+number of operations we are interested in for the complexity analysis.</p></li>
+<li><p>The precondition includes ownership of the ghost reference, <code class="docutils literal notranslate"><span class="pre">ctr</span> <span class="pre">|-&gt;</span> <span class="pre">c0</span></code>,
+where <code class="docutils literal notranslate"><span class="pre">c0</span></code> is the initial value of the counter.</p></li>
+<li><p>The postcondition includes the usual functional correctness properties, i.e.,
+that the output is a sorted precondition of the input.</p></li>
+<li><p>And, importantly, the last clause states that the counter has been “ticked”
+<code class="docutils literal notranslate"><span class="pre">(cf</span> <span class="pre">-</span> <span class="pre">c0)</span></code> at most <code class="docutils literal notranslate"><span class="pre">n</span> <span class="pre">*</span> <span class="pre">(n</span> <span class="pre">-</span> <span class="pre">1)</span> <span class="pre">/</span> <span class="pre">2</span></code> times.</p></li>
+</ol>
+<p>Now, with type shown as the rubric, let’s look at what one would have to review
+to judge that this is a proper worst-case complexity proof:</p>
+<ul class="simple">
+<li><p>Inspect the implementation of <code class="docutils literal notranslate"><span class="pre">insertion_sort</span></code> to check that every
+comparison is accounted for with an increment of the ghost counter.</p></li>
+<li><p>The ghost counter is never decremented.</p></li>
+</ul>
+<p>This is sub-optimal since now one must, as part of the review, read the code in
+detail, figure out if it is instrumented correctly. The promise of
+proof-oriented programming is that one should be able to check the correctness
+of a program by reading the specification alone, but in this case, one also has
+to read the implementation.</p>
+<p>Again, we should do better, and we can do better by embracing principles from
+proof engineering to set a better rubric.</p>
+</section>
+<section id="better-rubrics-with-abstraction">
+<h2>Better Rubrics with Abstraction<a class="headerlink" href="#better-rubrics-with-abstraction" title="Link to this heading"></a></h2>
+<p>Consider the following typeclass as a rubric for complexity-aware sorting
+algorithms—it’s a lot to swallow in one go, so we’ll describe it slowly piece
+by piece.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">module</span> MR = Pulse.Lib.MonotonicGhostRef
+<span class="k">module</span> TO = Pulse.Lib.TotalOrder
+
+<span class="k">let</span> leq_nat (x y:nat) : prop = x &lt;= y
+
+<span class="k">let</span> ticks_t = MR.mref leq_nat
+
+<span class="k">let</span> instrumented_total_order (#a:Type) (ord:TO.total_order a) (ctr:ticks_t) =
+    <span class="k">fn</span> (x y:a) (#i:erased nat)
+    <span class="k">requires</span> MR.pts_to ctr #1.0R i
+    <span class="k">returns</span> o:order
+    <span class="k">ensures</span> MR.pts_to ctr #1.0R (i + 1)
+    <span class="k">ensures</span> pure (o == x `ord.TO.compare` y)
+
+<span class="k">class</span> array_sort (f: nat -&gt; nat) = {
+    sort:
+        (<span class="k">fn</span> (a:Type)
+            (arr:A.array a)
+            (len:SZ.t)
+            (ctr:ticks_t)
+            (#ord:erased (TO.total_order a))
+            (iord:instrumented_total_order ord ctr)
+            (#s:erased (Seq.seq a)) (#i:erased nat)
+        <span class="k">requires</span> arr |-&gt; s ** MR.pts_to ctr #1.0R i
+        <span class="k">requires</span> pure (A.length arr == SZ.v len)
+        <span class="k">ensures</span> <span class="k">exists</span>* s&#39; ticks.
+            arr |-&gt; s&#39; **
+            MR.pts_to ctr #1.0R ticks **
+            pure (sorted #<span class="k">_</span> #ord s&#39; /\ permutation s s&#39; /\ ticks &lt;= i + f (Seq.length s)))
+}
+</pre></div>
+</div>
+<section id="monotonic-ghost-state">
+<h3>Monotonic Ghost State<a class="headerlink" href="#monotonic-ghost-state" title="Link to this heading"></a></h3>
+<p>A counter for complexity tracking should only be advanced, never decremented. An
+ordinary ghost reference (<code class="docutils literal notranslate"><span class="pre">Pulse.Lib.GhostReference.ref</span></code>) allows one to read
+and write the reference, but it does not enforce monotonicity. This means that
+one needs to carefully read the implementation to ensure that the counter is
+only ever incremented.</p>
+<p>Pulse offers more sophisticated forms of ghost state, including something called
+<em>monotonic</em>  ghost state. Given a reflexive, transitive relation <code class="docutils literal notranslate"><span class="pre">rel:</span> <span class="pre">preorder</span>
+<span class="pre">a</span></code>, one can build a monotonic ghost reference
+(<code class="docutils literal notranslate"><span class="pre">Pulse.Lib.MonotonicGhostRef.mref</span> <span class="pre">rel</span></code>) which is a reference to a mutable
+cell of type <code class="docutils literal notranslate"><span class="pre">a</span></code> which can only be updated in a way that respects the relation
+<code class="docutils literal notranslate"><span class="pre">rel</span></code>.</p>
+<p>In our rubric above, <code class="docutils literal notranslate"><span class="pre">ticks_t</span></code> is a monotonic ghost reference where the
+relation is the natural order on natural numbers. This means that a
+<code class="docutils literal notranslate"><span class="pre">ctr:ticks_t</span></code> can only be advanced, never decremented. This is exactly what we
+want for a complexity counter: using <code class="docutils literal notranslate"><span class="pre">ticks_t</span></code> for the counter means that one
+does not have to read the implementation to check that the counter is only ever
+incremented, since the type system enforces this property.</p>
+</section>
+<section id="instrumenting-comparisons-with-ticks">
+<h3>Instrumenting Comparisons with Ticks<a class="headerlink" href="#instrumenting-comparisons-with-ticks" title="Link to this heading"></a></h3>
+<p>Our next step in defining our rubric is to ensure that every comparison is
+instrumented with a tick of the counter. To do this, we define the type of an
+instrumented total order, a Pulse function that takes two elements of type <code class="docutils literal notranslate"><span class="pre">a</span></code>
+and returns an <code class="docutils literal notranslate"><span class="pre">order</span></code> (i.e., a comparison result) with a postcondition
+proving that its result is equal to the result given by a <em>pure</em> total order
+<code class="docutils literal notranslate"><span class="pre">ord</span></code>, but also stating that tick counter has been incremented. (The <code class="docutils literal notranslate"><span class="pre">#1.0R</span></code>
+is to state that we have full permission to the counter and can increment it.)</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> instrumented_total_order (#a:Type) (ord:TO.total_order a) (ctr:ticks_t) =
+    <span class="k">fn</span> (x y:a) (#i:erased nat)
+    <span class="k">requires</span> MR.pts_to ctr #1.0R i
+    <span class="k">returns</span> o:order
+    <span class="k">ensures</span> MR.pts_to ctr #1.0R (i + 1)
+    <span class="k">ensures</span> pure (o == x `ord.TO.compare` y)
+</pre></div>
+</div>
+</section>
+<section id="tying-it-together-with-parametricity">
+<h3>Tying it Together with Parametricity<a class="headerlink" href="#tying-it-together-with-parametricity" title="Link to this heading"></a></h3>
+<p>The final piece of the rubric is to tie together the tick counter with the
+instrumented total order, while exploiting parametricity to ensure that the
+sorting algorithm respects the instrumentation. Let’s have a closer look:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> array_sort (bound: nat -&gt; nat) = {
+    sort:
+        (<span class="k">fn</span> (a:Type)
+            (arr:A.array a)
+            (len:SZ.t)
+            (ctr:ticks_t)
+            (#ord:erased (TO.total_order a))
+            (iord:instrumented_total_order ord ctr)
+            (#s:erased (Seq.seq a)) (#i:erased nat)
+        <span class="k">requires</span> arr |-&gt; s ** MR.pts_to ctr #1.0R i
+        <span class="k">requires</span> pure (A.length arr == SZ.v len)
+        <span class="k">ensures</span> <span class="k">exists</span>* s&#39; ticks.
+            arr |-&gt; s&#39; **
+            MR.pts_to ctr #1.0R ticks **
+            pure (sorted #<span class="k">_</span> #ord s&#39; /\ permutation s s&#39; /\ ticks &lt;= i + bound (Seq.length s)))
+}
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">sort</span></code> function is</p>
+<ul class="simple">
+<li><p>Polymorphic in the type of array elements <code class="docutils literal notranslate"><span class="pre">a:Type</span></code></p></li>
+<li><p>Unlike our previous version, this version of <code class="docutils literal notranslate"><span class="pre">sort</span></code> is parametric in a total
+order <code class="docutils literal notranslate"><span class="pre">ord</span></code> on the elements,  but this <code class="docutils literal notranslate"><span class="pre">ord</span></code> has an <code class="docutils literal notranslate"><span class="pre">erased</span></code> type,
+meaning that runtime behavior of <code class="docutils literal notranslate"><span class="pre">sort</span></code> cannot depend on <code class="docutils literal notranslate"><span class="pre">ord</span></code>.</p></li>
+<li><p>Instead of using <code class="docutils literal notranslate"><span class="pre">ord</span></code>, the function is also parameterized by a tick counter
+<code class="docutils literal notranslate"><span class="pre">ctr:ticks_t</span></code> and an instrumented total order
+<code class="docutils literal notranslate"><span class="pre">iord:instrumented_total_order</span> <span class="pre">ord</span> <span class="pre">ctr</span></code>. This means, from parametricity,
+that the sorting algorithm is forced to use the instrumented total order for
+comparisons—no other concrete operations on the type <code class="docutils literal notranslate"><span class="pre">a</span></code> is available, and
+so every comparison must tick the counter.</p></li>
+<li><p>The rest of the rubric is similar to what we had before:</p>
+<ul>
+<li><p>we have ownership of the array <code class="docutils literal notranslate"><span class="pre">arr</span></code> and the ghost counter <code class="docutils literal notranslate"><span class="pre">ctr</span></code> in the
+precondition.</p></li>
+<li><p>The precondition states that the array has length <code class="docutils literal notranslate"><span class="pre">len</span></code>.</p></li>
+<li><p>The postcondition states that the output is a sorted permutation of the
+input, as usual for functional correctness,</p></li>
+<li><p>And, importantly, that the final value of the counter <code class="docutils literal notranslate"><span class="pre">ticks</span></code> is advanced
+by at most a <code class="docutils literal notranslate"><span class="pre">bound</span></code> computed from the length of the input.</p></li>
+</ul>
+</li>
+</ul>
+</section>
+<section id="using-the-rubric">
+<h3>Using the Rubric<a class="headerlink" href="#using-the-rubric" title="Link to this heading"></a></h3>
+<p>With this rubric in place, one can ask an agent to implement insertion sort,
+merge sort, heapsort, and quicksort, and here’s what it produces (using GPT-5.5
+in GitHub Copilot CLI with the FStarLang/proof-copilot plugin):</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">instance</span> insertion_sort_array_sort
+: array_sort (<span class="k">fun</span> n -&gt; n * (n - 1) / 2)
+
+<span class="k">instance</span> merge_sort_array_sort
+: array_sort (<span class="k">fun</span> n -&gt; <span class="k">if</span> n &gt; 0 <span class="k">then</span> 4 * n * MS.log2_ceil n + 4 * n <span class="k">else</span> 0)
+
+<span class="k">instance</span> heapsort_array_sort
+: array_sort (<span class="k">fun</span> n -&gt;
+    <span class="k">if</span> n &gt; 0 <span class="k">then</span>
+      (n / 2) * (2 * HC.log2_floor n) +
+      (n - 1) * (2 * HC.log2_floor n)
+    <span class="k">else</span> 0)
+
+<span class="k">instance</span> quicksort_array_sort
+: array_sort (<span class="k">fun</span> n -&gt; n * (n - 1) / 2)
+</pre></div>
+</div>
+<p>This is all that one has to audit to convince oneself that we have algorithms
+that are functionally correct with the appropriate complexity bounds, a
+substantial improvement than before.</p>
+<p>The main point here is that by careful design of a rubric, applying principles
+from software and proof-engineering practice, one can reduce the amount of human
+effort needed to comprehend the results produced by an agentic proof-oriented
+programmer.</p>
+<p>Note, there is still room for improvement, e.g., for merge sort and heap sort,
+the agent could have simplified away the special handling of the case when <code class="docutils literal notranslate"><span class="pre">n</span> <span class="pre">=</span>
+<span class="pre">0</span></code>—one could ask the agent to do that, but this is what was produced by the
+agent, so we show it as is.</p>
+<p>Also, importantly, rubrics are not absolute, as we will soon see. For starters,
+this rubric does not cover space complexity at all. What would it take to track
+and bound space complexity? We will get to this in a subsequent chapter.</p>
+</section>
+</section>
+<section id="auditing-implementations-what-is-an-algorithm">
+<h2>Auditing Implementations: What is an Algorithm?<a class="headerlink" href="#auditing-implementations-what-is-an-algorithm" title="Link to this heading"></a></h2>
+<p>Simply knowing that say, <code class="docutils literal notranslate"><span class="pre">insertion_sort_array_sort</span></code> has the type of a
+correct, quadratic-time sorting algorithm doesn’t tell us that what is
+implemented is actually an insertion sort. Notice that <code class="docutils literal notranslate"><span class="pre">quicksort_array_sort</span></code>
+has exactly the same type, so the rubric alone does not have the power to
+distinguish the two. For this, we need to audit the implementation itself.</p>
+<p>Auditing a piece of code for fidelity to a particular algorithm is a thorny
+problem. In fact, even the notion of an algorithm itself is a deep conceptual
+question, let alone whether or not a given implementation is faithful to a
+particular algorithm. Indeed, in our experience, agents are prone to cheating in
+this regard, e.g., producing an implementation of insertion sort and claiming
+that it is quicksort. For this, we offer nothing more than a plain old code
+review.</p>
+<p>You can find the full implementations here:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/FStarLang/AlgoStar/blob/rubrics/autoclrs/ch02-getting-started/CLRS.Ch02.InsertionSort.Rubric.fst">Insertion sort</a></p></li>
+<li><p><a class="reference external" href="https://github.com/FStarLang/AlgoStar/blob/rubrics/autoclrs/ch02-getting-started/CLRS.Ch02.MergeSort.Rubric.fst">Merge sort</a></p></li>
+<li><p><a class="reference external" href="https://github.com/FStarLang/AlgoStar/blob/rubrics/autoclrs/ch06-heapsort/CLRS.Ch06.Heap.Rubric.fst">Heap sort</a></p></li>
+<li><p><a class="reference external" href="https://github.com/FStarLang/AlgoStar/blob/rubrics/autoclrs/ch07-quicksort/CLRS.Ch07.Quicksort.Rubric.fst">Quicksort</a></p></li>
+</ul>
+<p>And the rubric itself:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://github.com/FStarLang/AlgoStar/blob/rubrics/autoclrs/common/CLRS.Common.Complexity.Sorting.Class.fst">CLRS.Common.Complexity.Sorting.Class</a></p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="agentic_rubrics_templates_audits.html" class="btn btn-neutral float-left" title="Rubrics, Templates, and Audits" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="agentic_rubrics_as_templates.html" class="btn btn-neutral float-right" title="Rubrics as Templates" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Divergence, or Non-Termination &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Primitive Effect Refinements" href="part4_pure.html" />
+    <link rel="prev" title="Erasure and the Ghost Effect" href="part4_ghost.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="part4.html">Computational Effects</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="part4_background.html">Computation Types to Track Dependences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part4_computation_types_and_tot.html">The Effect of Total Computations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part4_ghost.html">Erasure and the Ghost Effect</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Divergence, or Non-Termination</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-dv-effect">The <code class="docutils literal notranslate"><span class="pre">Dv</span></code> effect</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#partial-correctness-semantics-of-dv">Partial correctness semantics of <code class="docutils literal notranslate"><span class="pre">Dv</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#isolating-dv-from-the-logical-core">Isolating <code class="docutils literal notranslate"><span class="pre">Dv</span></code> from the logical core</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#no-extrinsic-proofs-for-dv-computations">No extrinsic proofs for <code class="docutils literal notranslate"><span class="pre">Dv</span></code> computations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#exercise">Exercise</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#general-recursive-types-and-impredicativity-with-dv">General Recursive Types and Impredicativity with <code class="docutils literal notranslate"><span class="pre">Dv</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#top-level-effects">Top-level Effects</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-untyped-lambda-calculus">Example: Untyped Lambda Calculus</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#interpreting-deeply-embedded-lambda-terms">Interpreting Deeply Embedded Lambda Terms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#denoting-lambda-terms-into-an-f-recursive-type">Denoting Lambda Terms into an F* Recursive Type</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#shallowly-embedded-dynamically-typed-programming">Shallowly Embedded Dynamically Typed Programming</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="part4_pure.html">Primitive Effect Refinements</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pulse/pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="part4.html">Computational Effects</a></li>
+      <li class="breadcrumb-item active">Divergence, or Non-Termination</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="divergence-or-non-termination">
+<span id="part4-div"></span><h1>Divergence, or Non-Termination<a class="headerlink" href="#divergence-or-non-termination" title="Link to this heading"></a></h1>
+<p>Most dependently typed languages are not <a class="reference external" href="https://en.wikipedia.org/wiki/Turing_completeness">Turing complete</a>. This is
+because, as explained <a class="reference internal" href="../part1/part1_termination.html#part1-termination"><span class="std std-ref">earlier</span></a>, it is
+crucial to the soundness of a type theory to have all functions
+terminate. This means that you cannot program, say, an interpreter for
+a general-purpose programming language in a language like Coq, since
+such an interpreter would not be able to handle programs that
+intentionally loop forever. <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p>
+<p>F*’s logical core of total (and ghost) functions can only express
+terminating computations. However, F* also allows expressing
+non-terminating or <em>divergent</em> computations, relying on the effect
+system to isolate divergent computations from the logical core. In
+particular, the computation type <code class="docutils literal notranslate"><span class="pre">Dv</span> <span class="pre">t</span></code> describes a computation that
+may loop forever, but if it completes, it returns a value of type
+<code class="docutils literal notranslate"><span class="pre">t</span></code>.</p>
+<p>Relying on the effect system as a dependency tracking mechanism, F*
+ensures that <code class="docutils literal notranslate"><span class="pre">Tot</span></code> computations cannot rely on <code class="docutils literal notranslate"><span class="pre">Dv</span></code> computations
+by placing <code class="docutils literal notranslate"><span class="pre">Dv</span></code> above <code class="docutils literal notranslate"><span class="pre">Tot</span></code> in the effect hierarchy, while,
+conversely, a total computation <code class="docutils literal notranslate"><span class="pre">Tot</span> <span class="pre">t</span></code> can be silently promoted to
+<code class="docutils literal notranslate"><span class="pre">Dv</span> <span class="pre">t</span></code>, the type of computations that may not terminate, i.e., <code class="docutils literal notranslate"><span class="pre">Tot</span>
+<span class="pre">&lt;</span> <span class="pre">Dv</span></code> in the effect partial order.</p>
+<p>Recursive functions that return computations in the <code class="docutils literal notranslate"><span class="pre">Dv</span></code> effect are
+not checked for termination.  As such, using the <code class="docutils literal notranslate"><span class="pre">Dv</span></code> effect, one
+can write programs such as the one below, which computes <a class="reference external" href="https://en.wikipedia.org/wiki/Collatz_conjecture">Collatz
+sequences</a>—whether or not
+this program terminates for all inputs is an open problem.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="c">(* You can program a function to compute Collatz sequences</span>
+<span class="c">   ... though no one knows if it actually terminates for all n *)</span>
+<span class="k">let</span> <span class="k">rec</span> collatz (n:pos)
+  : <span class="k">Dv</span> (list pos)
+  = <span class="k">if</span> n = 1 <span class="k">then</span> [n]
+    <span class="k">else</span> <span class="k">if</span> n % 2 = 0
+    <span class="k">then</span> n::collatz (n / 2)
+    <span class="k">else</span> n::collatz (3 * n + 1)
+</pre></div>
+</div>
+<p>In this chapter, we’ll look in detail at the <code class="docutils literal notranslate"><span class="pre">Dv</span></code> effect and how it
+interacts with other features of the language, including the other
+effects, recursive type definitions, and the styles of programming and
+proving it enables.</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id2" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>In place of general recursion and potential non-termination,
+other dependently typed languages like Coq and Agda offer
+features like corecursion and coinduction. Coinduction can be
+used to express a class of <em>productive</em> non-terminating
+programs. For instance, using coinduction, one could program a
+web server that loops forever to handle an infinite stream of
+requests, while producing a response for each request in a
+finite amount of time. Even the <code class="docutils literal notranslate"><span class="pre">collatz</span></code> function can be
+given a corecursive definition that computes a potentially
+infinite stream of numbers. However, not all non-terminating
+computations can be implemented with
+coinduction/corecursion. F* does not yet support coinduction.</p>
+</aside>
+</aside>
+<section id="the-dv-effect">
+<h2>The <code class="docutils literal notranslate"><span class="pre">Dv</span></code> effect<a class="headerlink" href="#the-dv-effect" title="Link to this heading"></a></h2>
+<p>The effect <code class="docutils literal notranslate"><span class="pre">Dv</span></code> (for divergence) is a primitive effect in F*.
+Computations in <code class="docutils literal notranslate"><span class="pre">Dv</span></code> may not terminate, even with infinite
+resources. In other words, computations in the <code class="docutils literal notranslate"><span class="pre">Dv</span></code> effect have the
+observational behavior of non-termination. For example, the following
+<code class="docutils literal notranslate"><span class="pre">loop</span></code> function has type <code class="docutils literal notranslate"><span class="pre">unit</span> <span class="pre">-&gt;</span> <span class="pre">Dv</span> <span class="pre">unit</span></code> and it always diverges
+when called:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> loop (): <span class="k">Dv</span> unit = loop ()
+</pre></div>
+</div>
+<p>If we remove the <code class="docutils literal notranslate"><span class="pre">Dv</span></code> effect label annotation, then F* treats the
+function as total and will try to prove that the recursive call
+terminates, according to its usual termination checking rules, i.e.,
+F* will attempt to prove <code class="docutils literal notranslate"><span class="pre">()</span> <span class="pre">&lt;&lt;</span> <span class="pre">()</span></code> which fails, as expected.</p>
+<p>Since the <code class="docutils literal notranslate"><span class="pre">Dv</span></code> effect admits divergence, F* essentially turns-off
+the termination checker when typechecking <code class="docutils literal notranslate"><span class="pre">Dv</span></code> computations. So the
+recursive <code class="docutils literal notranslate"><span class="pre">loop</span> <span class="pre">()</span></code> call does not require a decreasing termination
+metric.</p>
+</section>
+<section id="partial-correctness-semantics-of-dv">
+<h2>Partial correctness semantics of <code class="docutils literal notranslate"><span class="pre">Dv</span></code><a class="headerlink" href="#partial-correctness-semantics-of-dv" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">Tot</span></code> effect in F* has a <em>total correctness</em> semantics. That is,
+if a term has type <code class="docutils literal notranslate"><span class="pre">e:Tot</span> <span class="pre">t</span></code>, then <code class="docutils literal notranslate"><span class="pre">e</span></code> terminates and
+produces a value of type <code class="docutils literal notranslate"><span class="pre">t</span></code>.</p>
+<p>Terms with type <code class="docutils literal notranslate"><span class="pre">Dv</span> <span class="pre">t</span></code> have a <em>partial correctness</em> semantics. That
+is, a term <code class="docutils literal notranslate"><span class="pre">e:Dv</span> <span class="pre">t</span></code> may run forever, but if it
+terminates then the resulting value has type <code class="docutils literal notranslate"><span class="pre">t</span></code>.</p>
+<p>Another perspective is that aside from disabling the termination
+checking features of F*, all other type-checking constraints are
+enforced on <code class="docutils literal notranslate"><span class="pre">Dv</span></code> terms. This means that one can still give
+interesting sound specifications to <code class="docutils literal notranslate"><span class="pre">Dv</span></code> programs, e.g., the type
+below proves that if the Collatz function terminates, then the last
+element of the sequence is <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> collatz_ends_in_one (n:pos)
+  : <span class="k">Dv</span> (l:list pos { Cons? l /\ last l == 1 })
+  = <span class="k">if</span> n = 1 <span class="k">then</span> [n]
+    <span class="k">else</span> <span class="k">if</span> n % 2 = 0
+    <span class="k">then</span> n::collatz_ends_in_one (n / 2)
+    <span class="k">else</span> n::collatz_ends_in_one (3 * n + 1)
+</pre></div>
+</div>
+<p>If, for example, in the base case we were to return the empty list
+<code class="docutils literal notranslate"><span class="pre">[]</span></code> rather than <code class="docutils literal notranslate"><span class="pre">[n]</span></code>, then F* would refuse to accept the
+program, since the program could terminate while returning a value
+that is not an element of the annotated return type.</p>
+</section>
+<section id="isolating-dv-from-the-logical-core">
+<h2>Isolating <code class="docutils literal notranslate"><span class="pre">Dv</span></code> from the logical core<a class="headerlink" href="#isolating-dv-from-the-logical-core" title="Link to this heading"></a></h2>
+<p>Since <code class="docutils literal notranslate"><span class="pre">Dv</span></code> terms need not terminate, a program that always loops
+forever can be given any return type. For instance, the program below
+has return type <code class="docutils literal notranslate"><span class="pre">False</span></code>:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> dv_false () : <span class="k">Dv</span> False = dv_false()
+</pre></div>
+</div>
+<p>Importantly, a term of type <code class="docutils literal notranslate"><span class="pre">Dv</span> <span class="pre">False</span></code> should not be confused as a
+<em>proof</em> of <code class="docutils literal notranslate"><span class="pre">False</span></code>, since that would lead immediately to unsoundness
+of F*’s logical core. In particular, it should be impossible to turn a
+<code class="docutils literal notranslate"><span class="pre">e:Dv</span> <span class="pre">t</span></code> into a term of type <code class="docutils literal notranslate"><span class="pre">Tot</span> <span class="pre">t</span></code>. This is achieved by F*’s
+effect system, which treats <code class="docutils literal notranslate"><span class="pre">Tot</span></code> as a sub-effect of <code class="docutils literal notranslate"><span class="pre">Dv</span></code>, i.e.,
+<code class="docutils literal notranslate"><span class="pre">Tot</span> <span class="pre">&lt;</span> <span class="pre">Dv</span></code>, in the effect order. As explained in <a class="reference internal" href="part4_background.html#part4-background"><span class="std std-ref">earlier</span></a>, this ensures that no <code class="docutils literal notranslate"><span class="pre">Tot</span></code> term can depend on a
+<code class="docutils literal notranslate"><span class="pre">Dv</span></code> term, maintaining soundness of the total correctness
+interpretation of <code class="docutils literal notranslate"><span class="pre">Tot</span></code>.</p>
+<p>As an example, the following attempt to “cast” <code class="docutils literal notranslate"><span class="pre">dv_false</span></code> to <code class="docutils literal notranslate"><span class="pre">Tot</span></code>
+fails, as does trying to use <code class="docutils literal notranslate"><span class="pre">dv_false</span></code> to produce incorrect proofs
+of other types.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span>[@@expect_failure]
+<span class="k">let</span> tot_false : <span class="k">Tot</span> False = dv_false()
+[@@ expect_failure]
+<span class="k">let</span> bad_zero : <span class="k">Tot</span> (y:int{y == 0}) = dv_false (); 1
+</pre></div>
+</div>
+<p>While F* does not allow <code class="docutils literal notranslate"><span class="pre">Tot</span></code> computations to depend on <code class="docutils literal notranslate"><span class="pre">Dv</span></code>
+computations, going the other way is perfectly fine. Intuitively,
+always terminating computations are potentially non-terminating. We
+can think of it like a <em>weakening</em> of the specification:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> add_one (x:int) : int = x + 1
+<span class="k">let</span> add_one_div (x:int) : <span class="k">Dv</span> int = add_one x
+</pre></div>
+</div>
+<p>The effect system of F* automatically <em>lifts</em> <code class="docutils literal notranslate"><span class="pre">Tot</span></code> computations
+into <code class="docutils literal notranslate"><span class="pre">Dv</span></code>, meaning that <code class="docutils literal notranslate"><span class="pre">Tot</span></code> functions can be seamlessly used in
+<code class="docutils literal notranslate"><span class="pre">Dv</span></code> functions.</p>
+<p>The weakening of <code class="docutils literal notranslate"><span class="pre">Tot</span></code> terms to other effects is so pervasive in F*
+that one hardly even thinks about it, e.g., in the <code class="docutils literal notranslate"><span class="pre">collatz</span></code>
+program, sub-terms like <code class="docutils literal notranslate"><span class="pre">n</span> <span class="pre">/</span> <span class="pre">2</span></code> are in <code class="docutils literal notranslate"><span class="pre">Tot</span></code> but are easily used
+within a computation in the <code class="docutils literal notranslate"><span class="pre">Dv</span></code> effect.</p>
+</section>
+<section id="no-extrinsic-proofs-for-dv-computations">
+<h2>No extrinsic proofs for <code class="docutils literal notranslate"><span class="pre">Dv</span></code> computations<a class="headerlink" href="#no-extrinsic-proofs-for-dv-computations" title="Link to this heading"></a></h2>
+<p>One important consequence of any effectful code, including <code class="docutils literal notranslate"><span class="pre">Dv</span></code>,
+being outside the logical core of F* is that it is not possible to do
+<a class="reference internal" href="../part1/part1_lemmas.html#part1-intrinsic-extrinsic"><span class="std std-ref">extrinsic proofs</span></a> about effectful
+code. One cannot even state properties of <code class="docutils literal notranslate"><span class="pre">Dv</span></code> computations in
+specifications, since even specifications must be total. For example,
+even stating the following lemma is illegal:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span>[@@expect_failure]
+<span class="k">val</span> collatz_property (n:pos)
+  : <span class="k">Lemma</span> (Cons? (collatz n) /\ last (collatz n) = 1)
+</pre></div>
+</div>
+<p>This is nonsensical in F* since writing <code class="docutils literal notranslate"><span class="pre">Cons?</span> <span class="pre">(collatz</span> <span class="pre">n)</span></code> supposes
+that <code class="docutils literal notranslate"><span class="pre">collatz</span> <span class="pre">n</span></code> is <em>defined</em>, whereas it might actually just loop
+forever.</p>
+<p>The only way to state properties about divergent programs is to encode
+the property intrinsically in the computation type, as we saw above.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> last #a (l:list a { Cons? l }) : a = L.index l (L.length l - 1)
+<span class="k">val</span> collatz_ends_in_one (n:pos)
+  : <span class="k">Dv</span> (l:list pos { Cons? l /\ last l == 1 })
+</pre></div>
+</div>
+<section id="exercise">
+<h3>Exercise<a class="headerlink" href="#exercise" title="Link to this heading"></a></h3>
+<p>Define a predicate <code class="docutils literal notranslate"><span class="pre">collatz_spec</span> <span class="pre">(n:pos)</span> <span class="pre">(l:list</span> <span class="pre">pos)</span> <span class="pre">:</span> <span class="pre">bool</span></code> that
+decides if <code class="docutils literal notranslate"><span class="pre">l</span></code> is a valid Collatz sequence starting at <code class="docutils literal notranslate"><span class="pre">n</span></code>.</p>
+<p>Implement <code class="docutils literal notranslate"><span class="pre">val</span> <span class="pre">collatz'</span> <span class="pre">(n:pos)</span> <span class="pre">:</span> <span class="pre">Dv</span> <span class="pre">(l:list</span> <span class="pre">pos</span> <span class="pre">{</span> <span class="pre">collatz_spec</span> <span class="pre">n</span> <span class="pre">l</span> <span class="pre">})</span></code>.</p>
+<p>What does this type mean? Are there other ways to implement
+<code class="docutils literal notranslate"><span class="pre">collatz'</span></code> with the same type?</p>
+<div class="toggle docutils container">
+<div class="header docutils container">
+<p><strong>Answer</strong></p>
+</div>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> collatz_spec (n:pos) (l:list pos)
+  : <span class="k">Tot</span> bool (<span class="k">decreases</span> l) 
+  = <span class="k">match</span> l <span class="k">with</span>
+    | [] -&gt; <span class="k">false</span>
+    | hd :: tl -&gt; 
+      hd = n &amp;&amp; (
+        <span class="k">if</span> hd = 1 <span class="k">then</span> tl = []
+        <span class="k">else</span> <span class="k">if</span> n%2 = 0 <span class="k">then</span> collatz_spec (n/2) tl
+        <span class="k">else</span> collatz_spec (3*n + 1) tl
+      )
+<span class="c">// collatz&#39; may loop forever on some inputs</span>
+<span class="c">// but if it completes it always returns a valid</span>
+<span class="c">// Collatz sequence</span>
+<span class="k">let</span> <span class="k">rec</span> collatz&#39; (n:pos)
+  : <span class="k">Dv</span> (l:list pos { collatz_spec n l } )
+  = <span class="k">if</span> n = 1 <span class="k">then</span> [n]
+    <span class="k">else</span> <span class="k">if</span> n % 2 = 0
+    <span class="k">then</span> n::collatz&#39; (n / 2)
+    <span class="k">else</span> n::collatz&#39; (3 * n + 1)
+
+<span class="c">// here&#39;s another bogus implementation that always loops</span>
+<span class="k">let</span> <span class="k">rec</span> collatz&#39;&#39; (n:pos)
+  : <span class="k">Dv</span> (l:list pos { collatz_spec n l } )
+  = collatz&#39;&#39; n
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="general-recursive-types-and-impredicativity-with-dv">
+<h2>General Recursive Types and Impredicativity with <code class="docutils literal notranslate"><span class="pre">Dv</span></code><a class="headerlink" href="#general-recursive-types-and-impredicativity-with-dv" title="Link to this heading"></a></h2>
+<p>Aside from disabling the decreases metric on recursive functions in
+<code class="docutils literal notranslate"><span class="pre">Dv</span></code>, F* also disables two other forms of termination checking on
+<code class="docutils literal notranslate"><span class="pre">Dv</span></code> computations.</p>
+<p>Recall from a <a class="reference internal" href="../part2/part2_inductive_type_families.html#part2-strict-positivity"><span class="std std-ref">previous chapter</span></a> that
+inductive type definitions are subject to the <em>strict positivity</em>
+condition, since non-positive definitions allow the definition of
+recursive types and non-terminating computations. However, since
+computations in the <code class="docutils literal notranslate"><span class="pre">Dv</span></code> effect are already allowed to loop forever,
+the strict positivity condition can be relaxed when <code class="docutils literal notranslate"><span class="pre">Dv</span></code> types are
+involved. For example, one can define this:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">noeq</span>
+<span class="k">type</span> nonpos =
+  | NonPos : (nonpos -&gt; <span class="k">Dv</span> False) -&gt; nonpos
+
+<span class="k">let</span> loop_nonpos&#39; (f:nonpos) : <span class="k">Dv</span> False =
+   <span class="k">let</span> NonPos g = f <span class="k">in</span> g f 
+   
+<span class="k">let</span> loop_nonpos () : <span class="k">Dv</span> False  = loop_nonpos&#39; (NonPos loop_nonpos&#39;)
+</pre></div>
+</div>
+<p>The type <code class="docutils literal notranslate"><span class="pre">nonpos</span></code> is not strictly positive, since it appears to the
+left of an arrow in a field of one of its constructors. Indeed, using
+<code class="docutils literal notranslate"><span class="pre">nonpos</span></code> it is possible to define (without using <code class="docutils literal notranslate"><span class="pre">let</span> <span class="pre">rec</span></code>) an
+infinitely looping program <code class="docutils literal notranslate"><span class="pre">loop_nonpos()</span></code>—however, the type <code class="docutils literal notranslate"><span class="pre">Dv</span>
+<span class="pre">False</span></code> tells us that this program may loop forever, and the infinite
+loop is safely isolated from F*’s logical core.</p>
+<p>The other place in F*’s type system where termination checking comes
+into play is in the <a class="reference internal" href="../part2/part2_universes.html#part2-universes"><span class="std std-ref">universe levels</span></a>. As we
+learned previously, the logical core of F* is organized into an
+infinite hierarchy with copies of the F* type system arranged in a
+tower of universes. This stratification is necessary to prevent
+inconsistencies within the logical core. However, terms in the <code class="docutils literal notranslate"><span class="pre">Dv</span></code>
+effect are outside the logical core and, as such, restrictions on the
+universe levels no longer apply. As the snippet below shows a total
+function returning a type in universe <code class="docutils literal notranslate"><span class="pre">u#a</span></code> resides in universe
+<code class="docutils literal notranslate"><span class="pre">u#(a</span> <span class="pre">+</span> <span class="pre">1)</span></code>. However, a <code class="docutils literal notranslate"><span class="pre">Dv</span></code> function returning a type in <code class="docutils literal notranslate"><span class="pre">u#a</span></code>
+is just in universe <code class="docutils literal notranslate"><span class="pre">0</span></code>, since the only way to obtain the type
+<code class="docutils literal notranslate"><span class="pre">dv_type</span></code> returns is by incurring a <code class="docutils literal notranslate"><span class="pre">Dv</span></code> effect and moving outside
+F*’s logical core.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> tot_type : Type u#(a + 1) = unit -&gt; <span class="k">Tot</span> (Type u#a)
+<span class="k">let</span> dv_type : Type0 = unit -&gt; <span class="k">Dv</span> (Type u#a)
+</pre></div>
+</div>
+</section>
+<section id="top-level-effects">
+<h2>Top-level Effects<a class="headerlink" href="#top-level-effects" title="Link to this heading"></a></h2>
+<p>A top-level F* term is not meant to be effectful. If one defines the
+following term, F* accepts the term but raises a warning saying
+“Top-level let bindings must be total—this term may have effects”.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> inconsistent : False = loop_nonpos()
+</pre></div>
+</div>
+<p>Top-level effects can be problematic for a few reasons:</p>
+<blockquote>
+<div><ol class="arabic">
+<li><p>The order of evaluation of the effects in top-level terms is
+undefined for programs with multiple modules—it depends on the
+order in which modules are loaded at runtime.</p></li>
+<li><p>Top-level effects, particularly when divergence is involved, can
+render F*’s typechecking context inconsistent. For example, once
+<code class="docutils literal notranslate"><span class="pre">inconsistent</span></code> is defined, then any other assertion can be
+proven.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">_</span>  = <span class="k">let</span> <span class="k">_</span> : squash False = inconsistent <span class="k">in</span>
+         <span class="k">assert</span> <span class="k">false</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</div></blockquote>
+<p>Nevertheless, when used carefully, top-level effects can be useful,
+e.g., to initialize the state of a module, or to start the main
+function of a program. So, pay attention to the warning F* raises when
+you have a top-level effect and make sure you really know what you’re
+doing.</p>
+</section>
+<section id="example-untyped-lambda-calculus">
+<h2>Example: Untyped Lambda Calculus<a class="headerlink" href="#example-untyped-lambda-calculus" title="Link to this heading"></a></h2>
+<p>In this section, we put together the various things we’ve learned
+about <code class="docutils literal notranslate"><span class="pre">Dv</span></code> computations to define several variants of an untyped
+lambda calculus.</p>
+<p>You can refer back to our prior development of the <a class="reference internal" href="../part2/part2_stlc.html#part2-stlc"><span class="std std-ref">simply typed
+lambda calculus</span></a> if you need some basic background on the
+lambda calculus.</p>
+<section id="interpreting-deeply-embedded-lambda-terms">
+<h3>Interpreting Deeply Embedded Lambda Terms<a class="headerlink" href="#interpreting-deeply-embedded-lambda-terms" title="Link to this heading"></a></h3>
+<p>We start by defining the syntax of untyped lambda terms, below.  The
+variables use the de Bruijn convention, where a index of a variable
+counts the number of lambda-binders to traverse to reach its binding
+occurrence. The <code class="docutils literal notranslate"><span class="pre">Lam</span></code> case just has the body of the lambda term,
+with no type annotation on the binder, and no explicit name for the
+variable.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> var = nat
+<span class="k">type</span> term = 
+  | Var  : var -&gt; term
+  | Int  : int -&gt; term
+  | Lam  : term -&gt; term
+  | App  : term -&gt; term -&gt; term
+</pre></div>
+</div>
+<p>As usual, we can define what it means to substitute a variable <code class="docutils literal notranslate"><span class="pre">x</span></code>
+with a (closed) term <code class="docutils literal notranslate"><span class="pre">v</span></code> in <code class="docutils literal notranslate"><span class="pre">t</span></code>—this is just a regular <code class="docutils literal notranslate"><span class="pre">Tot</span></code>
+function.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> subst (x:var) (v:term) (t:term)
+  : <span class="k">Tot</span> term  (<span class="k">decreases</span> t) = 
+  <span class="k">match</span> t <span class="k">with</span>
+  | Var y -&gt; <span class="k">if</span> x = y <span class="k">then</span> v <span class="k">else</span> t
+  | Int <span class="k">_</span> -&gt; t
+  | Lam t -&gt; Lam (subst (x + 1) v t)
+  | App t0 t1 -&gt; App (subst x v t0) (subst x v t1)
+</pre></div>
+</div>
+<p>Finally, we can define an interpreter for <code class="docutils literal notranslate"><span class="pre">term</span></code>, which can
+(intentionally) loop infinitely, as is clear from the <code class="docutils literal notranslate"><span class="pre">Dv</span></code> type
+annotation.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="c">(* This interpreter can (intentionally) loop infinitely *)</span>
+<span class="k">let</span> <span class="k">rec</span> interpret (t:term)
+  : <span class="k">Dv</span> (option term)
+  = <span class="k">match</span> t <span class="k">with</span>
+    | Var <span class="k">_</span>
+    | Int <span class="k">_</span>
+    | Lam <span class="k">_</span> -&gt; Some t
+    | App t0 t1 -&gt;
+      <span class="k">let</span> head = interpret t0 <span class="k">in</span>
+      <span class="k">match</span> head <span class="k">with</span>
+      | None -&gt; None
+      | Some (Lam body) -&gt; interpret (subst 0 t1 body)
+      | <span class="k">_</span> -&gt; None <span class="c">//type error, expected a function</span>
+
+<span class="c">(* (\x. x x) (\x. x x) *)</span>
+<span class="k">let</span> loops () : <span class="k">Dv</span> <span class="k">_</span> = interpret (App (Lam (App (Var 0) (Var 0)))
+                                     (Lam (App (Var 0) (Var 0))))
+</pre></div>
+</div>
+<section id="id3">
+<h4>Exercise<a class="headerlink" href="#id3" title="Link to this heading"></a></h4>
+<p>This exercise is designed to show how you can prove non-trivial
+properties of <code class="docutils literal notranslate"><span class="pre">Dv</span></code> computations by giving them interesting dependent
+types.</p>
+<p>The substitution function defined here is only sound when the term
+being substituted is closed, otherwise, any free variables it has can
+be captured when substituted beneath a lambda.</p>
+<p>A term is closed if it satisfies this definition:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> closed&#39; (t:term) (offset:int) 
+  : bool
+  = <span class="k">match</span> t <span class="k">with</span>
+    | Int <span class="k">_</span> -&gt; <span class="k">true</span>
+    | Var i -&gt; i &lt;= offset
+    | Lam t -&gt; closed&#39; t (offset + 1)
+    | App t0 t1 -&gt; closed&#39; t0 offset &amp;&amp; closed&#39; t1 offset
+<span class="k">let</span> closed t = closed&#39; t (-1)
+</pre></div>
+</div>
+<p>Restrict the type of <code class="docutils literal notranslate"><span class="pre">subst</span></code> so that its argument is <code class="docutils literal notranslate"><span class="pre">v</span> <span class="pre">:</span> <span class="pre">term</span> <span class="pre">{</span>
+<span class="pre">closed</span> <span class="pre">v</span> <span class="pre">}</span></code>—you will have to also revise the type of its other
+argument for the proof to work.</p>
+<p>Next, give the following type to the interpreter itself, proving that
+interpreting closed terms produces closed terms, or loops forever.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> interpret (t:term { closed t })
+  : <span class="k">Dv</span> (option (t:term { closed t }))
+  = <span class="k">match</span> t <span class="k">with</span>
+    | Int <span class="k">_</span>
+    | Lam <span class="k">_</span> -&gt; Some t
+    | App t0 t1 -&gt;
+      <span class="k">let</span> head = interpret t0 <span class="k">in</span>
+      <span class="k">match</span> head <span class="k">with</span>
+      | None -&gt; None
+      | Some (Lam body) -&gt; interpret (subst 0 t1 body)
+      | <span class="k">_</span> -&gt; None <span class="c">//type error, expected a function</span>
+</pre></div>
+</div>
+<div class="toggle docutils container">
+<div class="header docutils container">
+<p><strong>Answer</strong></p>
+</div>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">module</span> Part4.UTLCEx1
+
+<span class="k">let</span> var = nat
+<span class="k">type</span> term = 
+  | Var  : var -&gt; term
+  | Int  : int -&gt; term
+  | Lam  : term -&gt; term
+  | App  : term -&gt; term -&gt; term
+
+<span class="c">//SNIPPET_START: closed$</span>
+<span class="k">let</span> <span class="k">rec</span> closed&#39; (t:term) (offset:int) 
+  : bool
+  = <span class="k">match</span> t <span class="k">with</span>
+    | Int <span class="k">_</span> -&gt; <span class="k">true</span>
+    | Var i -&gt; i &lt;= offset
+    | Lam t -&gt; closed&#39; t (offset + 1)
+    | App t0 t1 -&gt; closed&#39; t0 offset &amp;&amp; closed&#39; t1 offset
+<span class="k">let</span> closed t = closed&#39; t (-1)
+<span class="c">//SNIPPET_END: closed$</span>
+
+<span class="k">let</span> <span class="k">rec</span> closed&#39;_weaken (t:term) (offset offset&#39;:int)
+  : <span class="k">Lemma</span> 
+    (<span class="k">requires</span> closed&#39; t offset /\
+              offset &lt;= offset&#39;)
+    (<span class="k">ensures</span> closed&#39; t offset&#39;)
+  = <span class="k">match</span> t <span class="k">with</span>
+    | Int <span class="k">_</span> -&gt; ()
+    | Var <span class="k">_</span> -&gt; ()
+    | Lam t -&gt; closed&#39;_weaken t (offset + 1) (offset&#39; + 1)
+    | App t0 t1 -&gt; 
+      closed&#39;_weaken t0 offset offset&#39;;
+      closed&#39;_weaken t1 offset offset&#39; 
+
+<span class="k">let</span> <span class="k">rec</span> subst (x:var) 
+              (v:term { closed v })
+              (t:term { closed&#39; t x })
+  : <span class="k">Tot</span> (t1:term { closed&#39; t1 (x - 1) }) (<span class="k">decreases</span> t) = 
+  <span class="k">match</span> t <span class="k">with</span>
+  | Var y -&gt; <span class="k">if</span> x = y <span class="k">then</span> (closed&#39;_weaken v (-1) (x - 1); v) <span class="k">else</span> t
+  | Int <span class="k">_</span> -&gt; t
+  | Lam t -&gt; Lam (subst (x + 1) v t)
+  | App t0 t1 -&gt; App (subst x v t0) (subst x v t1)
+
+<span class="c">//SNIPPET_START: interpret$</span>
+<span class="k">let</span> <span class="k">rec</span> interpret (t:term { closed t })
+  : <span class="k">Dv</span> (option (t:term { closed t }))
+  = <span class="k">match</span> t <span class="k">with</span>
+    | Int <span class="k">_</span>
+    | Lam <span class="k">_</span> -&gt; Some t
+    | App t0 t1 -&gt;
+      <span class="k">let</span> head = interpret t0 <span class="k">in</span>
+      <span class="k">match</span> head <span class="k">with</span>
+      | None -&gt; None
+      | Some (Lam body) -&gt; interpret (subst 0 t1 body)
+      | <span class="k">_</span> -&gt; None <span class="c">//type error, expected a function</span>
+<span class="c">//SNIPPET_END: interpret$</span>
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="denoting-lambda-terms-into-an-f-recursive-type">
+<h3>Denoting Lambda Terms into an F* Recursive Type<a class="headerlink" href="#denoting-lambda-terms-into-an-f-recursive-type" title="Link to this heading"></a></h3>
+<p>We now look at a variation on the interpreter above to illustrate how
+(non-positive) recursive types using <code class="docutils literal notranslate"><span class="pre">Dv</span></code> can also be used to give a
+semantics to untyped lambda terms.</p>
+<p>Consider the type <code class="docutils literal notranslate"><span class="pre">dyn</span></code> shown below—it has a non-positive
+constructor <code class="docutils literal notranslate"><span class="pre">DFun</span></code>. We can use this type to interpret untyped lambda
+terms into dynamically typed, potentially divergent, F* terms,
+showing, in a way, that untyped lambda calculus is no more expressive
+than F* with the <code class="docutils literal notranslate"><span class="pre">Dv</span></code> effect.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">noeq</span>
+<span class="k">type</span> dyn = 
+  | DErr  : string -&gt; dyn
+  | DInt  : int -&gt; dyn
+  | DFun  : (dyn -&gt; <span class="k">Dv</span> dyn) -&gt; dyn
+</pre></div>
+</div>
+<p>The program <code class="docutils literal notranslate"><span class="pre">denote</span></code> shown below gives a semantics to <code class="docutils literal notranslate"><span class="pre">term</span></code> using
+<code class="docutils literal notranslate"><span class="pre">dyn</span></code>. It is parameterized by a <code class="docutils literal notranslate"><span class="pre">ctx</span> <span class="pre">:</span> <span class="pre">ctx_t</span></code>, which interprets
+the free variables of the term into <code class="docutils literal notranslate"><span class="pre">dyn</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> ctx_t = nat -&gt; dyn
+
+<span class="k">let</span> shift (ctx:ctx_t) (v:dyn) 
+  : ctx_t
+  = <span class="k">fun</span> n -&gt; <span class="k">if</span> n = 0 <span class="k">then</span> v <span class="k">else</span> ctx (n - 1)
+
+<span class="k">let</span> <span class="k">rec</span> denote (t:term) (ctx:ctx_t)
+  : <span class="k">Dv</span> dyn 
+  = <span class="k">match</span> t <span class="k">with</span>
+    | Var v -&gt; ctx v
+    | Int i -&gt; DInt i
+    | Lam t -&gt; DFun (<span class="k">fun</span> v -&gt; denote t (shift ctx v))
+    | App t0 t1 -&gt; 
+      <span class="k">match</span> denote t0 ctx <span class="k">with</span>
+      | DFun f -&gt; f (denote t1 ctx)
+      | DErr msg -&gt; DErr msg
+      | DInt <span class="k">_</span> -&gt; DErr &quot;Cannot apply an integer&quot;
+</pre></div>
+</div>
+<p>We look at the cases in detail:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>In the <code class="docutils literal notranslate"><span class="pre">Var</span></code> case, the intepretation just refers to the context.</p></li>
+<li><p>Integers constants in <code class="docutils literal notranslate"><span class="pre">term</span></code> are directly interpreted to
+integers in <code class="docutils literal notranslate"><span class="pre">dyn</span></code>.</p></li>
+<li><p>The case of <code class="docutils literal notranslate"><span class="pre">Lam</span></code> is the most interesting: An lambda abstraction
+in <code class="docutils literal notranslate"><span class="pre">term</span></code> is interpreted as an F* function <code class="docutils literal notranslate"><span class="pre">dyn</span> <span class="pre">-&gt;</span> <span class="pre">Dv</span> <span class="pre">dyn</span></code>,
+recursively calling the denotation function on the body when the
+function is applied. Here’s where we see the non-positivity of
+<code class="docutils literal notranslate"><span class="pre">DFun</span></code> at play—it allows us to inject the function into the
+<code class="docutils literal notranslate"><span class="pre">dyn</span></code> type.</p></li>
+<li><p>Finally, in the application case, we interpret a syntactic
+application in <code class="docutils literal notranslate"><span class="pre">term</span></code> as function application in F* (unless the
+head is not a function, in which case we have a type error).</p></li>
+</ul>
+</div></blockquote>
+<section id="id4">
+<h4>Exercise<a class="headerlink" href="#id4" title="Link to this heading"></a></h4>
+<p>This exercise is similar in spirit to the previous one and designed to
+show that you can prove some simple properties of <code class="docutils literal notranslate"><span class="pre">denote</span></code> by
+enriching its type.</p>
+<p>Can you prove that a closed term can be interpreted in an empty
+context?</p>
+<p>First, let’s refine the type of contexts so that it only provides an
+interpretation to only some variables:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> ctx_t (i:int) = x:nat{x &lt;= i} -&gt; dyn
+</pre></div>
+</div>
+<p>Next, let’s define <code class="docutils literal notranslate"><span class="pre">free</span> <span class="pre">t</span></code> to compute the greatest index of a free
+variable in a term.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> max (x y:int) : int = <span class="k">if</span> x &lt; y <span class="k">then</span> y <span class="k">else</span> x
+<span class="k">let</span> <span class="k">rec</span> free (t:term)
+  : int
+  = <span class="k">match</span> t <span class="k">with</span>
+    | Var x -&gt; x
+    | Int <span class="k">_</span> -&gt; -1
+    | Lam t -&gt; free t - 1
+    | App t0 t1 -&gt; max (free t0) (free t1)
+</pre></div>
+</div>
+<p>Can you give the same <code class="docutils literal notranslate"><span class="pre">denote</span></code> function shown earlier the following
+type?</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> denote (t:term) (ctx:ctx_t (free t))
+  : <span class="k">Dv</span> dyn
+</pre></div>
+</div>
+<p>Next, define the empty context as shown below:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> empty_context : ctx_t (-1) = <span class="k">fun</span> <span class="k">_</span> -&gt; false_elim ()
+</pre></div>
+</div>
+<p>Given a closed term <code class="docutils literal notranslate"><span class="pre">t</span> <span class="pre">:</span> <span class="pre">term</span> <span class="pre">{</span> <span class="pre">closed</span> <span class="pre">t</span> <span class="pre">}</span></code>, where <code class="docutils literal notranslate"><span class="pre">closed</span> <span class="pre">t</span> <span class="pre">=</span>
+<span class="pre">(free</span> <span class="pre">t</span> <span class="pre">=</span> <span class="pre">-1)</span></code>, can you use <code class="docutils literal notranslate"><span class="pre">denote</span></code> to give an interpretation to
+closed terms in the empty context?</p>
+<div class="toggle docutils container">
+<div class="header docutils container">
+<p><strong>Answer</strong></p>
+</div>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">module</span> Part4.UTLCEx2
+<span class="k">let</span> var = nat
+<span class="k">type</span> term = 
+  | Var  : var -&gt; term
+  | Int  : int -&gt; term
+  | Lam  : term -&gt; term
+  | App  : term -&gt; term -&gt; term
+
+<span class="c">//SNIPPET_START: free$</span>
+<span class="k">let</span> max (x y:int) : int = <span class="k">if</span> x &lt; y <span class="k">then</span> y <span class="k">else</span> x
+<span class="k">let</span> <span class="k">rec</span> free (t:term)
+  : int
+  = <span class="k">match</span> t <span class="k">with</span>
+    | Var x -&gt; x
+    | Int <span class="k">_</span> -&gt; -1
+    | Lam t -&gt; free t - 1
+    | App t0 t1 -&gt; max (free t0) (free t1)
+<span class="c">//SNIPPET_END: free$</span>
+
+<span class="k">noeq</span>
+<span class="k">type</span> dyn = 
+  | DErr  : string -&gt; dyn
+  | DInt  : int -&gt; dyn
+  | DFun  : (dyn -&gt; <span class="k">Dv</span> dyn) -&gt; dyn
+
+<span class="c">//SNIPPET_START: ctx_t$</span>
+<span class="k">let</span> ctx_t (i:int) = x:nat{x &lt;= i} -&gt; dyn
+<span class="c">//SNIPPET_END: ctx_t$</span>
+
+<span class="k">let</span> shift #i (ctx:ctx_t i) (v:dyn) 
+  : ctx_t (i + 1)
+  = <span class="k">fun</span> n -&gt; <span class="k">if</span> n = 0 <span class="k">then</span> v <span class="k">else</span> ctx (n - 1)
+
+<span class="c">(* This is similar to the interpreter, but</span>
+<span class="c">   &quot;interprets&quot; terms into the F* type dyn</span>
+<span class="c">    rather than just reducing syntax to syntax *)</span>
+<span class="k">let</span> <span class="k">rec</span> denote (t:term)
+               (ctx:ctx_t (free t))
+  : <span class="k">Dv</span> dyn 
+  = <span class="k">match</span> t <span class="k">with</span>
+    | Var v -&gt; ctx v
+    | Int i -&gt; DInt i
+    | Lam t -&gt; DFun (<span class="k">fun</span> v -&gt; denote t (shift ctx v))
+    | App t0 t1 -&gt; 
+      <span class="k">match</span> denote t0 ctx <span class="k">with</span>
+      | DFun f -&gt; f (denote t1 ctx)
+      | DErr msg -&gt; DErr msg
+      | DInt <span class="k">_</span> -&gt; DErr &quot;Cannot apply an integer&quot;
+
+<span class="c">//SNIPPET_START: empty_context$</span>
+<span class="k">let</span> empty_context : ctx_t (-1) = <span class="k">fun</span> <span class="k">_</span> -&gt; false_elim ()
+<span class="c">//SNIPPET_END: empty_context$</span>
+
+<span class="k">let</span> closed t = free t = -1
+<span class="k">let</span> denote_closed (t:term { closed t }) 
+  : <span class="k">Dv</span> dyn
+  = denote t empty_context
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="shallowly-embedded-dynamically-typed-programming">
+<h3>Shallowly Embedded Dynamically Typed Programming<a class="headerlink" href="#shallowly-embedded-dynamically-typed-programming" title="Link to this heading"></a></h3>
+<p>In the previous example, we saw how the syntax of untyped lambda terms
+can be interpreted into the F* type <code class="docutils literal notranslate"><span class="pre">dyn</span></code>. In this example, rather
+than going via the indirection of the syntax of lambda terms, we show
+how the type <code class="docutils literal notranslate"><span class="pre">dyn</span></code> can be used directly to embed within F* a small
+Turing complete, dynamically typed programming language.</p>
+<p>We can start by lifting the F* operations on integers and functions to
+(possibly failing) operations on <code class="docutils literal notranslate"><span class="pre">dyn</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="c">(* Lifting operations on integers to operations on dyn *)</span>
+<span class="k">let</span> lift (op: int -&gt; int -&gt; int) (n m:dyn) : dyn
+  = <span class="k">match</span> n, m <span class="k">with</span>
+    | DInt i, DInt j -&gt; DInt (op i j)
+    | <span class="k">_</span> -&gt; DErr &quot;Expected integers&quot;
+<span class="k">let</span> mul = lift op_Star
+<span class="k">let</span> sub = lift op_Subtraction
+<span class="k">let</span> add = lift op_Addition
+<span class="k">let</span> div (n m:dyn)
+  = <span class="k">match</span> n, m <span class="k">with</span>
+    | DInt i, DInt j -&gt; 
+      <span class="k">if</span> j = 0 <span class="k">then</span> DErr &quot;Division <span class="k">by</span> zero&quot;
+      <span class="k">else</span> DInt (i / j)
+    | <span class="k">_</span> -&gt; DErr &quot;Expected integers&quot;
+<span class="k">let</span> mod (n m:dyn)
+  = <span class="k">match</span> n, m <span class="k">with</span>
+    | DInt i, DInt j -&gt; 
+      <span class="k">if</span> j = 0 <span class="k">then</span> DErr &quot;Division <span class="k">by</span> zero&quot;
+      <span class="k">else</span> DInt (i % j)
+    | <span class="k">_</span> -&gt; DErr &quot;Expected integers&quot;
+</pre></div>
+</div>
+<p>We also provide operations to compare dyn-typed integers and to
+branch on them, treating <code class="docutils literal notranslate"><span class="pre">0</span></code> as <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="c">(* Branching *)</span>
+<span class="k">let</span> if_ (d:dyn) (then_ else_:dyn) =
+  <span class="k">match</span> d <span class="k">with</span>
+  | DInt b -&gt; 
+    <span class="k">if</span> b&lt;&gt;0 <span class="k">then</span> then_ <span class="k">else</span> else_
+  | <span class="k">_</span> -&gt; DErr &quot;Can only branch on integers&quot;
+
+<span class="c">(* comparison *)</span>
+<span class="k">let</span> eq_ (d:dyn) (d&#39;:dyn)
+  : dyn 
+  = <span class="k">match</span> d, d&#39; <span class="k">with</span>
+    | DInt i, DInt j -&gt; DInt (<span class="k">if</span> i = j <span class="k">then</span> 1 <span class="k">else</span> 0)
+    | <span class="k">_</span> -&gt; DErr &quot;Can only compare integers&quot;
+</pre></div>
+</div>
+<p>For functions, we can provide combinators to apply functions and,
+importantly, a combinator <code class="docutils literal notranslate"><span class="pre">fix</span></code> that provides general recursion.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="c">(* Dynamically typed application *)</span>
+<span class="k">let</span> app (f:dyn) (x:dyn)
+  : <span class="k">Dv</span> dyn
+  = <span class="k">match</span> f <span class="k">with</span>
+    | DFun f -&gt; f x
+    | <span class="k">_</span> -&gt; DErr &quot;Can only apply a <span class="k">function</span>&quot;
+<span class="c">(* general recursion *)</span>
+<span class="k">let</span> <span class="k">rec</span> fix (f: (dyn -&gt; <span class="k">Dv</span> dyn) -&gt; dyn -&gt; <span class="k">Dv</span> dyn) (n:dyn)
+  : <span class="k">Dv</span> dyn
+  = f (fix f) n
+</pre></div>
+</div>
+<p>An aside on the arity of recursive functions: You may wonder why
+<code class="docutils literal notranslate"><span class="pre">fix</span></code> is defined as shown, rather than <code class="docutils literal notranslate"><span class="pre">fix_alt</span></code> below, which
+removes a needless additional abstraction. The reason is that with
+<code class="docutils literal notranslate"><span class="pre">fix_alt</span></code>, to instruct F* to disable the termination checker on the
+recursive definition, we need an additional <code class="docutils literal notranslate"><span class="pre">Dv</span></code> annotation: indeed,
+evaluating <code class="docutils literal notranslate"><span class="pre">fixalt</span> <span class="pre">f</span></code> in a call-by-value semantics would result,
+unconditionally, in an infinite loop, whereas <code class="docutils literal notranslate"><span class="pre">fix</span> <span class="pre">f</span></code> would
+immediately return the lambda term <code class="docutils literal notranslate"><span class="pre">fun</span> <span class="pre">n</span> <span class="pre">-&gt;</span> <span class="pre">f</span> <span class="pre">(fix</span> <span class="pre">f)</span> <span class="pre">n</span></code>. In other
+words, eta reduction (or removing redundant function applications)
+does not preserve semantics in the presence of divergence.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> fix_alt (f: (dyn -&gt; <span class="k">Dv</span> dyn) -&gt; dyn -&gt; <span class="k">Dv</span> dyn) 
+  : <span class="k">Dv</span> (dyn -&gt; <span class="k">Dv</span> dyn)
+  = f (fix_alt f)
+</pre></div>
+</div>
+<p>With that, we can program non-trivial dynamically typed, general
+recursive programs within F* itself, as seen below.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="c">(* shorthands *)</span>
+<span class="k">let</span> i (i:int) : dyn = DInt i
+<span class="k">let</span> lam (f:dyn -&gt; <span class="k">Dv</span> dyn) : dyn = DFun f
+<span class="c">(* a dynamically typed analog of collatz *)</span>
+<span class="k">let</span> collatz_dyn 
+  : dyn 
+  = lam (fix (<span class="k">fun</span> collatz n -&gt;
+                if_ (eq_ n (i 1))
+                    (i 1)
+                    (if_ (eq_ (mod n (i 2)) (i 0))
+                         (collatz (div n (i 2)))
+                         (collatz (add (mul n (i 3)) (i 1))))))
+</pre></div>
+</div>
+<p>All of which is to illustrate that with general recursion and
+non-positive datatypes using <code class="docutils literal notranslate"><span class="pre">Dv</span></code>, F* is a general-purpose
+programming language like ML, Haskell, Lisp, or Scheme, or other
+functional languages you may be familiar with.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="part4_ghost.html" class="btn btn-neutral float-left" title="Erasure and the Ghost Effect" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="part4_pure.html" class="btn btn-neutral float-right" title="Primitive Effect Refinements" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

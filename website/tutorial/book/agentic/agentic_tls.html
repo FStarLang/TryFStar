@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A Verified TLS-1.3 Client and Server &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Under the hood" href="../under_the_hood/under_the_hood.html" />
+    <link rel="prev" title="Stateful Services" href="agentic_state_machines.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pulse/pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="agentic.html">Agentic Proof-Oriented Programming</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="agentic_getting_started.html">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agentic_rubrics_templates_audits.html">Rubrics, Templates, and Audits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agentic_sorting_algorithms.html">On Abstraction &amp; Rubrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agentic_rubrics_as_templates.html">Rubrics as Templates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agentic_state_machines.html">Stateful Services</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">A Verified TLS-1.3 Client and Server</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#a-roadmap-for-an-agentic-implementation-of-tls-1-3">A Roadmap for an Agentic Implementation of TLS-1.3</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#specifying-the-state-machine">Specifying the State Machine</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#auditing-state-machine-specification-with-key-agreement-proofs">Auditing State Machine Specification with Key Agreement Proofs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rubric-compliance">Rubric Compliance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#auditing-with-interoperability-testing">Auditing with Interoperability Testing</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="agentic.html">Agentic Proof-Oriented Programming</a></li>
+      <li class="breadcrumb-item active">A Verified TLS-1.3 Client and Server</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="a-verified-tls-1-3-client-and-server">
+<span id="agentic-tls"></span><h1>A Verified TLS-1.3 Client and Server<a class="headerlink" href="#a-verified-tls-1-3-client-and-server" title="Link to this heading"></a></h1>
+<p>We went to some trouble in the last chapter to create a rubric for state
+machines and their implementation refinements. In this chapter, we’ll put that
+rubric to work by using it to structure a verified implementation of the TLS-1.3
+protocol.</p>
+<p>Some background on TLS: Transport Layer Security (TLS) is a widely used
+cryptographic protocol for secure communication over the Internet. It is used to
+secure web traffic (e.g., for HTTPS) and is also used in many other applications
+that require secure communication. TLS provides confidentiality, integrity, and
+authenticity of data transmitted over a network. TLS-1.3 is the latest version
+of the protocol, specified in <a class="reference external" href="https://datatracker.ietf.org/doc/html/rfc8446">RFC 8446</a>, which includes several
+improvements over previous versions, including better security and performance.</p>
+<p>Verifying implementations of TLS has been a long-standing challenge, due to the
+complexity of the protocol and the need to reason about cryptographic
+properties. <a class="reference external" href="https://project-everest.github.io/">Project Everest</a>, a main
+application of F*, targeted the verification of TLS, and produced verified
+implementations of many of its components. However, some parts of the protocol
+were not fully verified, in particular, the main state machine proof of the TLS
+handshake protocol was not completed.</p>
+<p>TLS supports many modes and optimizations. What we’ll focus on here is verifying
+a single, commonly used profile of the protocol, reusing some verified
+components from Project Everest notably for the cryptographic primitives, and
+focusing on the main handshake protocol in the following mode:</p>
+<ul class="simple">
+<li><p>1-RTT (one round trip time) handshake, with no 0-RTT (zero round trip time) support.</p></li>
+<li><p>No session resumption, i.e., each handshake is a full handshake, or key update.</p></li>
+<li><p>X25519 key exchange</p></li>
+<li><p>Chacha20-Poly1305 as the symmetric cipher, with SHA-256 as the hash function.</p></li>
+</ul>
+<p>This is a limited profile for TLS, but a common one and widely supported.</p>
+<section id="a-roadmap-for-an-agentic-implementation-of-tls-1-3">
+<h2>A Roadmap for an Agentic Implementation of TLS-1.3<a class="headerlink" href="#a-roadmap-for-an-agentic-implementation-of-tls-1-3" title="Link to this heading"></a></h2>
+<p>An agentic implementation of TLS-1.3 took about 2 weeks of agentic programming
+to get a first verified version, costing around $3000 in tokens using GPT-5.5
+with GitHub Copilot CLI. Getting there took some planning and structure, with
+templates, rubrics, and audits playing a central role. We outline a roadmap for
+our process before getting into it in detail.</p>
+<p><strong>Templates</strong> Using the implementation of the Calculator Server as a template
+for an agent, instructing it to first implement a TLS-1.3 client, and then using
+the client as a template for the server. A lesson from this is to start small,
+and build up to more complex systems, using the simpler systems as templates for
+the more complex ones.</p>
+<p><strong>Rubrics</strong> To ensure that the implementation follows a well-understood pattern
+and to keep things comprehensible for a human, we use the state machine
+typeclass to ensure that the relationship between the Calculator Server and the
+TLS implementations are not just loosely related, but that they are both,
+formally, instances of the same rubric. Understanding the rubric alone, and
+convincing oneself that it enforces a state machine refinement, is enough to
+understand that a TLS implementation refines a state machine specification.</p>
+<p><strong>Audits</strong> The state machine specification for the Caclulator Server is just a
+few dozen lines of code and is easy to understand and review. In contrast, a
+state machine specification for TLS, even for the limited profile we are
+considering, is on the order of a few thousand lines of specification. While our
+rubric gives us confidence that the implementation refines this specification,
+there is still the question of whether the specification is correct. For this,
+we use two main techniques:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Interoperability testing: An claimed implementation of TLS can only
+practically be considered an implementation of TLS if it can interoperate
+with other implementations of TLS. This is common practice for network
+protocol implementors, e.g., the IETF organizes interoperability testing
+events for the networking protocols it standardizes, ensuring that
+multiple implementations of a protocol interpret the natural language
+specification of the protocol in the same way. Our TLS implementation
+interoperates with OpenSSL in both directions, i.e., our client
+interoperates with an OpenSSL server, and our server interoperates with an
+OpenSSL client. This gives us confidence that our implementation really is
+a TLS.</p></li>
+<li><p>State machine proofs: Knowing that the implementation refines the state
+machine, we can then ignore the implementation and focus on the state
+machine specification alone. We use agents to prove that the state machine
+specification guarantees some useful properties. Notably, we prove that if
+a client and server both agree on the messages exchanged, then they also
+agree on the session key that is derived by the handshake. In other words,
+subjecting the specification to further formal analysis allows us to gain
+confidence that the specification is also meaningful.</p></li>
+</ul>
+</div></blockquote>
+<p>Note, we do not prove any <em>cryptographic security</em> properties of the protocol,
+only functional correctness properties. Extending our state mahine specification
+to also support security proofs would be an interesting direction to pursue in
+the future.</p>
+</section>
+<section id="specifying-the-state-machine">
+<h2>Specifying the State Machine<a class="headerlink" href="#specifying-the-state-machine" title="Link to this heading"></a></h2>
+<p>We start by sketching the state machine specification, first informally, using
+this diagram from the RFC 8446.</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>         Client                                           Server
+
+ Key  ^ ClientHello
+ Exch | + key_share*
+      | + signature_algorithms*
+      | + psk_key_exchange_modes*
+      v + pre_shared_key*       --------&gt;
+                                                 ServerHello  ^ Key
+                                                 + key_share*  | Exch
+                                            + pre_shared_key*  v
+                                        {EncryptedExtensions}  ^  Server
+                                        {CertificateRequest*}  v  Params
+                                             {Certificate*}    ^
+                                         {CertificateVerify*}  | Auth
+                                                 {Finished}    v
+                                &lt;--------  [Application Data*]
+     ^ {Certificate*}
+Auth | {CertificateVerify*}
+     v {Finished}               --------&gt;
+     [Application Data]         &lt;-------&gt;  [Application Data]
+</pre></div>
+</div>
+<p>The client starts by preparing a <code class="docutils literal notranslate"><span class="pre">ClientHello</span></code> message, which includes the
+client’s key share and other supported cryptographic parameters. The server
+responds with a <code class="docutils literal notranslate"><span class="pre">ServerHello</span></code> message, which includes the server’s key share
+and other selected cryptographic parameters. The server may also send additional
+messages, such as <code class="docutils literal notranslate"><span class="pre">EncryptedExtensions</span></code>, <code class="docutils literal notranslate"><span class="pre">CertificateRequest</span></code>,
+<code class="docutils literal notranslate"><span class="pre">Certificate</span></code>, <code class="docutils literal notranslate"><span class="pre">CertificateVerify</span></code>, and <code class="docutils literal notranslate"><span class="pre">Finished</span></code> messages, depending on
+the configuration and requirements of the handshake. The client may also send
+its own <code class="docutils literal notranslate"><span class="pre">Certificate</span></code> and <code class="docutils literal notranslate"><span class="pre">CertificateVerify</span></code> messages if requested by the
+server. Using the key shares, both parties derive a shared session key, which is
+then used to encrypt and authenticate application data. The handshake is
+complete when both parties have exchanged the necessary messages and derived the
+session key. After the handshake, both parties can securely exchange application
+data.</p>
+<p>Specifying this state machine in F* takes a few steps and agents author this
+entirely from background knowledge of the TLS protocol, using the RFC 8446 as a
+reference. We sketch parts of this specification below, but omit many details.</p>
+<p>The state machine follows our rubric, the typeclass of state machines that we
+saw earlier.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> client_state_machine (initial:CS.connection_state)
+: SM.state_machine
+        CS.connection_state
+        CW.wire_message
+        CTypes.client_local_event
+        CTypes.local_output =
+{
+    SM.sm_initial_state = initial;
+    SM.sm_step = client_step;
+}
+</pre></div>
+</div>
+<p>The state of the protocol is <code class="docutils literal notranslate"><span class="pre">connection_state</span></code>, which includes a model of the
+protocol state, a log of the messages sent and received on the wire, and a log
+of the events that have occurred in the protocol.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> connection_state = {
+    cs_model: connection_model;
+    cs_wire_log: wire_log;
+    cs_event_log: list conn_event;
+}
+</pre></div>
+</div>
+<p>The connection model itself has many components, reflecting the state of the
+various sub-protcols that are part of TLS, including the initial configuration,
+the handshake state machine, etc.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> connection_model = {
+    model_config: connection_config;
+    model_control: connection_control_state;
+    model_record: record_layer_state;
+    model_handshake: handshake_state;
+    model_application: application_state;
+    model_failure: option T.tls_error;
+}
+</pre></div>
+</div>
+<p>The handshake state machine is perhaps the most interesting part: we don’t
+discuss it in detail, but it records various parts of the handshake, e.g., the
+messages sent and received so far, the state of the key schedule, the transcript
+of the handshake, etc. The point is mainly to see that this is a detailed model
+of the TLS handshake.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> handshake_state = {
+    hs_start: option handshake_start;
+    hs_server_selection: option server_handshake_selection;
+    hs_client_hello: option M.client_hello;
+    hs_server_hello: option M.server_hello;
+    hs_encrypted_extensions: option M.encrypted_extensions;
+    hs_certificate: option M.certificate_msg;
+    hs_validated_peer: option X.peer_identity;
+    hs_certificate_verify: option M.certificate_verify;
+    hs_certificate_verify_verified: bool;
+    hs_server_finished: option M.finished;
+    hs_server_finished_verified: bool;
+    hs_client_finished: option M.finished;
+    hs_transcript: Tr.transcript;
+    hs_buffers: handshake_buffer_state;
+    hs_keys: key_schedule_state;
+}
+</pre></div>
+</div>
+<p>The transition relation is given by <code class="docutils literal notranslate"><span class="pre">client_step</span></code>: we’ll see a small part
+of it below. A few things to point out:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Unlike for Calculator Server, the transition relation is not a simple
+function of the current but is instead a relation between the current
+state, the event, the next state, and the outputs.</p></li>
+<li><p>There are both wire event and local events.</p></li>
+<li><p>The core of the transition relation is <code class="docutils literal notranslate"><span class="pre">legal_connection_delta</span></code></p></li>
+</ul>
+</div></blockquote>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> client_step
+    (st0:CS.connection_state)
+    (ev:SM.event CW.wire_message CTypes.client_local_event)
+    (st1:CS.connection_state)
+    (out:SM.step_output CW.wire_message CTypes.local_output)
+: prop =
+<span class="k">match</span> ev <span class="k">with</span>
+| SM.WireEvent wire -&gt;
+    <span class="k">exists</span> msg.
+        <span class="k">let</span> conn_ev =
+            CS.ConnNetworkEvent {
+                CL.message_direction = CL.Received;
+                CL.message_value = msg;
+            } <span class="k">in</span>
+        CS.legal_connection_delta
+            st0
+            {
+                CS.delta_event = conn_ev;
+                CS.delta_raw_sent =
+                    WF.serialize_all CW.tls_record_wire_format out.SM.so_wire_outputs;
+                CS.delta_raw_received = CW.wire_serialize wire;
+            }
+            st1 /\
+        client_local_outputs_match conn_ev out.SM.so_local_outputs
+| SM.LocalEvent local -&gt;
+    <span class="k">let</span> api = CTypes.client_local_event_api local <span class="k">in</span>
+    <span class="k">exists</span> conn_ev raw_sent raw_received.
+        client_api_event_matches st0 api conn_ev /\
+        client_wire_outputs_match raw_sent out.SM.so_wire_outputs /\
+        client_local_outputs_match conn_ev out.SM.so_local_outputs /\
+        CS.legal_connection_delta
+        st0
+        {
+            CS.delta_event = conn_ev;
+            CS.delta_raw_sent = raw_sent;
+            CS.delta_raw_received = raw_received;
+        }
+        st1
+</pre></div>
+</div>
+<p>At the heart of <code class="docutils literal notranslate"><span class="pre">legal_connection_delta</span></code> is a step function, which is a ghost
+function computing a single step of the state machine for network and local
+events. We give a glimpse of it below.</p>
+<p>For example, <code class="docutils literal notranslate"><span class="pre">step_handshake_message</span></code> transitions the handshake state,
+appending messages to the transcript, and recording what was sent or received so
+far.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> step_handshake_message
+    (model:connection_model)
+    (dir:direction)
+    (msg:M.handshake_msg)
+: <span class="k">GTot</span> (option connection_model) =
+    <span class="k">let</span> hs = model.model_handshake <span class="k">in</span>
+    <span class="k">match</span> dir, msg, model.model_control <span class="k">with</span>
+    | CL.Sent, M.ClientHello ch, ControlHandshaking HsStarted -&gt;
+        <span class="k">let</span> hs&#39; =
+        append_handshake_to_transcript
+            { hs <span class="k">with</span>
+                hs_client_hello = Some ch;
+                hs_buffers =
+                { hs.hs_buffers <span class="k">with</span> hb_client_hello_bytes = W.serialize_handshake msg };
+            }
+            msg <span class="k">in</span>
+        Some (with_handshake_stage model hs&#39; HsClientHelloSent)
+    | CL.Received, M.ClientHello ch, ControlHandshaking HsAwaitingClientHello -&gt;
+        <span class="k">let</span> hs&#39; =
+        append_handshake_to_transcript
+            { hs <span class="k">with</span>
+                hs_client_hello = Some ch;
+                hs_buffers =
+                { hs.hs_buffers <span class="k">with</span> hb_client_hello_bytes = W.serialize_handshake msg };
+            }
+            msg <span class="k">in</span>
+        Some (with_handshake_stage model hs&#39; HsClientHelloReceived)
+    | ...
+</pre></div>
+</div>
+<p>Local transitions include cases for deriving keys, callbacks to certificate
+validation, and other local events.</p>
+<ul class="simple">
+<li><p>Deriving shared secrets is a local event with a full specification of how
+secrets are derived based on a crypto API for key-derivation functions
+(<code class="docutils literal notranslate"><span class="pre">hkdf</span></code> etc.).</p></li>
+<li><p>Callbacks to other local events, e.g., selecting server parameters, callbacks
+to certificate validation, and delivering application data, are all local
+events with their effects logged in the connection state.</p></li>
+</ul>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> step_local_event (model:connection_model) (ev:local_event) : <span class="k">GTot</span> (option connection_model) =
+    <span class="k">let</span> hs = model.model_handshake <span class="k">in</span>
+    <span class="k">match</span> ev, model.model_control <span class="k">with</span>
+    | LocalDeriveSharedSecret shared, ControlHandshaking HsServerHelloReceived
+    | LocalDeriveSharedSecret shared, ControlHandshaking HsClientHelloReceived -&gt;
+        Some (derive_shared_secret_model model hs shared)
+
+    | LocalSelectServerParameters selection, ControlHandshaking HsClientHelloReceived -&gt;
+        Some (with_handshake_stage
+        model
+        { hs <span class="k">with</span>
+            hs_server_selection = Some selection;
+            hs_client_hello = Some selection.server_selected_client_hello;
+        }
+        HsClientHelloReceived)
+    | LocalVerifyCertificateSignature cv, ControlHandshaking HsCertificateVerifyReceived -&gt;
+        Some (with_handshake_stage
+        model
+        { hs <span class="k">with</span>
+            hs_certificate_verify = Some cv;
+            hs_certificate_verify_verified = <span class="k">true</span>;
+        }
+        HsCertificateVerifyVerified)
+    | LocalDeliverApplicationData bytes, ControlApplicationData -&gt;
+        <span class="k">let</span> app = model.model_application <span class="k">in</span>
+        Some {
+        model <span class="k">with</span>
+            model_application =
+            { app <span class="k">with</span> app_log = CL.append_app_received app.app_log bytes };
+        }
+    | ...
+</pre></div>
+</div>
+<p>Note, it might appear that the this transition relation is too permissive, e.g.,
+a <code class="docutils literal notranslate"><span class="pre">LocalVerifyCertificateSignature</span> <span class="pre">cv</span></code> event could be fired even if the
+certificate signature is invalid. However, transitions are guarded by a
+<code class="docutils literal notranslate"><span class="pre">legal_local_event</span></code> predicate, as shown below, ensuring that
+<code class="docutils literal notranslate"><span class="pre">LocalVerifyCertificateSignature</span> <span class="pre">cv</span></code> can only be fired if the certificate
+signature is indeed valid according to <code class="docutils literal notranslate"><span class="pre">C.verify_signature</span></code>, a pure function
+specifying the behavior of a signature verification algorithm.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> legal_local_event (model:connection_model) (ev:local_event) : prop =
+    <span class="k">let</span> hs = model.model_handshake <span class="k">in</span>
+    <span class="k">match</span> ev, model.model_control <span class="k">with</span>
+    | LocalVerifyCertificateSignature cv, ControlHandshaking HsCertificateVerifyReceived -&gt;
+        model.model_config.config_role == ClientEndpoint /\
+        (<span class="k">match</span> hs.hs_validated_peer, hs.hs_certificate_verify, hs.hs_buffers.hb_certificate_verify_input <span class="k">with</span>
+        | Some peer, Some stored_cv, Some input -&gt;
+            stored_cv == cv /\
+            C.verify_signature cv.M.scheme peer.X.leaf_public_key input cv.M.signature
+        | <span class="k">_</span>, <span class="k">_</span>, <span class="k">_</span> -&gt; False)
+    | ...
+</pre></div>
+</div>
+</section>
+<section id="auditing-state-machine-specification-with-key-agreement-proofs">
+<h2>Auditing State Machine Specification with Key Agreement Proofs<a class="headerlink" href="#auditing-state-machine-specification-with-key-agreement-proofs" title="Link to this heading"></a></h2>
+<p>Of course, this is a large state machine specification (and we have only shown a
+small part of it), and it is not obvious that it is correct. One way to audit
+whether or not this is a good specification is to try to prove that it satisfies
+various useful properties.</p>
+<p>One property that one aims to ensure is that if the client and server might
+expect is that if the client and server agree on the messages exchanged, then
+they also agree on the session key that is derived by the handshake. It is worth
+pointing out that this is not a small proof-oriented test (SPOT): it is a
+universal property of the protocol specification, rather than a property a
+single small example. Though, both SPOTs and proofs of such universal properties
+share the idea of proving properties of the specification to judge its quality.</p>
+<p>The lemma shown below gives us confidence that the state machine specification
+is sufficiently precise to draw such meaningful conclusions.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> lemma_client_server_application_record_material_agrees_from_paired_handshake_event_trace
+    (client:CS.connection_state)
+    (server:CS.connection_state)
+: <span class="k">Lemma</span>
+  (<span class="k">requires</span>
+    CD.client_driver_application_ready client /\
+    SD.server_driver_application_ready server /\
+    paired_handshake_event_trace client server /\
+    client_server_driver_first_epoch_no_key_update_state_inputs client server)
+  (<span class="k">ensures</span>
+    paired_handshake_message_states client server /\
+    paired_handshake_events client server /\
+    client_server_driver_remaining_semantic_projection_inputs client server /\
+    client_server_driver_supported_profile_state_inputs client server /\
+    CS.supported_profile_client_server_key_material_inputs_agree client server /\
+    CS.supported_profile_client_server_key_material_agrees client server /\
+    CS.peer_record_material_agrees (CS.traffic_id CS.TrafficApplication CS.ClientTraffic) client server /\
+    CS.peer_record_material_agrees (CS.traffic_id CS.TrafficApplication CS.ServerTraffic) client server)
+</pre></div>
+</div>
+<p>Let’s look at it closely. The preconditions state:</p>
+<ul class="simple">
+<li><p>The client and server are both in a state where they are ready to send and
+receive application data.</p></li>
+<li><p>The client and server have not performed any key updates during the
+handshake—our TLS profile does not support key updates, so this is a
+reasonable assumption.</p></li>
+<li><p>The client and server have a paired handshake event trace, i.e., they have
+exchanged the same handshake messages in the same order, which is the most
+significant assumption here. It states that</p>
+<ol class="arabic simple">
+<li><p>The client hello sent by the client is the same as the client hello received by the server.</p></li>
+<li><p>The server hello sent by the server is the same as the server hello received by the client.</p></li>
+<li><p>The encrypted extensions sent by the server is the same as the encrypted extensions received.</p></li>
+<li><p>The certificate sent by the server is the same as the certificate received by the client.</p></li>
+<li><p>The certificate verify sent by the server is the same as the certificate verify received</p></li>
+<li><p>The finished sent by the server is the same as the finished received by the client.</p></li>
+<li><p>The finished sent by the client is the same as the finished received by the server; and</p></li>
+<li><p>All these messages appear in the event trace of the client and server logs.</p></li>
+</ol>
+</li>
+</ul>
+<p>Under these assumptions, we get several useful conclusions, including, most notably:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">supported_profile_client_server_key_material_agrees</span></code>, which guarantees that
+the client and server agree on all the derived key material, including the
+handshake traffic keys, the application traffic keys, and the master secret.</p></li>
+</ul>
+<p>Underlying these proofs are also some assumptions about the underlying
+cryptographic primitives, which we show below.</p>
+<p>The first assumption is about the X25519 key agreement protocol, which is used
+to derive a shared secret between the client and server. The lemma below states
+that if the client and server have the same public keys, then they will derive
+the same shared secret.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> lemma_x25519_shared_agreement:
+    client_sk:x25519_private -&gt;
+    server_sk:x25519_private -&gt;
+    client_pub:x25519_public -&gt;
+    server_pub:x25519_public -&gt;
+    <span class="k">Lemma</span>
+    (<span class="k">requires</span>
+        x25519_public_from_private client_sk == client_pub /\
+        x25519_public_from_private server_sk == server_pub)
+    (<span class="k">ensures</span>
+        x25519_shared client_sk server_pub ==
+        x25519_shared server_sk client_pub)
+</pre></div>
+</div>
+<p>The second assumption states that chacha20-poly1305 is a functionally correct
+authenticated encryption scheme:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> lemma_chacha20_poly1305_open_seal:
+    key:B.bytes -&gt;
+    nonce:B.bytes -&gt;
+    aad:B.bytes -&gt;
+    plaintext:B.bytes -&gt;
+    <span class="k">Lemma</span>
+    (chacha20_poly1305_open
+        key
+        nonce
+        aad
+        (chacha20_poly1305_seal key nonce aad plaintext) ==
+        Some plaintext)
+</pre></div>
+</div>
+<p>Both of these properties could be proven from the underlying cryptographic
+primitives. However, for this development, we focused on using pre-existing
+verified cryptographic primitives from HACL*, rather than verifying these
+properties again from scratch.</p>
+<p>One should also attempt to prove other properties of the specification to
+further increase confidence, e.g., one could prove that the server’s parameter
+selection always picks the strongest supported cipher suite that the client
+offers.</p>
+</section>
+<section id="rubric-compliance">
+<h2>Rubric Compliance<a class="headerlink" href="#rubric-compliance" title="Link to this heading"></a></h2>
+<p>While we have a large state machine specification, our typeclass for state
+machine refinement gives us an easy way to check that the Pulse implementation
+of this TLS state machine is indeed a correct refinement.</p>
+<p>Reviewing this is just a matter of checking that the implementation satisfies
+the typeclass, which is just a few lines of code. For example, the snippet below
+is sufficient to guarantee that the client protocol implementation is a correct
+refinement of the <code class="docutils literal notranslate"><span class="pre">client_system</span></code> state machine. An analogous instantiation
+is sufficient to check the server refinement.</p>
+<p>The rest of the implementation, in excess of 130,000 lines of code, need not be
+reviewed to check for compliance with the state machine.</p>
+<blockquote>
+<div><div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> client_protocol_implementation
+  : CPI.protocol_implementation
+      canonical_client
+      CS.connection_state
+      CW.wire_message
+      CTypes.client_local_event
+      CTypes.local_output
+  =
+  {
+      CPI.pi_system = (<span class="k">fun</span> cc -&gt; client_system (Ghost.reveal cc.canonical_client_initial));
+      ...
+  }
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+<section id="auditing-with-interoperability-testing">
+<h2>Auditing with Interoperability Testing<a class="headerlink" href="#auditing-with-interoperability-testing" title="Link to this heading"></a></h2>
+<p>Finally, as mentioned previously, to confirm that we have truly implemented a
+TLS-1.3 client and server, we perform interoperability testing with OpenSSL.</p>
+<p>Our implementation extracts to about 45,000 lines of C code (of which about
+15,000 lines are generated by EverParse for wire format parsers and
+serializers). We compile this to C, linking the HACL* libraries for
+cryptographic primities, and OpenSSL libraries for certificate validation.</p>
+<p>Together with a few hundred lines of unverified C code to implement a top-level
+main function to launch a client or server, configure the network, and to
+perform some basic testing to negotiate a connection, the resulting test client
+and server interoperate with OpenSSL.</p>
+<p>Of course, one would want to audit this further for a number of other
+properties, e.g., for performance profiling, for side-channel resistance
+(although the HACL* cryptographic primitives already do have some side-channel
+resistance guarantees), and for other properties.</p>
+<p>We don’t mean to claim that our TLS client and server are production ready,
+though it is a good start. What is important is that with a careful choice of
+templates (starting with small demonstrations like Calculator Server), rubrics
+(to easily check that an implementation is a refinement of a state machine), and
+audits (e.g., by proving specification properties, and by interoperability
+testing), we can use agents to produce a verified implementation of a complex
+protocol like TLS-1.3 and have some confidence that it is correct.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="agentic_state_machines.html" class="btn btn-neutral float-left" title="Stateful Services" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../under_the_hood/under_the_hood.html" class="btn btn-neutral float-right" title="Under the hood" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Equality Types &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Constructive &amp; Classical Connectives" href="part2_logical_connectives.html" />
+    <link rel="prev" title="Merkle Trees" href="part2_merkle.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="part2.html">Representing Data, Proofs, and Computations with Inductive Types</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="part2_inductive_type_families.html">Inductive type definitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_vectors.html">Length-indexed Lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_merkle.html">Merkle Trees</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Equality Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#definitional-equality">Definitional Equality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#propositional-equality">Propositional Equality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#equality-reflection">Equality Reflection</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#implicit-conversions-using-provable-equalities">Implicit conversions using provable equalities</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#undecidability-and-weak-normalization">Undecidability and Weak Normalization</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#functional-extensionality">Functional Extensionality</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exercise">Exercise</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#decidable-equality-and-equality-qualifiers">Decidable equality and equality qualifiers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="part2_logical_connectives.html">Constructive &amp; Classical Connectives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_stlc.html">Simply Typed Lambda Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_phoas.html">Higher-order Abstract Syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_well_founded.html">Well-founded Relations and Termination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_par.html">A First Model of Computational Effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_universes.html">Universes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pulse/pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+      <li class="breadcrumb-item active">Equality Types</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="equality-types">
+<span id="part2-equality"></span><h1>Equality Types<a class="headerlink" href="#equality-types" title="Link to this heading"></a></h1>
+<p>In an <a class="reference internal" href="../part1/part1_equality.html#part1-equality"><span class="std std-ref">early section</span></a> we learned that F*
+supports at least two kinds of equality. In this section, we look in
+detail at definitional equality, propositional equality, extensional
+equality of functions, and decidable equality. These topics are fairly
+technical, but are core features of the language and their treatment
+in F* makes essential use of an indexed inductive type, <code class="docutils literal notranslate"><span class="pre">equals</span> <span class="pre">#t</span> <span class="pre">x</span>
+<span class="pre">y</span></code>, a proposition asserting the equality of <code class="docutils literal notranslate"><span class="pre">x:t</span></code> and <code class="docutils literal notranslate"><span class="pre">y:t</span></code>.</p>
+<p>Depending on your level of comfort with functional programming and
+dependent types, you may want to skip or just skim this chapter on a
+first reading, returning to it for reference if something is unclear.</p>
+<section id="definitional-equality">
+<h2>Definitional Equality<a class="headerlink" href="#definitional-equality" title="Link to this heading"></a></h2>
+<p>One of the main distinctive feature of a type theory like F* (or Coq,
+Lean, Agda etc., and in contrast with foundations like set theory) is
+that <em>computation</em> is a primitive notion within the theory, such that
+lambda terms that are related by reduction are considered
+identical. For example, there is no way to distinguish within the
+theory between <span class="math notranslate nohighlight">\((\lambda x.x) 0\)</span> and <span class="math notranslate nohighlight">\(0\)</span>, since the former
+reduces in a single step of computation to the latter. Terms that are
+related by reduction are called <em>definitionally equal</em>, and this is
+the most primitive notion of equality in the language. Definitional
+equality is a congruence, in the sense that within any context
+<span class="math notranslate nohighlight">\(T[]\)</span>, <span class="math notranslate nohighlight">\(T[n]\)</span> is definitionally equal to <span class="math notranslate nohighlight">\(T[m]\)</span>,
+when <span class="math notranslate nohighlight">\(n\)</span> and <span class="math notranslate nohighlight">\(m\)</span> are definitionally equal.</p>
+<p>Since definitionally equal terms are identical, all type theories,
+including F*, will implicitly allow treating a term <code class="docutils literal notranslate"><span class="pre">v:t</span></code> as if it had
+type <code class="docutils literal notranslate"><span class="pre">t'</span></code>, provided <code class="docutils literal notranslate"><span class="pre">t</span></code> and <code class="docutils literal notranslate"><span class="pre">t'</span></code> are definitionally equal.</p>
+<p>Let’s look at a few examples, starting again with our type of
+length-indexed vectors.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> vec (a:Type) : nat -&gt; Type =
+  | Nil : vec a 0
+  | Cons : #n:nat -&gt; hd:a -&gt; tl:vec a n -&gt; vec a (n + 1)
+</pre></div>
+</div>
+<p>As the two examples below show a <code class="docutils literal notranslate"><span class="pre">v:vec</span> <span class="pre">a</span> <span class="pre">n</span></code> also has type <code class="docutils literal notranslate"><span class="pre">vec</span>
+<span class="pre">a</span> <span class="pre">m</span></code> when <code class="docutils literal notranslate"><span class="pre">n</span></code> and <code class="docutils literal notranslate"><span class="pre">m</span></code> are definitionally equal.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> conv_vec_0 (#a:Type) (v:vec a ((<span class="k">fun</span> x -&gt; x) 0))
+  : vec a 0
+  = v
+
+<span class="k">let</span> conv_vec_1 (#a:Type) (v:vec a ((<span class="k">fun</span> x -&gt; x + 1) 0))
+  : vec a 1
+  = v
+</pre></div>
+</div>
+<p>In the first case, a single step of computation (a function
+application, or <span class="math notranslate nohighlight">\(\beta\)</span>-reduction) suffices; while the second
+case requires a <span class="math notranslate nohighlight">\(\beta\)</span>-reduction followed by a step of integer
+arithmetic. In fact, any computational step, including unfolding
+defintions, conditionals, fixpoint reduction etc. are all allowed when
+deciding if terms are definitionally equivalent—the code below
+illustrates how F* implicitly reduces the <code class="docutils literal notranslate"><span class="pre">factorial</span></code> function when
+deciding if two terms are definitionally equal.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> factorial (n:nat)
+  : nat
+  = <span class="k">if</span> n = 0 <span class="k">then</span> 1
+    <span class="k">else</span> n * factorial (n - 1)
+
+<span class="k">let</span> conv_vec_6 (#a:Type) (v:vec a (factorial 3))
+  : vec a 6
+  = v
+</pre></div>
+</div>
+<p>Of course, there is nothing particularly special about the <code class="docutils literal notranslate"><span class="pre">vec</span></code>
+type or its indices. Definitional equality applies everywhere, as
+illustrated below.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> conv_int (x : (<span class="k">fun</span> b -&gt; <span class="k">if</span> b <span class="k">then</span> int <span class="k">else</span> bool) <span class="k">true</span>)
+  : int
+  = x + 1
+</pre></div>
+</div>
+<p>Here, when adding <code class="docutils literal notranslate"><span class="pre">1</span></code> to <code class="docutils literal notranslate"><span class="pre">x</span></code>, F* implicitly converts the type of
+<code class="docutils literal notranslate"><span class="pre">x</span></code> to <code class="docutils literal notranslate"><span class="pre">int</span></code> by performing a <span class="math notranslate nohighlight">\(\beta\)</span>-reduction followed by a
+case analysis.</p>
+</section>
+<section id="propositional-equality">
+<h2>Propositional Equality<a class="headerlink" href="#propositional-equality" title="Link to this heading"></a></h2>
+<p>Definitional equality is so primitive in the language that there is no
+way to even state within the terms that two terms are definitionally
+equal, i.e., there is no way to state within the logic that two terms
+are related to each other by reduction. The closest one can get to
+stating that two terms are equal is through a notion called a
+<em>provable equality</em> or propositional equality.</p>
+<p>In thinking of propositions as types, we mentioned at the <a class="reference internal" href="../part1/part1.html#part1"><span class="std std-ref">very
+start of the book</span></a>, that one can think of a type <code class="docutils literal notranslate"><span class="pre">t</span></code> as a
+proposition, or a statement of a theorem, and <code class="docutils literal notranslate"><span class="pre">e</span> <span class="pre">:</span> <span class="pre">t</span></code> as a proof of
+the theorem <code class="docutils literal notranslate"><span class="pre">t</span></code>. So, one might ask, what type corresponds to the
+equality proposition and how are proofs of equality represented?</p>
+<p>The listing below shows the definition of an inductive type <code class="docutils literal notranslate"><span class="pre">equals</span>
+<span class="pre">#a</span> <span class="pre">x</span> <span class="pre">y</span></code> representing the equality proposition between <code class="docutils literal notranslate"><span class="pre">x:a</span></code> and
+<code class="docutils literal notranslate"><span class="pre">y:a</span></code>. Its single constructor <code class="docutils literal notranslate"><span class="pre">Reflexivity</span></code> is an equality proof.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> equals (#a:Type) : a -&gt; a -&gt; Type =
+  | Reflexivity : #x:a -&gt; equals x x
+</pre></div>
+</div>
+<p>It’s easy to construct some simple equality proofs. In the second case,
+just as with our vector examples, F* accepts <code class="docutils literal notranslate"><span class="pre">Reflexivity</span> <span class="pre">#_</span> <span class="pre">#6</span></code> as
+having type <code class="docutils literal notranslate"><span class="pre">equals</span> <span class="pre">(factorial</span> <span class="pre">3)</span> <span class="pre">6</span></code>, since <code class="docutils literal notranslate"><span class="pre">equals</span> <span class="pre">6</span> <span class="pre">6</span></code> is
+definitionally equal to <code class="docutils literal notranslate"><span class="pre">equals</span> <span class="pre">(factorial</span> <span class="pre">3)</span> <span class="pre">6</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> z_equals_z
+  : equals 0 0
+  = Reflexivity
+
+<span class="k">let</span> fact_3_eq_6
+  : equals (factorial 3) 6
+  = Reflexivity #<span class="k">_</span> #6
+</pre></div>
+</div>
+<p>Although the only constructor of <code class="docutils literal notranslate"><span class="pre">equals</span></code> is <code class="docutils literal notranslate"><span class="pre">Reflexivity</span></code>, as
+the following code shows, <code class="docutils literal notranslate"><span class="pre">equals</span></code> is actually an equivalence
+relation, satisfying (in addition to reflexivity) the laws of symmetry
+and transitivity.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> reflexivity #a (x:a)
+  : equals x x
+  = Reflexivity
+
+<span class="k">let</span> symmetry #a (x y : a) (pf:equals x y)
+  : equals y x
+  = Reflexivity
+
+<span class="k">let</span> transitivity #a (x y z : a) (pf1:equals x y) (pf2:equals y z)
+  : equals x z
+  = Reflexivity
+</pre></div>
+</div>
+<p>This might seem like magic: how is it that we can derive symmetry
+and transitivity from reflexivity alone? The answer lies in how F*
+interprets inductive type definitions.</p>
+<p>In particular, given an inductive type definition of type
+<span class="math notranslate nohighlight">\(T~\overline{p}\)</span>, where <span class="math notranslate nohighlight">\(\overline{p}\)</span> is a list of
+parameters, F* includes an axiom stating that any value <span class="math notranslate nohighlight">\(v:
+T~\overline{p}\)</span> must be an application of one of the constructors of
+<span class="math notranslate nohighlight">\(T\)</span>, <span class="math notranslate nohighlight">\(D~\overline{v} : T~\overline{p'}\)</span>, such that
+<span class="math notranslate nohighlight">\(\overline{p} = \overline{p'}\)</span>.</p>
+<p>In the case of equality proofs, this allows F* to conclude that every
+equality proof is actually an instance of <code class="docutils literal notranslate"><span class="pre">Reflexivity</span></code>, as shown
+below.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> uip_refl #a (x y:a) (pf:equals x y)
+  : equals pf (Reflexivity #a #x)
+  = Reflexivity
+</pre></div>
+</div>
+<p>Spend a minute looking at the statement above: the return type is a
+statement of equality about equality proofs. Write down a version of
+<code class="docutils literal notranslate"><span class="pre">uip_refl</span></code> making all implicit arguments explicit.</p>
+<div class="toggle docutils container">
+<div class="header docutils container">
+<p><strong>Answer</strong></p>
+</div>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> uip_refl_explicit #a (x y:a) (pf:equals x y)
+  : equals #(equals x y) pf (Reflexivity #a #x)
+  = Reflexivity #(equals x y) #(Reflexivity #a #x)
+</pre></div>
+</div>
+</div>
+<hr class="docutils" />
+<p>In fact, from <code class="docutils literal notranslate"><span class="pre">uip_refl</span></code>, a stronger statement showing that all
+equality proofs are equal is also provable. The property below is
+known as the <em>uniqueness of identity proofs</em> (UIP) and is at the core
+of what makes F* an extensional type theory.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> uip #a (x y:a) (pf0 pf1:equals x y)
+  : equals pf0 pf1
+  = Reflexivity
+</pre></div>
+</div>
+<p>The F* module <code class="docutils literal notranslate"><span class="pre">Prims</span></code>, the very first module in every program’s
+dependence graph, defines the <code class="docutils literal notranslate"><span class="pre">equals</span></code> type as shown here. The
+propositional equality predicate <code class="docutils literal notranslate"><span class="pre">(==)</span></code> that we’ve used in several
+examples already is shown below.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> ( == ) #a (x y : a) : prop
+</pre></div>
+</div>
+<p>In what follows, we’ll mostly use propositional equalities, except where we
+wish to emphasize the reflexivity proofs.</p>
+</section>
+<section id="equality-reflection">
+<h2>Equality Reflection<a class="headerlink" href="#equality-reflection" title="Link to this heading"></a></h2>
+<p>What makes F* an <em>extensional</em> type theory (and unlike the
+<em>intensional</em> type theories implemented by Coq, Lean, Agda, etc.) is a
+feature known as equality reflection. Whereas intensional type
+theories treat definitional and provable equalities separately, in F*
+terms that are provably equal are also considered definitionally
+equal. That is, if in a given context <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">==</span> <span class="pre">y</span></code> is derivable, then
+<code class="docutils literal notranslate"><span class="pre">x</span></code> is also definitionally equal to <code class="docutils literal notranslate"><span class="pre">y</span></code>. This has some
+wide-reaching consequences.</p>
+<section id="implicit-conversions-using-provable-equalities">
+<h3>Implicit conversions using provable equalities<a class="headerlink" href="#implicit-conversions-using-provable-equalities" title="Link to this heading"></a></h3>
+<p>Recall from the start of the chapter that <code class="docutils literal notranslate"><span class="pre">v:vec</span> <span class="pre">a</span> <span class="pre">((fun</span> <span class="pre">x</span> <span class="pre">-&gt;</span> <span class="pre">x)</span> <span class="pre">0)</span></code>
+is implicitly convertible to the type <code class="docutils literal notranslate"><span class="pre">vec</span> <span class="pre">a</span> <span class="pre">0</span></code>, since the two types
+are related by congruence and reduction. However, as the examples
+below show, if <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">==</span> <span class="pre">b</span></code> is derivable in the context, then
+<code class="docutils literal notranslate"><span class="pre">v:a</span></code> can be implicitly converted to the type <code class="docutils literal notranslate"><span class="pre">b</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> pconv_vec_z (#a:Type) (#n:nat) (<span class="k">_</span>:(n == 0)) (v:vec a n)
+  : vec a 0
+  = v
+
+<span class="k">let</span> pconv_vec_nm (#a:Type) (#n #m:nat) (<span class="k">_</span>:(n == m)) (v:vec a n)
+  : vec a m
+  = v
+
+<span class="k">let</span> pconv_int (#a:Type) (<span class="k">_</span>:(a == int)) (x:a)
+  : int
+  = x + 1
+
+<span class="k">let</span> pconv_ab (#a #b:Type) (<span class="k">_</span>:(a == b)) (v:a)
+  : b
+  = v
+</pre></div>
+</div>
+<p>We do not require a proof of <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">==</span> <span class="pre">b</span></code> to be literally bound in the
+context. As the example below shows, the hypothesis <code class="docutils literal notranslate"><span class="pre">h</span></code> is used in
+conjunction with the control flow of the program to prove that in the
+<code class="docutils literal notranslate"><span class="pre">then</span></code> branch <code class="docutils literal notranslate"><span class="pre">aa</span> <span class="pre">:</span> <span class="pre">int</span></code> and in the <code class="docutils literal notranslate"><span class="pre">else</span></code> branch <code class="docutils literal notranslate"><span class="pre">bb</span> <span class="pre">:</span> <span class="pre">int</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> pconv_der (#a #b:Type)
+              (x y:int)
+              (h:((x &gt; 0 ==&gt; a == int) /\
+                  (y &gt; 0 ==&gt; b == int) /\
+                  (x &gt; 0 \/ y &gt; 0)))
+              (aa:a)
+              (bb:b)
+  : int
+  = <span class="k">if</span> x &gt; 0 <span class="k">then</span> aa - 1 <span class="k">else</span> bb + 1
+</pre></div>
+</div>
+<p>In fact, with our understanding of equality proofs, we can better
+explain how case analysis works in F*. In the code above, the
+<code class="docutils literal notranslate"><span class="pre">then</span></code>-branch is typechecked in a context including a hypothesis
+<code class="docutils literal notranslate"><span class="pre">h_then:</span> <span class="pre">squash</span> <span class="pre">(equals</span> <span class="pre">(x</span> <span class="pre">&gt;</span> <span class="pre">0)</span> <span class="pre">true)</span></code>, while the <code class="docutils literal notranslate"><span class="pre">else</span></code> branch
+includes the hypothesis <code class="docutils literal notranslate"><span class="pre">h_else:</span> <span class="pre">squash</span> <span class="pre">(equals</span> <span class="pre">(x</span> <span class="pre">&gt;</span> <span class="pre">0)</span> <span class="pre">false)</span></code>. The
+presence of these additional control-flow hypotheses, in conjunction
+with whatever else is in the context (in particular hypothesis <code class="docutils literal notranslate"><span class="pre">h</span></code>)
+allows us to derive <code class="docutils literal notranslate"><span class="pre">(a</span> <span class="pre">==</span> <span class="pre">int)</span></code> and <code class="docutils literal notranslate"><span class="pre">(b</span> <span class="pre">==</span> <span class="pre">int)</span></code> in the
+respective branches and convert the types of <code class="docutils literal notranslate"><span class="pre">aa</span></code> and <code class="docutils literal notranslate"><span class="pre">bb</span></code>
+accordingly.</p>
+</section>
+<section id="undecidability-and-weak-normalization">
+<h3>Undecidability and Weak Normalization<a class="headerlink" href="#undecidability-and-weak-normalization" title="Link to this heading"></a></h3>
+<p>Implicit conversions with provable equalities are very convenient—we
+have relied on it without noticing in nearly all our examples so far,
+starting from the simplest examples about lists to vectors and Merkle
+trees, and some might say this is the one key feature which gives F*
+its programming-oriented flavor.</p>
+<p>However, as the previous example hinted, it is, in general,
+undecidable to determine if <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">==</span> <span class="pre">b</span></code> is derivable in a given
+context. In practice, however, through the use of an SMT solver, F*
+can often figure out when terms are provably equal and convert using
+it. But, it cannot always do this. In such cases, the F* standard
+library offers the following primitive (in FStar.Pervasives), which
+allows the user to write <code class="docutils literal notranslate"><span class="pre">coerce_eq</span> <span class="pre">pf</span> <span class="pre">x</span></code>, to explicitly coerce the
+type of <code class="docutils literal notranslate"><span class="pre">x</span></code> using the equality proof <code class="docutils literal notranslate"><span class="pre">pf</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> coerce_eq (#a #b:Type) (<span class="k">_</span>:squash (a == b)) (x:a) : b = x
+</pre></div>
+</div>
+<p>Another consequence of equality reflection is the loss of strong
+normalization. Intensional type theories enjoy a nice property
+ensuring that every term will reduce to a canonical normal form, no
+matter the order of evaluation. F* does not have this property, since
+some terms, under certain evaluation orders, can reduce
+infinitely. However, metatheory developed for F* proves that closed
+terms (terms without free variables) in the <code class="docutils literal notranslate"><span class="pre">Tot</span></code> effect do not
+reduce infinitely, and as a corollary, there are no closed proofs of
+<code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<p>F* includes various heuristics to avoid getting stuck in an infinite
+loop when reducing open terms, but one can craft examples to make F*’s
+reduction machinery loop forever. As such, deciding if possibly open
+terms have the same normal form is also undecidable in F*.</p>
+</section>
+</section>
+<section id="functional-extensionality">
+<span id="part2-funext"></span><h2>Functional Extensionality<a class="headerlink" href="#functional-extensionality" title="Link to this heading"></a></h2>
+<p>Functional extensionality is a principle that asserts the provable
+equality of functions that are pointwise equal. That is, for functions
+<span class="math notranslate nohighlight">\(f\)</span> and <span class="math notranslate nohighlight">\(g\)</span>, <span class="math notranslate nohighlight">\(\forall x. f x == g x\)</span> implies
+<span class="math notranslate nohighlight">\(f == g\)</span>.</p>
+<p>This principle is provable as a theorem in F*, but only for function
+literals, or, equivalently, <span class="math notranslate nohighlight">\(\eta\)</span>-expanded functions. That is,
+the following is a theorem in F*.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> eta (#a:Type) (#b: a -&gt; Type) (f: (x:a -&gt; b x)) = <span class="k">fun</span> x -&gt; f x
+<span class="k">let</span> funext_on_eta (#a : Type) (#b: a -&gt; Type) (f g : (x:a -&gt; b x))
+                  (hyp : (x:a -&gt; <span class="k">Lemma</span> (f x == g x)))
+  : squash (eta f == eta g)
+  = <span class="k">_</span> <span class="k">by</span> (norm [delta_only [`%eta]];
+          pointwise (<span class="k">fun</span> <span class="k">_</span> -&gt;
+             try_with
+                     (<span class="k">fun</span> <span class="k">_</span> -&gt; mapply (quote hyp))
+                     (<span class="k">fun</span> <span class="k">_</span> -&gt; trefl()));
+           trefl())
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note, the proof of the theorem makes use of tactics, a topic we’ll
+cover in a later chapter. You do not need to understand it in
+detail, yet. The proof roughly says to descend into every sub-term
+of the goal and try to rewrite it using the pointwise equality
+hypothesis <code class="docutils literal notranslate"><span class="pre">hyp</span></code>, and if it fails to just rewrite the sub-term to
+itself.</p>
+</div>
+<p>Unfortunately, functional extensionality does not apply to all
+functions. That is, the following is not provable in F* nor is it
+sound to assume it as an axiom.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> funext =
+  #a:Type -&gt;
+  #b:(a -&gt; Type) -&gt;
+  f:(x:a -&gt; b x) -&gt;
+  g:(x:a -&gt; b x) -&gt;
+  <span class="k">Lemma</span> (<span class="k">requires</span> (<span class="k">forall</span> (x:a). f x == g x))
+        (<span class="k">ensures</span> f == g)
+</pre></div>
+</div>
+<p>The problem is illustrated by the following counterexample, which
+allows deriving <code class="docutils literal notranslate"><span class="pre">False</span></code> in a context where <code class="docutils literal notranslate"><span class="pre">funext</span></code> is valid.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> f (x:nat) : int = 0
+<span class="k">let</span> g (x:nat) : int = <span class="k">if</span> x = 0 <span class="k">then</span> 1 <span class="k">else</span> 0
+<span class="k">let</span> pos = x:nat{x &gt; 0}
+<span class="k">let</span> full_funext_false (ax:funext)
+  : False
+  = ax #pos f g;
+    <span class="k">assert</span> (f == g);
+    <span class="k">assert</span> (f 0 == g 0);
+    false_elim()
+</pre></div>
+</div>
+<p>The proof works by exploiting the interaction with refinement
+subtyping. <code class="docutils literal notranslate"><span class="pre">f</span></code> and <code class="docutils literal notranslate"><span class="pre">g</span></code> are clearly not pointwise equal on the
+entire domain of natural numbers, yet they are pointwise equal on the
+positive natural numbers. However, from <code class="docutils literal notranslate"><span class="pre">ax</span> <span class="pre">#pos</span> <span class="pre">f</span> <span class="pre">g</span></code> we gain that
+<code class="docutils literal notranslate"><span class="pre">f</span> <span class="pre">==</span> <span class="pre">g</span></code>, and in particular that <code class="docutils literal notranslate"><span class="pre">f</span> <span class="pre">0</span> <span class="pre">==</span> <span class="pre">g</span> <span class="pre">0</span></code>, which is false.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The trouble arises in part because although <code class="docutils literal notranslate"><span class="pre">ax:funext</span></code> proves
+<code class="docutils literal notranslate"><span class="pre">squash</span> <span class="pre">(equals</span> <span class="pre">#(pos</span> <span class="pre">-&gt;</span> <span class="pre">int)</span> <span class="pre">f</span> <span class="pre">g)</span></code>, F*’s encoding of the
+equality to the SMT solver (whose equality is untyped) treats the
+equality as <code class="docutils literal notranslate"><span class="pre">squash</span> <span class="pre">(equals</span> <span class="pre">#(nat</span> <span class="pre">-&gt;</span> <span class="pre">int)</span> <span class="pre">f</span> <span class="pre">g)</span></code>, which leads to
+the contradiction.</p>
+</div>
+<p>Further, <span class="math notranslate nohighlight">\(\eta\)</span>-equivalent functions in F* are not considered
+provably equal. Otherwise, in combination with <code class="docutils literal notranslate"><span class="pre">funext_on_eta</span></code>, an
+<span class="math notranslate nohighlight">\(\eta\)</span>-equivalence principle leads to the same contradiction as
+<code class="docutils literal notranslate"><span class="pre">funext_false</span></code>, as shown below.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> eta_equiv =
+  #a:Type -&gt;
+  #b:(a -&gt; Type) -&gt;
+  f:(x:a -&gt; b x) -&gt;
+  <span class="k">Lemma</span> (f == eta f)
+
+<span class="k">let</span> eta_equiv_false (ax:eta_equiv)
+  : False
+  = funext_on_eta #pos f g (<span class="k">fun</span> x -&gt; ());
+    ax #pos f;
+    ax #pos g;
+    <span class="k">assert</span> (f == g);
+    <span class="k">assert</span> (f 0 == g 0);
+    false_elim()
+</pre></div>
+</div>
+<p>The F* standard library module <code class="docutils literal notranslate"><span class="pre">FStar.FunctionalExtensionality</span></code>
+provides more information and several utilities to work with
+functional extensionality on <span class="math notranslate nohighlight">\(\eta\)</span>-expanded functions.</p>
+<p>Thanks in particular to Aseem Rastogi and Dominique Unruh for many
+insights and discussions related to functional extensionality.</p>
+</section>
+<section id="exercise">
+<h2>Exercise<a class="headerlink" href="#exercise" title="Link to this heading"></a></h2>
+<p>Leibniz equality <code class="docutils literal notranslate"><span class="pre">leq</span> <span class="pre">x</span> <span class="pre">y</span></code>, relates two terms <code class="docutils literal notranslate"><span class="pre">x:a</span></code> and <code class="docutils literal notranslate"><span class="pre">y:a</span></code> if
+for all predicates <code class="docutils literal notranslate"><span class="pre">p:a</span> <span class="pre">-&gt;</span> <span class="pre">Type</span></code>, <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">x</span></code> implies <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">y</span></code>. That is,
+if no predicate can distinguish <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span></code>, then they must be
+equal.</p>
+<p>Define Leibniz equality and prove that it is an equivalence relation.</p>
+<p>Then prove that Leibniz equality and the equality predicate <code class="docutils literal notranslate"><span class="pre">equals</span> <span class="pre">x</span>
+<span class="pre">y</span></code> defined above are isomorphic, in the sense that <code class="docutils literal notranslate"><span class="pre">leq</span> <span class="pre">x</span> <span class="pre">y</span> <span class="pre">-&gt;</span>
+<span class="pre">equals</span> <span class="pre">x</span> <span class="pre">y</span></code> and <code class="docutils literal notranslate"><span class="pre">equals</span> <span class="pre">x</span> <span class="pre">y</span> <span class="pre">-&gt;</span> <span class="pre">leq</span> <span class="pre">x</span> <span class="pre">y</span></code>.</p>
+<p><a class="reference external" href="../code/exercises/Part2.Leibniz.fst">Exercise file</a></p>
+<div class="toggle docutils container">
+<div class="header docutils container">
+<p><strong>Hint</strong></p>
+<p>The section on Leibniz equality <a class="reference external" href="https://plfa.github.io/Equality/">here</a> tells you how to do it in
+Agda.</p>
+</div>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> lbz_eq (#a:Type) (x y:a) = p:(a -&gt; Type) -&gt; p x -&gt; p y
+
+<span class="c">// lbz_eq is an equivalence relation</span>
+<span class="k">let</span> lbz_eq_refl #a (x:a)
+  : lbz_eq x x
+  = <span class="k">fun</span> p px -&gt; px
+<span class="k">let</span> lbz_eq_trans #a (x y z:a) (pf1:lbz_eq x y) (pf2:lbz_eq y z)
+  : lbz_eq x z
+  = <span class="k">fun</span> p px -&gt; pf2 p (pf1 p px)
+<span class="k">let</span> lbz_eq_sym #a (x y:a) (pf:lbz_eq x y)
+  : lbz_eq y x
+  = <span class="k">fun</span> p -&gt; pf (<span class="k">fun</span> (z:a) -&gt; (p z -&gt; p x)) (<span class="k">fun</span> (px: p x) -&gt; px)
+
+<span class="c">// equals and lbz_eq are isomorphic</span>
+<span class="k">let</span> equals_lbz_eq (#a:Type) (x y:a) (pf:equals x y)
+  : lbz_eq x y
+  = <span class="k">fun</span> p px -&gt; px
+<span class="k">let</span> lbz_eq_equals (#a:Type) (x y:a) (pf:lbz_eq x y)
+  : equals x y
+  = pf (<span class="k">fun</span> (z:a) -&gt; equals x z) Reflexivity
+</pre></div>
+</div>
+</div>
+<hr class="docutils" />
+</section>
+<section id="decidable-equality-and-equality-qualifiers">
+<span id="part2-equality-qualifiers"></span><h2>Decidable equality and equality qualifiers<a class="headerlink" href="#decidable-equality-and-equality-qualifiers" title="Link to this heading"></a></h2>
+<p>To end this chapter, we discuss a third kind of equality in F*, the
+polymorphic <em>decidable equality</em> with the signature shown below taken
+from the F* module <code class="docutils literal notranslate"><span class="pre">Prims</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> ( = ) (#a:eqtype) (x y:a) : bool
+</pre></div>
+</div>
+<p>On <code class="docutils literal notranslate"><span class="pre">eqtype</span></code>, i.e., <code class="docutils literal notranslate"><span class="pre">a:Type{hasEq</span> <span class="pre">a}</span></code>, decidable equality <code class="docutils literal notranslate"><span class="pre">(=)</span></code>
+and provable equality coincide, as shown below.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> dec_equals (#a:eqtype) (x y:a) (<span class="k">_</span>:squash (x = y))
+  : equals x y
+  = Reflexivity
+
+<span class="k">let</span> equals_dec (#a:eqtype) (x y:a) (<span class="k">_</span>:equals x y)
+  : squash (x = y)
+  = ()
+</pre></div>
+</div>
+<p>That is, for the class of <code class="docutils literal notranslate"><span class="pre">eqtype</span></code>, <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">=</span> <span class="pre">y</span></code> returns a boolean
+value that decides equality. Decidable equality and <code class="docutils literal notranslate"><span class="pre">eqtype</span></code> were
+first covered in <a class="reference internal" href="../part1/part1_equality.html#part1-equality"><span class="std std-ref">an earlier chapter</span></a>, where we
+mentioned that several primitive types, like <code class="docutils literal notranslate"><span class="pre">int</span></code> and <code class="docutils literal notranslate"><span class="pre">bool</span></code> all
+validate the <code class="docutils literal notranslate"><span class="pre">hasEq</span></code> predicate and are, hence, instances of <code class="docutils literal notranslate"><span class="pre">eqtype</span></code>.</p>
+<p>When introducing a new inductive type definition, F* tries to
+determine whether or not the type supports decidable equality based on
+a structural equality of the representation of the values of that
+type. If so, the type is considered an <code class="docutils literal notranslate"><span class="pre">eqtype</span></code> and uses of the <code class="docutils literal notranslate"><span class="pre">(</span>
+<span class="pre">=</span> <span class="pre">)</span></code> operator are compiled at runtime to structural comparison of
+values provided by the target language chosen, e.g., OCaml, F#, or C.</p>
+<p>The criterion used to determine whether or not the type supports
+decidable equality is the following.</p>
+<p>Given an inductive type definition of <span class="math notranslate nohighlight">\(T\)</span> with parameters
+<span class="math notranslate nohighlight">\(\overline{p}\)</span> and indexes <span class="math notranslate nohighlight">\(~\overline{q}\)</span>, for each
+constructor of <span class="math notranslate nohighlight">\(D\)</span> with arguments <span class="math notranslate nohighlight">\(\overline{v:t_v}\)</span>,</p>
+<ol class="arabic simple">
+<li><p>Assume, for every type parameter <span class="math notranslate nohighlight">\(t \in \overline{p}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{hasEq}~t\)</span>.</p></li>
+<li><p>Assume, for recursive types, for all <span class="math notranslate nohighlight">\(\overline{q}\)</span>, <span class="math notranslate nohighlight">\(\mathsf{hasEq}~(T~\overline{p}~\overline{q})\)</span>.</p></li>
+<li><p>For all arguments <span class="math notranslate nohighlight">\(\overline{v:t_v}\)</span>, prove <span class="math notranslate nohighlight">\(\mathsf{hasEq}~t_v\)</span>.</p></li>
+</ol>
+<p>If the proof in step 3 succeeds for all constructors, then F*
+introduces an axiom
+<span class="math notranslate nohighlight">\(\forall~\overline{p}~\overline{q}. (\forall t \in \overline{p}. \mathsf{hasEq}~t) \Rightarrow \mathsf{hasEq}~(T~\overline{p}~\overline{q})\)</span>.</p>
+<p>If the check in step 3 fails for any constructor, F* reports an error
+which the user can address by adding one of two qualifiers to the type.</p>
+<ol class="arabic">
+<li><p><code class="docutils literal notranslate"><span class="pre">noeq</span></code>: This qualifier instructs F* to consider that the type
+does not support decidable equality, e.g., if one of the
+constructors contains a function, as shown below.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">noeq</span>
+<span class="k">type</span> itree (a:Type) =
+  | End : itree a
+  | Node : hd:nat -&gt; tl:(nat -&gt; itree a) -&gt; itree a
+</pre></div>
+</div>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unopteq</span></code>: This qualifier instructs F* to determine whether a
+given instance of the type supports equality, even when some of its
+parameters are not themselves instances of <code class="docutils literal notranslate"><span class="pre">eqtype</span></code>. This can be
+useful in situations such as the following:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">unopteq</span>
+<span class="k">type</span> t (f: Type -&gt; Type) =
+  | T : f bool -&gt; t f
+
+<span class="k">let</span> <span class="k">_</span> = <span class="k">assert</span> (hasEq (t list))
+
+[@@expect_failure]
+<span class="k">let</span> <span class="k">_</span> = <span class="k">assert</span> (hasEq (<span class="k">fun</span> x -&gt; x -&gt; x))
+</pre></div>
+</div>
+</li>
+</ol>
+<p>This <a class="reference external" href="https://github.com/FStarLang/FStar/wiki/Deriving-hasEq-predicate-for-inductive-types,-and-types-of-equalities-in-F*">wiki page</a>
+provides more information about equality qualifiers on inductive types.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="part2_merkle.html" class="btn btn-neutral float-left" title="Merkle Trees" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="part2_logical_connectives.html" class="btn btn-neutral float-right" title="Constructive &amp; Classical Connectives" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

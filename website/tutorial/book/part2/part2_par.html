@@ -1,0 +1,1210 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A First Model of Computational Effects &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Universes" href="part2_universes.html" />
+    <link rel="prev" title="Well-founded Relations and Termination" href="part2_well_founded.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="part2.html">Representing Data, Proofs, and Computations with Inductive Types</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="part2_inductive_type_families.html">Inductive type definitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_vectors.html">Length-indexed Lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_merkle.html">Merkle Trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_equality.html">Equality Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_logical_connectives.html">Constructive &amp; Classical Connectives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_stlc.html">Simply Typed Lambda Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_phoas.html">Higher-order Abstract Syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_well_founded.html">Well-founded Relations and Termination</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">A First Model of Computational Effects</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#a-first-taste-the-state-monad">A First Taste: The State Monad</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#some-stateful-programs">Some stateful programs</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#monadic-let-bindings">Monadic let bindings</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#st-is-a-monad"><code class="docutils literal notranslate"><span class="pre">st</span></code> is a monad</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#exercise">Exercise</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id1">Exercise</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#computation-trees-or-monads-generically">Computation Trees, or Monads Generically</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id2">Exercise</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">Exercise</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#manipulating-computation-trees-nondeterminism-and-concurrency">Manipulating Computation Trees: Nondeterminism and Concurrency</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id4">Exercise</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#looking-ahead">Looking ahead</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="part2_universes.html">Universes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pulse/pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+      <li class="breadcrumb-item active">A First Model of Computational Effects</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="a-first-model-of-computational-effects">
+<span id="part2-par"></span><h1>A First Model of Computational Effects<a class="headerlink" href="#a-first-model-of-computational-effects" title="Link to this heading"></a></h1>
+<p>As a final chapter in this section, we show how inductive types can be
+used to model not just data, but also <em>computations</em>, including
+computations with side effects, like mutable state and shared-memory
+concurrency. This is meant to also give a taste of the next section in
+this book, which deals with modeling and proving properties of
+programs with effects and F*’s user-extensible system of indexed
+effects.</p>
+<p>Thanks to Guido Martinez and Danel Ahman, for some of the content in
+this chapter.</p>
+<section id="a-first-taste-the-state-monad">
+<h2>A First Taste: The State Monad<a class="headerlink" href="#a-first-taste-the-state-monad" title="Link to this heading"></a></h2>
+<p>All the programs we’ve written so far have been purely
+functional. However, one can model programs that manipulate mutable
+state within a purely functional language, and one common but powerful
+way to do this is with something called a <em>monad</em>, an idea that was
+introduced to functional programmers in the late 1980s and early 90s
+by <a class="reference external" href="https://dl.acm.org/doi/10.1145/143165.143169">Philip Wadler</a>
+building on semantic foundations developed by <a class="reference external" href="https://ieeexplore.ieee.org/document/39155">Eugenio Moggi</a>. If you’ve been
+puzzled about monads before, we’ll start from scratch here, and
+hopefully this time it will all make sense!</p>
+<p>Consider modeling a program that manipulates a single piece of mutable
+state, just a single integer that programs can read and write, and
+which returns a result of type <code class="docutils literal notranslate"><span class="pre">a</span></code>. One way to do this is to
+represent such a <em>stateful computation</em> as a program whose type is
+<code class="docutils literal notranslate"><span class="pre">st</span> <span class="pre">a</span></code>:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> st a = int -&gt; a &amp; int
+</pre></div>
+</div>
+<p>A <code class="docutils literal notranslate"><span class="pre">(st</span> <span class="pre">a)</span></code> computation is a function which when given an initial
+value for the state <code class="docutils literal notranslate"><span class="pre">s0</span></code> returns a pair <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">s1)</span></code> with the result
+of the computation <code class="docutils literal notranslate"><span class="pre">x:a</span></code> and a final value for the state <code class="docutils literal notranslate"><span class="pre">s1</span></code>.</p>
+<p>For example, a computation that reads the state, increments it, and
+returns the initial value of the state, can be expressed as shown
+below.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> read_and_increment_v0
+  : st int
+  = <span class="k">fun</span> s0 -&gt; s0, s0 + 1
+</pre></div>
+</div>
+<p>This is pretty straightforward, but writing computations in this style
+can be quite tedious and error prone. For example, if you wanted to
+read the state and increment it twice, one would write:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> inc_twice_v0
+  : st int
+  = <span class="k">fun</span> s0 -&gt;
+      <span class="k">let</span> x, s1 = read_and_increment_v0 s0 <span class="k">in</span>
+      <span class="k">let</span> <span class="k">_</span>, s2 = read_and_increment_v0 s1 <span class="k">in</span>
+      x, s2
+</pre></div>
+</div>
+<p>This is quite clumsy, since at each call to <code class="docutils literal notranslate"><span class="pre">read_and_increment_v0</span></code>
+we had to be careful to pass it the “the most recent version” of the
+state. For instance, a small typo could easily have caused us to write
+the program below, where we pass <code class="docutils literal notranslate"><span class="pre">s0</span></code> to the second call of
+<code class="docutils literal notranslate"><span class="pre">read_and_increment</span></code>, causing the program to only increment the
+state once.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> inc_twice_buggy
+  : st int
+  = <span class="k">fun</span> s0 -&gt;
+      <span class="k">let</span> x, s1 = read_and_increment_v0 s0 <span class="k">in</span>
+      <span class="k">let</span> <span class="k">_</span>, s2 = read_and_increment_v0 s0 <span class="k">in</span>
+      x, s2
+</pre></div>
+</div>
+<p>The main idea with the state monad is to structure stateful programs
+by abstracting out all the plumbing related to manipulating the state,
+eliminating some of the tedium and possibilities for errors.</p>
+<p>The way this works is by defining functions to read and write the
+state, plus a couple of functions to return a pure value without
+reading or writing the state (a kind of an identity function that’s a
+noop on the state); and a function to sequentially compose a pair of
+stateful computations.</p>
+<ul class="simple">
+<li><p>The function <code class="docutils literal notranslate"><span class="pre">read</span> <span class="pre">:</span> <span class="pre">st</span> <span class="pre">int</span></code> below, reads the state and returns it,
+without modifying the state.</p></li>
+</ul>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> read
+  : st int
+  = <span class="k">fun</span> s -&gt; s, s
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>The function <code class="docutils literal notranslate"><span class="pre">write</span> <span class="pre">(s1:int)</span> <span class="pre">:</span> <span class="pre">st</span> <span class="pre">unit</span></code> below, sets the state to <code class="docutils literal notranslate"><span class="pre">s1</span></code> and
+returns <code class="docutils literal notranslate"><span class="pre">()</span> <span class="pre">:</span> <span class="pre">unit</span></code>.</p></li>
+</ul>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> write (s1:int)
+  : st unit
+  = <span class="k">fun</span> <span class="k">_</span> -&gt; (), s1
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>The function <code class="docutils literal notranslate"><span class="pre">bind</span></code> is perhaps the most interesting. Given a
+stateful computation <code class="docutils literal notranslate"><span class="pre">f:</span> <span class="pre">st</span> <span class="pre">a</span></code> and another computation <code class="docutils literal notranslate"><span class="pre">g</span> <span class="pre">:</span> <span class="pre">a</span> <span class="pre">-&gt;</span>
+<span class="pre">st</span> <span class="pre">b</span></code> which depends on the result of <code class="docutils literal notranslate"><span class="pre">f</span></code> and then may read or
+write the state returning a <code class="docutils literal notranslate"><span class="pre">b</span></code>; <code class="docutils literal notranslate"><span class="pre">bind</span> <span class="pre">f</span> <span class="pre">g</span></code> composes <code class="docutils literal notranslate"><span class="pre">f</span></code> and
+<code class="docutils literal notranslate"><span class="pre">g</span></code> sequentially, passing the initial state <code class="docutils literal notranslate"><span class="pre">s0</span></code> to <code class="docutils literal notranslate"><span class="pre">f</span></code>, then
+passing its result <code class="docutils literal notranslate"><span class="pre">x</span></code> and next state <code class="docutils literal notranslate"><span class="pre">s1</span></code> to <code class="docutils literal notranslate"><span class="pre">g</span></code>.</p></li>
+</ul>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> bind #a #b
+         (f: st a)
+         (g: a -&gt; st b)
+  : st b
+  = <span class="k">fun</span> s0 -&gt;
+      <span class="k">let</span> x, s1 = f s0 <span class="k">in</span>
+      g x s1
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Finally, <code class="docutils literal notranslate"><span class="pre">return</span></code> promotes a pure value <code class="docutils literal notranslate"><span class="pre">x:a</span></code> into an <code class="docutils literal notranslate"><span class="pre">st</span> <span class="pre">a</span></code>,
+without touching the state.</p></li>
+</ul>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> return #a (x:a)
+  : st a
+  = <span class="k">fun</span> s -&gt; x, s
+</pre></div>
+</div>
+<section id="some-stateful-programs">
+<h3>Some stateful programs<a class="headerlink" href="#some-stateful-programs" title="Link to this heading"></a></h3>
+<p>With these combinators in hand, we can write stateful programs in a
+more compact style, never directly manipulating the underlying integer
+variable that holds the state directly.</p>
+<p>Here’s a next attempt at <code class="docutils literal notranslate"><span class="pre">read_and_increment</span></code>:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> read_and_increment_v1 : st int = 
+  bind read (<span class="k">fun</span> x -&gt; 
+  bind (write (x + 1)) (<span class="k">fun</span> <span class="k">_</span> -&gt; 
+  return x))
+</pre></div>
+</div>
+<p>Now, you’re probably thinking that this version is even worse than
+<code class="docutils literal notranslate"><span class="pre">read_and_increment_v0</span></code>! But, the program looks obscure “just”
+because it’s using a convoluted syntax to call <code class="docutils literal notranslate"><span class="pre">bind</span></code>. Many
+languages, most famously Haskell, provide specialized syntax to
+simplify writing computations that work with APIs like <code class="docutils literal notranslate"><span class="pre">bind</span></code> and
+<code class="docutils literal notranslate"><span class="pre">return</span></code>. F* provides some syntactic sugar to handle this too.</p>
+</section>
+</section>
+<section id="monadic-let-bindings">
+<h2>Monadic let bindings<a class="headerlink" href="#monadic-let-bindings" title="Link to this heading"></a></h2>
+<p>The definition below defines a function with a special name
+<code class="docutils literal notranslate"><span class="pre">let!</span></code>. Names of this form, the token <code class="docutils literal notranslate"><span class="pre">let</span></code> followed by a sequence
+of one or more operator characters such as <code class="docutils literal notranslate"><span class="pre">!</span></code>, <code class="docutils literal notranslate"><span class="pre">?</span></code>, <code class="docutils literal notranslate"><span class="pre">&#64;</span></code>, <code class="docutils literal notranslate"><span class="pre">$</span></code>,
+<code class="docutils literal notranslate"><span class="pre">&lt;</span></code>, and <code class="docutils literal notranslate"><span class="pre">&gt;</span></code> are monadic let-binding operators.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> (<span class="k">let</span>!) = bind
+</pre></div>
+</div>
+<p>With <code class="docutils literal notranslate"><span class="pre">let!</span></code> in scope, the following syntactic sugar becomes available:</p>
+<ul class="simple">
+<li><p>Instead of writing <code class="docutils literal notranslate"><span class="pre">bind</span> <span class="pre">f</span> <span class="pre">(fun</span> <span class="pre">x</span> <span class="pre">-&gt;</span> <span class="pre">e)</span></code> you can write <code class="docutils literal notranslate"><span class="pre">let!</span> <span class="pre">x</span> <span class="pre">=</span> <span class="pre">f</span> <span class="pre">in</span> <span class="pre">e</span></code>.</p></li>
+<li><p>Instead of writing <code class="docutils literal notranslate"><span class="pre">bind</span> <span class="pre">f</span> <span class="pre">(fun</span> <span class="pre">_</span> <span class="pre">-&gt;</span> <span class="pre">e)</span></code> you can write <code class="docutils literal notranslate"><span class="pre">f</span> <span class="pre">;!</span>
+<span class="pre">e</span></code>, i.e., a semicolon followed by the sequence of operator characters
+used in the monadic let-binding operator.</p></li>
+<li><p>Instead of writing <code class="docutils literal notranslate"><span class="pre">bind</span> <span class="pre">f</span> <span class="pre">(fun</span> <span class="pre">x</span> <span class="pre">-&gt;</span> <span class="pre">match</span> <span class="pre">x</span> <span class="pre">with</span> <span class="pre">...)</span></code>, you can
+write <code class="docutils literal notranslate"><span class="pre">match!</span> <span class="pre">f</span> <span class="pre">with</span> <span class="pre">...</span></code></p></li>
+<li><p>Instead of writing <code class="docutils literal notranslate"><span class="pre">bind</span> <span class="pre">f</span> <span class="pre">(fun</span> <span class="pre">x</span> <span class="pre">-&gt;</span> <span class="pre">if</span> <span class="pre">x</span> <span class="pre">then</span> <span class="pre">...)</span></code>, you can
+write <code class="docutils literal notranslate"><span class="pre">if!</span> <span class="pre">f</span> <span class="pre">then</span> <span class="pre">...</span></code></p></li>
+</ul>
+<p>See this file <a class="reference external" href="https://github.com/FStarLang/FStar/blob/master/examples/misc/MonadicLetBindings.fst">MonadicLetBindings.fst</a>
+for more details and examples of the syntactic sugar.</p>
+<p>Using this syntactic sugar, we come to our final version of
+<code class="docutils literal notranslate"><span class="pre">read_and_increment</span></code>, where now, hopefully, the imperative-looking
+state updates make the intent of our program clear.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> read_and_increment : st int =
+  <span class="k">let</span>! x = read <span class="k">in</span>
+  write (x + 1) ;!
+  return x
+</pre></div>
+</div>
+<p>Having structured our programs with <code class="docutils literal notranslate"><span class="pre">return</span></code> and <code class="docutils literal notranslate"><span class="pre">bind</span></code>, larger
+<code class="docutils literal notranslate"><span class="pre">st</span></code> computations can be built from smaller ones, without having to
+worry about how to plumb the state through—that’s handled once and
+for all by our combinators.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> inc_twice : st int = 
+  <span class="k">let</span>! x = read_and_increment <span class="k">in</span>
+  read_and_increment ;!
+  return x
+</pre></div>
+</div>
+<section id="st-is-a-monad">
+<span id="part2-monad-intro"></span><h3><code class="docutils literal notranslate"><span class="pre">st</span></code> is a monad<a class="headerlink" href="#st-is-a-monad" title="Link to this heading"></a></h3>
+<p>It turns out that every API that is structured like our <code class="docutils literal notranslate"><span class="pre">st</span></code> is an
+instance of a general pattern called a <em>monad</em>, an algebraic
+structure. Specifically, a monad consists of:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>A type operator <code class="docutils literal notranslate"><span class="pre">m</span> <span class="pre">:</span> <span class="pre">Type</span> <span class="pre">-&gt;</span> <span class="pre">Type</span></code></p></li>
+<li><p>A function <code class="docutils literal notranslate"><span class="pre">return</span> <span class="pre">(#a:Type)</span> <span class="pre">(x:a)</span> <span class="pre">:</span> <span class="pre">m</span> <span class="pre">a</span></code></p></li>
+<li><p>A function <code class="docutils literal notranslate"><span class="pre">bind</span> <span class="pre">(#a</span> <span class="pre">#b:Type)</span> <span class="pre">(f:m</span> <span class="pre">a)</span> <span class="pre">(g:</span> <span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">m</span> <span class="pre">b)</span> <span class="pre">:</span> <span class="pre">m</span> <span class="pre">b</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>which satisfy the following laws, where <cite>~</cite> is some suitable
+equivalence relation on <code class="docutils literal notranslate"><span class="pre">m</span> <span class="pre">a</span></code></p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Left identity: <code class="docutils literal notranslate"><span class="pre">bind</span> <span class="pre">(return</span> <span class="pre">x)</span> <span class="pre">f</span> <span class="pre">~</span> <span class="pre">f</span></code></p></li>
+<li><p>Right identity: <code class="docutils literal notranslate"><span class="pre">bind</span> <span class="pre">f</span> <span class="pre">return</span> <span class="pre">~</span> <span class="pre">f</span></code></p></li>
+<li><p>Associativity: <code class="docutils literal notranslate"><span class="pre">bind</span> <span class="pre">f1</span> <span class="pre">(fun</span> <span class="pre">x</span> <span class="pre">-&gt;</span> <span class="pre">bind</span> <span class="pre">(f2</span> <span class="pre">x)</span> <span class="pre">f3)</span> <span class="pre">~</span> <span class="pre">bind</span> <span class="pre">(bind</span> <span class="pre">f1</span> <span class="pre">f2)</span> <span class="pre">f3</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>It’s easy to prove that <code class="docutils literal notranslate"><span class="pre">st</span></code>, <code class="docutils literal notranslate"><span class="pre">return</span></code>, and <code class="docutils literal notranslate"><span class="pre">bind</span></code> satisfy these
+laws in F*, where we pick the equivalence relation to equate functions
+that take equal arguments to equal results.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> feq #a #b (f g : a -&gt; b) = <span class="k">forall</span> x. f x == g x
+<span class="k">let</span> left_identity #a #b (x:a) (g: a -&gt; st b)
+  : <span class="k">Lemma</span> ((<span class="k">let</span>! v = return x <span class="k">in</span> g v) `feq` g x)
+  = ()
+<span class="k">let</span> right_identity #a (f:st a)
+  : <span class="k">Lemma</span> ((<span class="k">let</span>! x = f <span class="k">in</span> return x) `feq` f)
+  = ()
+<span class="k">let</span> associativity #a #b #c (f1:st a) (f2:a -&gt; st b) (f3:b -&gt; st c)
+  : <span class="k">Lemma</span> ((<span class="k">let</span>! x = f1 <span class="k">in</span> <span class="k">let</span>! y = f2 x <span class="k">in</span> f3 y) `feq`
+           (<span class="k">let</span>! y = (<span class="k">let</span>! x = f1 <span class="k">in</span> f2 x) <span class="k">in</span> f3 y))
+  = ()
+</pre></div>
+</div>
+<p>These laws are practically useful in that they can catch bugs in our
+implementations of the combinators. For instance, suppose we were to
+write <code class="docutils literal notranslate"><span class="pre">bind_buggy</span></code> below, which like in <code class="docutils literal notranslate"><span class="pre">inc_twice_buggy</span></code>,
+mistakenly re-uses the old state <code class="docutils literal notranslate"><span class="pre">s0</span></code> when calling <code class="docutils literal notranslate"><span class="pre">g</span></code>—in this
+case, the <code class="docutils literal notranslate"><span class="pre">right_identity</span></code> law below cannot be proved.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> bind_buggy #a #b
+               (f: st a)
+               (g: a -&gt; st b)
+  : st b
+  = <span class="k">fun</span> s0 -&gt;
+      <span class="k">let</span> x, s1 = f s0 <span class="k">in</span>
+      g x s0
+[@@expect_failure]
+<span class="k">let</span> right_identity_fail #a (f:st a)
+  : <span class="k">Lemma</span> (bind_buggy f return `feq` f)
+  = ()
+</pre></div>
+</div>
+<p>We can also prove laws about how the stateful actions, <code class="docutils literal notranslate"><span class="pre">read</span></code> and
+<code class="docutils literal notranslate"><span class="pre">write</span></code>, interact with each other in sequential composition.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> redundant_read_elim ()
+  : <span class="k">Lemma</span> ((read;! read) `feq` read)
+  = ()
+
+<span class="k">let</span> redundant_write_elim (x y:int)
+  : <span class="k">Lemma</span> ((write x ;! write y) `feq` write y)
+  = ()
+
+<span class="k">let</span> read_write_noop ()
+  : <span class="k">Lemma</span> ((<span class="k">let</span>! x = read <span class="k">in</span> write x) `feq` return ())
+  = ()
+</pre></div>
+</div>
+<p>That completes our tour of our very first monad, the state monad.</p>
+</section>
+<section id="exercise">
+<h3>Exercise<a class="headerlink" href="#exercise" title="Link to this heading"></a></h3>
+<p>Make the <code class="docutils literal notranslate"><span class="pre">st</span></code> type generic, so that instead of the state being fixed
+to a single integer value, it can be used with any type for the
+state. I.e., define <code class="docutils literal notranslate"><span class="pre">st</span> <span class="pre">(s:Type)</span> <span class="pre">(a:Type)</span> <span class="pre">:</span> <span class="pre">Type</span></code>, where <code class="docutils literal notranslate"><span class="pre">s</span></code> is
+the type of the state.</p>
+<p>Adapt the full development seen above to work with <code class="docutils literal notranslate"><span class="pre">st</span> <span class="pre">s</span></code>, including
+proving the various laws.</p>
+<p><a class="reference external" href="../code/exercises/Part2.ST.fst">Exercise file</a></p>
+<div class="toggle docutils container">
+<div class="header docutils container">
+<p><strong>Answer</strong></p>
+</div>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">module</span> Part2.ST
+
+<span class="k">let</span> st s a = s -&gt; a &amp; s
+
+<span class="k">let</span> read #s
+  : st s s
+  = <span class="k">fun</span> s -&gt; s, s
+
+<span class="k">let</span> write #s (s1:s)
+  : st s unit
+  = <span class="k">fun</span> <span class="k">_</span> -&gt; (), s1
+
+<span class="k">let</span> bind #s #a #b
+         (f: st s a)
+         (g: a -&gt; st s b)
+  : st s b
+  = <span class="k">fun</span> s0 -&gt;
+      <span class="k">let</span> x, s1 = f s0 <span class="k">in</span>
+      g x s1
+
+<span class="k">let</span> return #s #a (x:a)
+  : st s a
+  = <span class="k">fun</span> s -&gt; x, s
+
+<span class="k">let</span> read_and_increment : st int int =
+  x &lt;-- read;
+  write (x + 1);;
+  return x
+
+<span class="k">let</span> inc_twice : st int int = 
+  x &lt;-- read_and_increment;
+  read_and_increment;;
+  return x
+
+<span class="k">let</span> feq #a #b (f g : a -&gt; b) = <span class="k">forall</span> x. f x == g x
+<span class="k">let</span> left_identity #s #a #b (x:a) (g: a -&gt; st s b)
+  : <span class="k">Lemma</span> ((v &lt;-- return x; g v) `feq` g x)
+  = ()
+<span class="k">let</span> right_identity #s #a (f:st s a)
+  : <span class="k">Lemma</span> ((x &lt;-- f; return x) `feq` f)
+  = ()
+<span class="k">let</span> associativity #s #a #b #c (f1:st s a) (f2:a -&gt; st s b) (f3:b -&gt; st s c)
+  : <span class="k">Lemma</span> ((x &lt;-- f1; y &lt;-- f2 x; f3 y) `feq`
+           (y &lt;-- (x &lt;-- f1; f2 x); f3 y))
+  = ()
+
+<span class="k">let</span> redundant_read_elim ()
+  : <span class="k">Lemma</span> ((read;; read) `feq` read)
+  = ()
+
+<span class="k">let</span> redundant_write_elim (x y:int)
+  : <span class="k">Lemma</span> ((write x ;; write y) `feq` write y)
+  = ()
+
+<span class="k">let</span> read_write_noop ()
+  : <span class="k">Lemma</span> ((x &lt;-- read;  write x) `feq` return ())
+  = ()
+</pre></div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="id1">
+<h3>Exercise<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p>Monads can be used to model many computational effects, not just
+mutable state.  Another common example is to use monads to model
+computations that may raise runtime errors. Here’s an exercise to help
+you see how.</p>
+<p>Prove that the <code class="docutils literal notranslate"><span class="pre">option</span></code> type can be made into a monad, i.e., define
+<code class="docutils literal notranslate"><span class="pre">bind</span></code> and <code class="docutils literal notranslate"><span class="pre">return</span></code> and prove the monad laws.</p>
+<p><a class="reference external" href="../code/exercises/Part2.Option.fst">Exercise file</a></p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="computation-trees-or-monads-generically">
+<h2>Computation Trees, or Monads Generically<a class="headerlink" href="#computation-trees-or-monads-generically" title="Link to this heading"></a></h2>
+<p>Each time one defines a monad to model a computational effect, one
+usually thinks first of the effectful <em>actions</em> involved (e.g.,
+reading and writing the state, or raising an error), and then finds a
+way to package those actions into the interface of monad with
+<code class="docutils literal notranslate"><span class="pre">return</span></code> and <code class="docutils literal notranslate"><span class="pre">bind</span></code>, and then, to keep things honest, proves that
+the implementation satisfies the monad laws.</p>
+<p>However, a lot of this is boilerplate and can be done once and for all
+by representing effectful computations not just as functions (as we
+did with <code class="docutils literal notranslate"><span class="pre">st</span> <span class="pre">a</span> <span class="pre">=</span> <span class="pre">int</span> <span class="pre">-&gt;</span> <span class="pre">a</span> <span class="pre">&amp;</span> <span class="pre">s</span></code>) but instead as an inductive type
+that models a <em>computation tree</em>, with effectful actions made explicit
+at each node in the tree. One can prove that this representation,
+sometimes called a <em>free monad</em>, is a monad, and then instantiate it
+repeatedly for the particular kinds of actions that one may want to
+use in given program.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In this section, we’re scratching the surface of a rich area of
+research called <em>algebraic effects</em>. While what we show here is not
+a full-blown algebraic effects development (we’ll save that for a
+later chapter), here are some other resources about it.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/FStarLang/FStar/blob/master/examples/layeredeffects/Alg.fst">Alg.fst</a>:
+An F* development with algebraic effects (to be covered in
+detail later).</p></li>
+<li><p><a class="reference external" href="https://koka-lang.github.io/koka/doc/index.html">Koka</a>, a
+language with algebraic effects at its core</p></li>
+<li><p>A bibliography about <a class="reference external" href="https://github.com/yallop/effects-bibliography">effects</a></p></li>
+</ul>
+</div></blockquote>
+</div>
+<p>We’ll start our development of computation trees with a type
+describing the signature of a language of actions.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">noeq</span>
+<span class="k">type</span> action_class = {
+  t : Type;
+  input_of : t -&gt; Type;
+  output_of : t -&gt; Type;
+}
+</pre></div>
+</div>
+<p>This kind of signature is sometimes called a <em>type class</em>, a type
+<code class="docutils literal notranslate"><span class="pre">act:Type</span></code>, together with some operations it supports. In this case,
+the operations tell us what kind of input and output a given action
+expects.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>F* also provides support for type classes and inference of type
+class instantiations. This will be described in a later
+chapter. Meanwhile, you can learn more about type classes in F*
+<a class="reference external" href="https://github.com/FStarLang/FStar/wiki/Typeclasses-(via-meta-arguments">from the wiki</a>
+and from these <a class="reference external" href="https://github.com/FStarLang/FStar/tree/master/examples/typeclasses">examples</a>.</p>
+</div>
+<p>For example, if we were interested in just the read/write actions on a
+mutable integer state (as in our <code class="docutils literal notranslate"><span class="pre">st</span> <span class="pre">a</span></code> example), we could build an
+instance of the <code class="docutils literal notranslate"><span class="pre">action_class</span></code>, as shown below.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> rw =
+  | Read
+  | Write
+
+<span class="k">let</span> input_of : rw -&gt; Type =
+  <span class="k">fun</span> a -&gt;
+    <span class="k">match</span> a <span class="k">with</span>
+    | Read -&gt; unit
+    | Write -&gt; int
+
+<span class="k">let</span> output_of : rw -&gt; Type =
+  <span class="k">fun</span> a -&gt;
+    <span class="k">match</span> a <span class="k">with</span>
+    | Read -&gt; int
+    | Write -&gt; unit
+
+<span class="k">let</span> rw_action_class = { t = rw; input_of ; output_of }
+</pre></div>
+</div>
+<p>However, we can define a type <code class="docutils literal notranslate"><span class="pre">tree</span> <span class="pre">acts</span> <span class="pre">a</span></code>, the type of a computation
+tree whose effectful actions are from the class <code class="docutils literal notranslate"><span class="pre">acts</span></code>, completely
+generically in the actions themselves.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">noeq</span>
+<span class="k">type</span> tree (acts:action_class) (a:Type) =
+  | Return : x:a -&gt; tree acts a
+  | DoThen : act:acts.t -&gt;
+             input:acts.input_of act -&gt;
+             continue: (acts.output_of act -&gt; tree acts a) -&gt;
+             tree acts a
+</pre></div>
+</div>
+<p>A <code class="docutils literal notranslate"><span class="pre">tree</span> <span class="pre">act</span> <span class="pre">a</span></code> has just two cases:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Either it is a leaf node, <code class="docutils literal notranslate"><span class="pre">Return</span> <span class="pre">x</span></code>, modeling a computation
+that immediately returns the value <code class="docutils literal notranslate"><span class="pre">x</span></code>;</p></li>
+<li><p>Or, we have a node <code class="docutils literal notranslate"><span class="pre">DoThen</span> <span class="pre">act</span> <span class="pre">input</span> <span class="pre">k</span></code>, modeling a computation
+that begins with some action <code class="docutils literal notranslate"><span class="pre">act</span></code>, to which we pass some input,
+and where <code class="docutils literal notranslate"><span class="pre">k</span></code> represents all the possible “continuations” of the
+action, represented by a <code class="docutils literal notranslate"><span class="pre">tree</span> <span class="pre">act</span> <span class="pre">a</span></code> for each possible output
+returned by the action. That is, <code class="docutils literal notranslate"><span class="pre">DoThen</span></code> represents a node in
+the tree with a single action and a possibly infinite number of
+sub-trees.</p></li>
+</ul>
+</div></blockquote>
+<p>With this representation we can define <code class="docutils literal notranslate"><span class="pre">return</span></code> and <code class="docutils literal notranslate"><span class="pre">bind</span></code>, and
+prove the monad laws once and for all.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> return #a #acts (x:a)
+  : tree acts a
+  = Return x
+
+<span class="k">let</span> <span class="k">rec</span> bind #acts #a #b (f: tree acts a) (g: a -&gt; tree acts b)
+  : tree acts b
+  = <span class="k">match</span> f <span class="k">with</span>
+    | Return x -&gt; g x
+    | DoThen act i k -&gt;
+      DoThen act i (<span class="k">fun</span> x -&gt; bind (k x) g)
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">return</span></code> combinator is easy, since we already have a
+<code class="docutils literal notranslate"><span class="pre">Return</span></code> leaf node in the tree type.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">bind</span></code> combinator is a little more interesting, involving a
+structural recursion over the tree, relying (as we did in the
+previous chapter on well-founded recursion) on the property that all
+the trees returned by <code class="docutils literal notranslate"><span class="pre">k</span></code> are strictly smaller than the original
+tree <code class="docutils literal notranslate"><span class="pre">f</span></code>.</p></li>
+</ul>
+<p>To prove the monad laws, we first need to define an equivalence
+relation on trees—this relation is not quite just <code class="docutils literal notranslate"><span class="pre">==</span></code>, since each
+continuation in the tree is function which itself returns a tree. So,
+we define <code class="docutils literal notranslate"><span class="pre">equiv</span></code> below, relating trees that are both <code class="docutils literal notranslate"><span class="pre">Returns</span></code>, or
+when they both begin with the same action and have
+pointwise-equivalent continuations.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> equiv #acts #a (x y: tree acts a) =
+  <span class="k">match</span> x, y <span class="k">with</span> 
+  | Return vx, Return vy -&gt; vx == vy
+  | DoThen actx ix kx, DoThen acty iy ky -&gt;
+    actx == acty /\
+    ix == iy /\
+    (<span class="k">forall</span> o. equiv (kx o) (ky o))
+  | <span class="k">_</span> -&gt; False
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We are specifically avoiding the use of <a class="reference internal" href="part2_equality.html#part2-funext"><span class="std std-ref">functional
+extensionality</span></a> here, a property which allows
+equating pointwise equal <span class="math notranslate nohighlight">\(\eta\)</span>-expanded functions. We show
+how one can use functional extensionality in this development as an
+advanced exercise.</p>
+</div>
+<p>To prove that <code class="docutils literal notranslate"><span class="pre">equiv</span></code> is an equivalence relation, here are lemmas
+that prove that it is reflexive, symmetric, and transitive—we see
+here a use of the syntactic sugar for logical connectives,
+<a class="reference internal" href="part2_logical_connectives.html#part2-connectives"><span class="std std-ref">introduced in a previous chapter</span></a>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> equiv_refl #acts #a (x:tree acts a) 
+  : <span class="k">Lemma</span> (equiv x x)
+  = <span class="k">match</span> x <span class="k">with</span>
+    | Return v -&gt; ()
+    | DoThen act i k -&gt; 
+      <span class="k">introduce</span> <span class="k">forall</span> o. equiv (k o) (k o)
+      <span class="k">with</span> (equiv_refl (k o))
+
+<span class="k">let</span> <span class="k">rec</span> equiv_sym #acts #a (x y:tree acts a) 
+  : <span class="k">Lemma</span> 
+    (<span class="k">requires</span> equiv x y)
+    (<span class="k">ensures</span> equiv y x)
+  = <span class="k">match</span> x, y <span class="k">with</span>
+    | Return <span class="k">_</span>, Return <span class="k">_</span> -&gt; ()
+    | DoThen act i kx, DoThen <span class="k">_</span> <span class="k">_</span> ky -&gt; 
+      <span class="k">introduce</span> <span class="k">forall</span> o. equiv (ky o) (kx o)
+      <span class="k">with</span> equiv_sym (kx o) (ky o)
+
+<span class="k">let</span> <span class="k">rec</span> equiv_trans #acts #a (x y z: tree acts a)
+  : <span class="k">Lemma</span> 
+    (<span class="k">requires</span> equiv x y /\ equiv y z)
+    (<span class="k">ensures</span> equiv x z)
+  = <span class="k">match</span> x, y, z <span class="k">with</span>
+    | Return <span class="k">_</span>, <span class="k">_</span>, <span class="k">_</span> -&gt; ()
+    | DoThen act i kx, DoThen <span class="k">_</span> <span class="k">_</span> ky, DoThen <span class="k">_</span> <span class="k">_</span> kz -&gt;
+      <span class="k">introduce</span> <span class="k">forall</span> o. equiv (kx o) (kz o)
+      <span class="k">with</span> equiv_trans (kx o) (ky o) (kz o)
+</pre></div>
+</div>
+<p>Now, we can prove that <code class="docutils literal notranslate"><span class="pre">tree</span></code> satisfies the monad laws with respect
+to <code class="docutils literal notranslate"><span class="pre">equiv</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> right_identity #acts #a #b (x:a) (g:a -&gt; tree acts b)
+  : <span class="k">Lemma</span> (bind (return x) g `equiv` g x)
+  = equiv_refl (g x)
+
+<span class="k">let</span> <span class="k">rec</span> left_identity #acts #a (f:tree acts a)
+  : <span class="k">Lemma</span> (bind f return `equiv` f)
+  = <span class="k">match</span> f <span class="k">with</span>
+    | Return <span class="k">_</span> -&gt; ()
+    | DoThen act i k -&gt;
+      <span class="k">introduce</span> <span class="k">forall</span> o. bind (k o) return `equiv` (k o)
+      <span class="k">with</span> left_identity (k o)
+
+<span class="k">let</span> <span class="k">rec</span> assoc #acts #a #b #c 
+              (f1: tree acts a)
+              (f2: a -&gt; tree acts b)
+              (f3: b -&gt; tree acts c)
+  : <span class="k">Lemma</span> (bind f1 (<span class="k">fun</span> x -&gt; bind (f2 x) f3) `equiv`
+           bind (bind f1 f2) f3)
+  = <span class="k">match</span> f1 <span class="k">with</span>
+    | Return v -&gt; 
+      right_identity v f2;
+      right_identity v (<span class="k">fun</span> x -&gt; bind (f2 x) f3)
+    | DoThen act i k -&gt;
+      <span class="k">introduce</span> <span class="k">forall</span> o. bind (k o) (<span class="k">fun</span> x -&gt; bind (f2 x) f3) `equiv`
+                     bind (bind (k o) f2) f3
+      <span class="k">with</span> assoc (k o) f2 f3
+</pre></div>
+</div>
+<p>The associativity law, in particular, should make intuitive sense in
+that a <code class="docutils literal notranslate"><span class="pre">tree</span> <span class="pre">acts</span> <span class="pre">a</span></code> represents a computation in a canonical fully
+left-associative form, i.e., a single action followed by its
+continuation. As such, no matter how you associate computations in
+<code class="docutils literal notranslate"><span class="pre">bind</span></code>, the underlying representation is always fully
+left-associated.</p>
+<p>Having defined our computation trees generically, we can use them with
+any actions we like. For example, here’s our <code class="docutils literal notranslate"><span class="pre">read_and_increment</span></code>
+re-built using computation trees.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> read : tree rw_action_class int = DoThen Read () Return
+<span class="k">let</span> write (x:int) : tree rw_action_class unit = DoThen Write x Return
+<span class="k">let</span> read_and_increment 
+  : tree rw_action_class int
+  = x &lt;-- read ;
+    write (x + 1);;
+    return x
+</pre></div>
+</div>
+<p>Finally, given a computation tree we can “run” it, by interpreting it
+as a state-passing function.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> st a = int -&gt; a &amp; int
+<span class="k">let</span> <span class="k">rec</span> interp #a (f: tree rw_action_class a)
+  : st a 
+  = <span class="k">fun</span> s0 -&gt; 
+     <span class="k">match</span> f <span class="k">with</span>
+     | Return x -&gt; x, s0
+     | DoThen Read i k -&gt; 
+       interp (k s0) s0
+     | DoThen Write s1 k -&gt; 
+       interp (k ()) s1
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A main difference between what we’ve shown here with <code class="docutils literal notranslate"><span class="pre">interp</span></code> and
+a general treatment of algebraic effects is that rather than
+“bake-in” the interpretation of the individual actions in
+<code class="docutils literal notranslate"><span class="pre">interp</span></code>, we can also abstract the semantics of the actions using
+an idea similar to exception handling, allowing the context to
+customize the semantics of the actions simply by providing a
+different handler.</p>
+</div>
+<section id="id2">
+<h3>Exercise<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<p>Prove that the <code class="docutils literal notranslate"><span class="pre">interp</span></code> function interprets equivalent trees <code class="docutils literal notranslate"><span class="pre">f</span></code>
+and <code class="docutils literal notranslate"><span class="pre">g</span></code> to pointwise equivalent functions.</p>
+<p><a class="reference external" href="../code/exercises/Part2.ComputationTreeEquiv.fst">Exercise File</a></p>
+<div class="toggle docutils container">
+<div class="header docutils container">
+<p><strong>Answer</strong></p>
+</div>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> feq #a #b (f g: a -&gt; b) = <span class="k">forall</span> x. f x == g x
+<span class="k">let</span> <span class="k">rec</span> interp_equiv #a (f g:tree rw_action_class a)
+  : <span class="k">Lemma</span>
+    (<span class="k">requires</span> equiv f g)
+    (<span class="k">ensures</span> feq (interp f) (interp g))
+  = <span class="k">match</span> f, g <span class="k">with</span>
+    | Return <span class="k">_</span>, Return <span class="k">_</span> -&gt; ()
+    | DoThen act i kf, DoThen <span class="k">_</span> <span class="k">_</span> kg -&gt;
+      <span class="k">introduce</span> <span class="k">forall</span> o. feq (interp (kf o)) (interp (kg o))
+      <span class="k">with</span> interp_equiv (kf o) (kg o)
+</pre></div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="id3">
+<h3>Exercise<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<p>Instead of proving every time that a function like <code class="docutils literal notranslate"><span class="pre">interp</span></code> produces
+equivalent results when applied to equivalent trees, using functional
+extensionality, we can prove that equivalent trees are actually
+provably equal, i.e., <code class="docutils literal notranslate"><span class="pre">equiv</span> <span class="pre">x</span> <span class="pre">y</span> <span class="pre">==&gt;</span> <span class="pre">x</span> <span class="pre">==</span> <span class="pre">y</span></code>.</p>
+<p>This is a little technical, since although functional extensionality
+is a theorem in F*, it is only true of <span class="math notranslate nohighlight">\(\eta\)</span>-expanded functions.</p>
+<p>Try to use <code class="docutils literal notranslate"><span class="pre">FStar.FunctionalExtensionality.fsti</span></code> to adapt the
+definitions shown above so that we can prove the lemma <code class="docutils literal notranslate"><span class="pre">equiv</span> <span class="pre">x</span> <span class="pre">y</span> <span class="pre">==&gt;</span>
+<span class="pre">x</span> <span class="pre">==</span> <span class="pre">y</span></code>.</p>
+<div class="toggle docutils container">
+<div class="header docutils container">
+<p><strong>Answer</strong></p>
+</div>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">module</span> Part2.FreeFunExt
+<span class="k">open</span> FStar.Classical.Sugar
+<span class="k">module</span> F = FStar.FunctionalExtensionality
+<span class="k">open</span> FStar.FunctionalExtensionality
+
+<span class="k">noeq</span>
+<span class="k">type</span> action_class = {
+  t : Type;
+  input_of : t -&gt; Type;
+  output_of : t -&gt; Type;
+}
+
+
+<span class="k">noeq</span>
+<span class="k">type</span> tree (acts:action_class) (a:Type) =
+  | Return : x:a -&gt; tree acts a
+  | DoThen : act:acts.t -&gt;
+             input:acts.input_of act -&gt;
+             <span class="c">//We have to restrict continuations to be eta expanded</span>
+             <span class="c">//that what `^-&gt;` does. Its defined in FStar.FunctionalExtensionality</span>
+             continue:(acts.output_of act ^-&gt; tree acts a) -&gt;
+             tree acts a
+
+<span class="k">let</span> return #a #acts (x:a)
+  : tree acts a
+  = Return x
+
+<span class="k">let</span> <span class="k">rec</span> bind #acts #a #b (f: tree acts a) (g: a -&gt; tree acts b)
+  : tree acts b
+  = <span class="k">match</span> f <span class="k">with</span>
+    | Return x -&gt; g x
+    | DoThen act i k -&gt;
+      <span class="c">//Now, we have to ensure that continuations are instances of</span>
+      <span class="c">//F.( ^-&gt; )</span>
+      DoThen act i (F.on <span class="k">_</span> (<span class="k">fun</span> x -&gt; bind (k x) g))
+
+<span class="k">let</span> <span class="k">rec</span> equiv #acts #a (x y: tree acts a) =
+  <span class="k">match</span> x, y <span class="k">with</span> 
+  | Return vx, Return vy -&gt; vx == vy
+  | DoThen actx ix kx, DoThen acty iy ky -&gt;
+    actx == acty /\
+    ix == iy /\
+    (<span class="k">forall</span> o. equiv (kx o) (ky o))
+  | <span class="k">_</span> -&gt; False
+
+<span class="k">let</span> <span class="k">rec</span> equiv_refl #acts #a (x:tree acts a) 
+  : <span class="k">Lemma</span> (equiv x x)
+  = <span class="k">match</span> x <span class="k">with</span>
+    | Return v -&gt; ()
+    | DoThen act i k -&gt; 
+      <span class="k">introduce</span> <span class="k">forall</span> o. equiv (k o) (k o)
+      <span class="k">with</span> (equiv_refl (k o))
+
+<span class="k">let</span> <span class="k">rec</span> equiv_sym #acts #a (x y:tree acts a) 
+  : <span class="k">Lemma</span> 
+    (<span class="k">requires</span> equiv x y)
+    (<span class="k">ensures</span> equiv y x)
+  = <span class="k">match</span> x, y <span class="k">with</span>
+    | Return <span class="k">_</span>, Return <span class="k">_</span> -&gt; ()
+    | DoThen act i kx, DoThen <span class="k">_</span> <span class="k">_</span> ky -&gt; 
+      <span class="k">introduce</span> <span class="k">forall</span> o. equiv (ky o) (kx o)
+      <span class="k">with</span> equiv_sym (kx o) (ky o)
+
+<span class="k">let</span> <span class="k">rec</span> equiv_trans #acts #a (x y z: tree acts a)
+  : <span class="k">Lemma</span> 
+    (<span class="k">requires</span> equiv x y /\ equiv y z)
+    (<span class="k">ensures</span> equiv x z)
+  = <span class="k">match</span> x, y, z <span class="k">with</span>
+    | Return <span class="k">_</span>, <span class="k">_</span>, <span class="k">_</span> -&gt; ()
+    | DoThen act i kx, DoThen <span class="k">_</span> <span class="k">_</span> ky, DoThen <span class="k">_</span> <span class="k">_</span> kz -&gt;
+      <span class="k">introduce</span> <span class="k">forall</span> o. equiv (kx o) (kz o)
+      <span class="k">with</span> equiv_trans (kx o) (ky o) (kz o)
+
+<span class="c">// THIS IS THE MAIN LEMMA OF THE EXERCISE</span>
+<span class="k">let</span> <span class="k">rec</span> equiv_is_equal #acts #a (x y: tree acts a)
+  : <span class="k">Lemma</span>
+    (<span class="k">requires</span> equiv x y)
+    (<span class="k">ensures</span> x == y)
+  = <span class="k">match</span> x, y <span class="k">with</span>
+    | Return <span class="k">_</span>, Return <span class="k">_</span> -&gt; ()
+    | DoThen act i kx, DoThen <span class="k">_</span> <span class="k">_</span> ky -&gt;
+      <span class="k">introduce</span> <span class="k">forall</span> o. kx o == ky o
+      <span class="k">with</span> equiv_is_equal (kx o) (ky o);
+      F.extensionality <span class="k">_</span> <span class="k">_</span> kx ky
+
+<span class="k">let</span> right_identity #acts #a #b (x:a) (g:a -&gt; tree acts b)
+  : <span class="k">Lemma</span> (bind (return x) g `equiv` g x)
+  = equiv_refl (g x)
+
+<span class="k">let</span> <span class="k">rec</span> left_identity #acts #a (f:tree acts a)
+  : <span class="k">Lemma</span> (bind f return `equiv` f)
+  = <span class="k">match</span> f <span class="k">with</span>
+    | Return <span class="k">_</span> -&gt; ()
+    | DoThen act i k -&gt;
+      <span class="k">introduce</span> <span class="k">forall</span> o. bind (k o) return `equiv` (k o)
+      <span class="k">with</span> left_identity (k o)
+
+<span class="k">let</span> <span class="k">rec</span> assoc #acts #a #b #c 
+              (f1: tree acts a)
+              (f2: a -&gt; tree acts b)
+              (f3: b -&gt; tree acts c)
+  : <span class="k">Lemma</span> (bind f1 (<span class="k">fun</span> x -&gt; bind (f2 x) f3) `equiv`
+           bind (bind f1 f2) f3)
+  = <span class="k">match</span> f1 <span class="k">with</span>
+    | Return v -&gt; 
+      right_identity v f2;
+      right_identity v (<span class="k">fun</span> x -&gt; bind (f2 x) f3)
+    | DoThen act i k -&gt;
+      <span class="k">introduce</span> <span class="k">forall</span> o. bind (k o) (<span class="k">fun</span> x -&gt; bind (f2 x) f3) `equiv`
+                     bind (bind (k o) f2) f3
+      <span class="k">with</span> assoc (k o) f2 f3
+
+<span class="k">type</span> rw =
+  | Read
+  | Write
+
+<span class="k">let</span> input_of : rw -&gt; Type =
+  <span class="k">fun</span> a -&gt;
+    <span class="k">match</span> a <span class="k">with</span>
+    | Read -&gt; unit
+    | Write -&gt; int
+
+<span class="k">let</span> output_of : rw -&gt; Type =
+  <span class="k">fun</span> a -&gt;
+    <span class="k">match</span> a <span class="k">with</span>
+    | Read -&gt; int
+    | Write -&gt; unit
+
+<span class="k">let</span> rw_action_class = { t = rw; input_of ; output_of }
+
+<span class="c">//Here again the continuation has to be F.( ^-&gt; )</span>
+<span class="k">let</span> read : tree rw_action_class int = DoThen Read () (F.on <span class="k">_</span> Return) 
+<span class="k">let</span> write (x:int) : tree rw_action_class unit = DoThen Write x (F.on <span class="k">_</span> Return)
+<span class="k">let</span> read_and_increment 
+  : tree rw_action_class int
+  = x &lt;-- read ;
+    write (x + 1);;
+    return x
+
+<span class="k">let</span> st a = int -&gt; a &amp; int
+<span class="k">let</span> <span class="k">rec</span> interp #a (f: tree rw_action_class a)
+  : st a 
+  = <span class="k">fun</span> s0 -&gt; 
+     <span class="k">match</span> f <span class="k">with</span>
+     | Return x -&gt; x, s0
+     | DoThen Read i k -&gt; 
+       interp (k s0) s0
+     | DoThen Write s1 k -&gt; 
+       interp (k ()) s1
+
+<span class="c">// And now since equivalent trees and equal, lemmas such as this</span>
+<span class="c">// become trivial</span>
+<span class="k">let</span> interp_equiv #a (f g:tree rw_action_class a)
+  : <span class="k">Lemma</span>
+    (<span class="k">requires</span> equiv f g)
+    (<span class="k">ensures</span> feq (interp f) (interp g))
+  = equiv_is_equal f g
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="manipulating-computation-trees-nondeterminism-and-concurrency">
+<h2>Manipulating Computation Trees: Nondeterminism and Concurrency<a class="headerlink" href="#manipulating-computation-trees-nondeterminism-and-concurrency" title="Link to this heading"></a></h2>
+<p>As a final bit, we show that representing computations as trees is not
+just useful from a perspective of genericity and code re-use.
+Computation trees expose the structure of a computation in a way that
+allows us to manipulate it, e.g., interpreting actions in an
+alternative semantics.</p>
+<p>In this section, we enhance our computation trees to support
+non-deterministic choice, i.e., given pair of computations <code class="docutils literal notranslate"><span class="pre">l,</span> <span class="pre">r:tree</span>
+<span class="pre">acts</span> <span class="pre">a</span></code>, we can non-deterministically choose to evaluate <code class="docutils literal notranslate"><span class="pre">l</span></code> or
+<code class="docutils literal notranslate"><span class="pre">r</span></code>. With this capability, we can also express some models of
+concurrency, e.g., a semantics that interleaves imperative actions
+from several threads.</p>
+<p>Let’s start by enhancing our <code class="docutils literal notranslate"><span class="pre">tree</span></code> type to now include an node <code class="docutils literal notranslate"><span class="pre">Or</span>
+<span class="pre">l</span> <span class="pre">r</span></code>, to represent non-deterministic choice between <code class="docutils literal notranslate"><span class="pre">l</span></code> and <code class="docutils literal notranslate"><span class="pre">r</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">noeq</span>
+<span class="k">type</span> tree (acts:action_class) (a:Type) =
+  | Return : x:a -&gt; tree acts a
+  | DoThen : act:acts.t -&gt;
+             input:acts.input_of act -&gt;
+             continue: (acts.output_of act -&gt; tree acts a) -&gt;
+             tree acts a
+  | Or :  tree acts a -&gt; tree acts a -&gt; tree acts a
+</pre></div>
+</div>
+<p>As before, we can define <code class="docutils literal notranslate"><span class="pre">return</span></code> and <code class="docutils literal notranslate"><span class="pre">bind</span></code>, this time in
+<code class="docutils literal notranslate"><span class="pre">bind</span></code> we sequence <code class="docutils literal notranslate"><span class="pre">g</span></code> after both choices in <code class="docutils literal notranslate"><span class="pre">Or</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> return #acts #a (x:a)
+  : tree acts a
+  = Return x
+
+<span class="k">let</span> <span class="k">rec</span> bind #acts #a #b (f: tree acts a) (g: a -&gt; tree acts b)
+  : tree acts b
+  = <span class="k">match</span> f <span class="k">with</span>
+    | Return x -&gt; g x
+    | DoThen act i k -&gt;
+      DoThen act i (<span class="k">fun</span> x -&gt; bind (k x) g)
+    | Or m0 m1 -&gt; Or (bind m0 g) (bind m1 g)
+</pre></div>
+</div>
+<p>What’s more interesting is that, in addition to sequential
+composition, we can also define parallel composition of a pair of
+computations using <code class="docutils literal notranslate"><span class="pre">par</span> <span class="pre">f</span> <span class="pre">g</span></code>, as shown below.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> l_par #acts #a #b (f:tree acts a) (g:tree acts b)
+  : tree acts (a &amp; b)
+  = <span class="k">match</span> f <span class="k">with</span>
+    | Return v -&gt; x &lt;-- g; return (v, x)
+    | DoThen a i k -&gt;
+      DoThen a i (<span class="k">fun</span> x -&gt; r_par (k x) g)
+    | Or m0 m1 -&gt; Or (l_par m0 g) (l_par m1 g)
+
+<span class="k">and</span> r_par #acts #a #b (f:tree acts a) (g: tree acts b)
+  : tree acts (a &amp; b)
+  = <span class="k">match</span> g <span class="k">with</span>
+    | Return v -&gt; x &lt;-- f; return (x, v)
+    | DoThen a i k -&gt;
+      DoThen a i (<span class="k">fun</span> x -&gt; l_par f (k x))
+    | Or m0 m1 -&gt; Or (r_par f m0) (r_par f m1)
+
+<span class="k">let</span> par #acts #a #b (f: tree acts a) (g: tree acts b)
+  : tree acts (a &amp; b)
+  = Or (l_par f g) (r_par f g)
+</pre></div>
+</div>
+<p>There’s quite a lot going on here, so let’s break it down a bit:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The functions <code class="docutils literal notranslate"><span class="pre">l_par</span> <span class="pre">f</span> <span class="pre">g</span></code> and <code class="docutils literal notranslate"><span class="pre">r_par</span> <span class="pre">f</span> <span class="pre">g</span></code> are mutually
+recursive and define an interleaving semantics of the actions in
+<code class="docutils literal notranslate"><span class="pre">f</span></code> and <code class="docutils literal notranslate"><span class="pre">g</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">l_par</span> <span class="pre">f</span> <span class="pre">g</span></code> is left-biased: picking an action from <code class="docutils literal notranslate"><span class="pre">f</span></code> to
+execute first (if any are left); while <code class="docutils literal notranslate"><span class="pre">r_par</span> <span class="pre">f</span> <span class="pre">g</span></code> is
+right-biased, picking an action from <code class="docutils literal notranslate"><span class="pre">g</span></code> to execute first.</p></li>
+<li><p>Consider the <code class="docutils literal notranslate"><span class="pre">DoThen</span></code> case in <code class="docutils literal notranslate"><span class="pre">l_par</span></code>: it picks the head
+action <code class="docutils literal notranslate"><span class="pre">a</span></code> from <code class="docutils literal notranslate"><span class="pre">f</span></code> and the recurses in the continuation with
+<code class="docutils literal notranslate"><span class="pre">r_par</span> <span class="pre">(k</span> <span class="pre">x)</span> <span class="pre">g</span></code>, to prefer executing first an action from <code class="docutils literal notranslate"><span class="pre">g</span></code>
+rather than <code class="docutils literal notranslate"><span class="pre">k</span> <span class="pre">x</span></code>. The <code class="docutils literal notranslate"><span class="pre">DoThen</span></code> case of <code class="docutils literal notranslate"><span class="pre">r_par</span></code> is
+symmetric.</p></li>
+<li><p>For <code class="docutils literal notranslate"><span class="pre">l_par</span></code>, in the non-deterministic choice case (<code class="docutils literal notranslate"><span class="pre">Or</span></code>), we
+interleave either choice of <code class="docutils literal notranslate"><span class="pre">f</span></code> with <code class="docutils literal notranslate"><span class="pre">g</span></code>, and <code class="docutils literal notranslate"><span class="pre">r_par</span></code> is
+symmetric.</p></li>
+<li><p>Finally, we define parallel composition <code class="docutils literal notranslate"><span class="pre">par</span> <span class="pre">f</span> <span class="pre">g</span></code> as the
+non-deterministic choice of either the left-biased or right-biased
+interleaving of the actions of <code class="docutils literal notranslate"><span class="pre">f</span></code> and <code class="docutils literal notranslate"><span class="pre">g</span></code>. This fixes the
+semantics of parallel composition to a round-robin scheduling of
+the actions between the threads, but one could imagine
+implementing other kinds of schedulers too.</p></li>
+</ul>
+</div></blockquote>
+<p>As before, we can now instantiate our tree with read/write actions and
+write some simple programs, including <code class="docutils literal notranslate"><span class="pre">par_inc</span></code>, a computation that
+tries to increment the counter twice in parallel.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> read : tree rw_actions int = DoThen Read () Return
+<span class="k">let</span> write (x:int) : tree rw_actions unit = DoThen Write x Return
+<span class="k">let</span> inc
+  : tree rw_actions unit
+  = x &lt;-- read ;
+    write (x + 1)
+<span class="k">let</span> par_inc = par inc inc 
+</pre></div>
+</div>
+<p>However, there’s trouble ahead—because of the interleaving
+semantics, we don’t actually increment the state twice.</p>
+<p>To check, let’s define an interpretation function to run our
+computations. Since we need to resolve the non-deterministic choice in
+the <code class="docutils literal notranslate"><span class="pre">Or</span></code> nodes, we’ll parameterize our interpreter by a source of
+“randomness”, an infinite stream of booleans.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> randomness = nat -&gt; bool
+<span class="k">let</span> par_st a = randomness -&gt; pos:nat -&gt; s0:int -&gt; (a &amp; int &amp; nat)
+<span class="k">let</span> <span class="k">rec</span> interp #a (f:tree rw_actions a) 
+  : par_st a 
+  = <span class="k">fun</span> rand pos s0 -&gt;
+      <span class="k">match</span> f <span class="k">with</span>
+      | Return x -&gt; x, s0, pos
+      | DoThen Read <span class="k">_</span> k -&gt; interp (k s0) rand pos s0
+      | DoThen Write s1 k -&gt; interp (k ()) rand pos s1      
+      | Or l r -&gt; 
+        <span class="k">if</span> rand pos
+        <span class="k">then</span> interp l rand (pos + 1) s0
+        <span class="k">else</span> interp r rand (pos + 1) s0
+<span class="k">let</span> st a = int -&gt; a &amp; int
+<span class="k">let</span> interpret #a (f:tree rw_actions a) 
+  : st a    
+  = <span class="k">fun</span> s0 -&gt; 
+      <span class="k">let</span> x, s, <span class="k">_</span> = interp f (<span class="k">fun</span> n -&gt; n % 2 = 0) 0 s0 <span class="k">in</span> 
+      x, s
+</pre></div>
+</div>
+<p>This interpreter is very similar to our prior interpreter, except in
+the <code class="docutils literal notranslate"><span class="pre">Or</span></code> case, we read a boolean from <code class="docutils literal notranslate"><span class="pre">rand</span></code>, our randomness
+stream, and choose the left- or right-branch accordingly.</p>
+<p>We can run our program on this interpreter and check what it
+returns. One way to do this is to make use of F*’s normalizer, the
+abstract machine that F* uses to reduce computations during
+type-checking. The <code class="docutils literal notranslate"><span class="pre">assert_norm</span> <span class="pre">p</span></code> feature used below instructs F*
+to symbolically reduce the term <code class="docutils literal notranslate"><span class="pre">p</span></code> as much as possible and then
+check that the result is equivalent to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>F*’s emacs mode <code class="docutils literal notranslate"><span class="pre">fstar-mode.el</span></code> provides some utilities to allow
+reducing terms of F*’s abstract machine and showing the results to
+the user. F*’s tactics also allow evaluating terms and viewing
+the results—we leave further discussion of these features to a
+future chapter.</p>
+</div>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> test_prog = <span class="k">assert_norm</span> (<span class="k">forall</span> x. snd (interpret par_inc x) == x + 1)
+</pre></div>
+</div>
+<p>In this case, we ask F* to interpret <code class="docutils literal notranslate"><span class="pre">par_inc</span></code> on the interpreter we
+just defined. And, indeed, F* confirms that in the final state, we
+have incremented the state only once. Due to the round-robin
+scheduling of actions, the interpreter has executed both the reads
+before both the writes, making one of the reads and one of the writes
+redundant.</p>
+<section id="id4">
+<h3>Exercise<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<p>Define an action class that include an increment operation, in
+addition to reads and writes. Adapt the interpreter shown above to
+work with this action class and prove (using <code class="docutils literal notranslate"><span class="pre">assert_norm</span></code>) that a
+program that contains two parallel atomic increments increments the
+state twice.</p>
+<p><a class="reference external" href="../code/exercises/Part2.AtomicIncrement.fst">Exercise File</a></p>
+<div class="toggle docutils container">
+<div class="header docutils container">
+<p><strong>Answer</strong></p>
+</div>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> rwi =
+  | R
+  | W
+  | Inc
+  
+<span class="k">let</span> input_of_rwi : rwi -&gt; Type =
+  <span class="k">fun</span> a -&gt;
+    <span class="k">match</span> a <span class="k">with</span>
+    | R -&gt; unit
+    | W -&gt; int
+    | Inc -&gt; unit
+
+<span class="k">let</span> output_of_rwi : rwi -&gt; Type =
+  <span class="k">fun</span> a -&gt;
+    <span class="k">match</span> a <span class="k">with</span>
+    | R -&gt; int
+    | W -&gt; unit
+    | Inc -&gt; unit
+
+<span class="k">let</span> rwi_actions = { t = rwi; input_of=input_of_rwi ; output_of=output_of_rwi }
+
+<span class="k">let</span> atomic_inc : tree rwi_actions unit = DoThen Inc () Return
+
+<span class="k">let</span> <span class="k">rec</span> interp_rwi #a (f:tree rwi_actions a) 
+  : par_st a 
+  = <span class="k">fun</span> tape pos s0 -&gt;
+      <span class="k">match</span> f <span class="k">with</span>
+      | Return x -&gt; x, s0, pos
+      | DoThen R <span class="k">_</span> k -&gt; interp_rwi (k s0) tape pos s0
+      | DoThen W s1 k -&gt; interp_rwi (k ()) tape pos s1      
+      | DoThen Inc () k -&gt; interp_rwi (k ()) tape pos (s0 + 1)            
+      | Or l r -&gt; 
+        <span class="k">let</span> b = tape pos <span class="k">in</span>
+        <span class="k">if</span> b
+        <span class="k">then</span> interp_rwi l tape (pos + 1) s0
+        <span class="k">else</span> interp_rwi r tape (pos + 1) s0
+<span class="k">let</span> interpret_rwi #a (f:tree rwi_actions a) 
+  : st a    
+  = <span class="k">fun</span> s0 -&gt; 
+      <span class="k">let</span> x, s, <span class="k">_</span> = interp_rwi f (<span class="k">fun</span> n -&gt; n % 2 = 0) 0 s0 <span class="k">in</span> 
+      x, s
+
+<span class="k">let</span> par_atomic_inc = par atomic_inc atomic_inc
+<span class="k">let</span> test_par_atomic_inc = <span class="k">assert_norm</span> (<span class="k">forall</span> x. snd (interpret_rwi par_atomic_inc x) == x + 2)
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="looking-ahead">
+<h2>Looking ahead<a class="headerlink" href="#looking-ahead" title="Link to this heading"></a></h2>
+<p>Writing correct programs with side-effects is hard, particularly when
+those effects include features like mutable state and concurrency!</p>
+<p>What we’ve seen here is that although we’ve been able to model the
+semantics of these programs, proving that they work correctly is
+non-trivial. Further, while we have defined interpreters for our
+programs, these interpreters are far from efficient. In practice, one
+usually resorts to things like shared-memory concurrency to gain
+performance and our interpreters, though mathematically precise, are
+horribly slow.</p>
+<p>Addressing these two topics is the main purpose of F*’s user-defined
+effect system, a big part of the language which we’ll cover in a
+subsequent section. The effect system aims to address two main needs:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Proofs of effectful programs: The effect system enables developing
+effectful programs coupled with <em>program logics</em> that enable
+specifying and proving program properties. We’ll learn about many
+different kinds of logics that F* libraries provide, ranging from
+classical Floyd-Hoare logics for sequential programs, relational
+logics for program equivalence, weakest precondition calculi, and
+separation logics for concurrent and distributed programs.</p></li>
+<li><p>Effect abstraction: Although programs can be specified and proven
+against a clean mathematical semantics, for efficient execution,
+F* provides mechanisms to hide the representation of an effect so
+that effectful programs can be compiled efficiently to run with
+native support for effects like state, exceptions, concurrency,
+and IO.</p></li>
+</ul>
+</div></blockquote>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="part2_well_founded.html" class="btn btn-neutral float-left" title="Well-founded Relations and Termination" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="part2_universes.html" class="btn btn-neutral float-right" title="Universes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

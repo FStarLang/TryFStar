@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Mutable References &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Existential Quantification" href="pulse_existentials.html" />
+    <link rel="prev" title="Pulse Basics" href="pulse_ch1.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pulse_getting_started.html">Getting up and running with Codespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ch1.html">Pulse Basics</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Mutable References</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ref-t-stack-or-heap-references"><code class="docutils literal notranslate"><span class="pre">ref</span> <span class="pre">t</span></code>: Stack or Heap References</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#reading-a-reference">Reading a reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#erased-values-are-for-specification-and-proof-only">Erased values are for specification and proof only</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#writing-through-a-reference">Writing through a reference</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#dereferencing-is-explicit">Dereferencing is explicit</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#inspecting-the-proof-state">Inspecting the proof state</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#fractional-permissions">Fractional Permissions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#stack-references">Stack references</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#let-mut-creates-a-new-stack-ref"><code class="docutils literal notranslate"><span class="pre">let</span> <span class="pre">mut</span></code> creates a new stack ref</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#stack-references-are-scoped-and-implicitly-reclaimed">Stack references are scoped and implicitly reclaimed</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#heap-references">Heap references</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ghost-references">Ghost references</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_existentials.html">Existential Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_user_defined_predicates.html">User-defined Predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_conditionals.html">Conditionals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_loops.html">Loops &amp; Recursion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_arrays.html">Mutable Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ghost.html">Ghost Computations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_higher_order.html">Higher Order Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_implication_and_forall.html">Implication and Universal Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_linked_list.html">Linked Lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_atomics_and_invariants.html">Atomic Operations and Invariants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_spin_lock.html">Spin Locks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_parallel_increment.html">Parallel Increment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_extraction.html">Extraction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+      <li class="breadcrumb-item active">Mutable References</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="mutable-references">
+<span id="pulse-references"></span><h1>Mutable References<a class="headerlink" href="#mutable-references" title="Link to this heading"></a></h1>
+<p>Pulse aims to support programming with explicit control over memory
+management and without need for a garbage collector, similar to
+languages like C or Rust, but, of course, in a proof-oriented style.
+Towards that end, one of the main features it offers (especially in
+comparison to purely functional F*) is support for references to
+mutable memory that can be both allocated and reclaimed.</p>
+<p>In this chapter, we’ll learn about three kinds of mutable references:
+stack references, heap references (or boxes), and ghost
+references. Stack references point to memory allocated in the stack
+frame of the current function (in which case the memory is reclaimed
+when the function returns). Heap references, or boxes, point to memory
+locations in the heap, and heap memory is explicitly reclaimed by
+calling <code class="docutils literal notranslate"><span class="pre">drop</span></code> or <code class="docutils literal notranslate"><span class="pre">free</span></code>. Ghost references are for specification
+and proof purposes only and point to memory locations that do not
+really exist at runtime.</p>
+<section id="ref-t-stack-or-heap-references">
+<h2><code class="docutils literal notranslate"><span class="pre">ref</span> <span class="pre">t</span></code>: Stack or Heap References<a class="headerlink" href="#ref-t-stack-or-heap-references" title="Link to this heading"></a></h2>
+<p>Most of the operations on mutable references are agnostic to whether
+the memory referenced resides on the stack or the heap—the main
+difference is that stack references are allocated in a scope and
+implicitly reclaimed when they go out of scope; whereas heap
+references are explicitly allocated and deallocated.</p>
+<p>The type <code class="docutils literal notranslate"><span class="pre">Pulse.Lib.Reference.ref</span> <span class="pre">t</span></code> is the basic type of a mutable
+reference. We have already seen <code class="docutils literal notranslate"><span class="pre">ref</span> <span class="pre">t</span></code> used in the <code class="docutils literal notranslate"><span class="pre">incr</span></code>
+function of the previous section. We show below another common
+function to swap the contents of two references:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> swap u#a (#a: Type u#a) (r0 r1:ref a)
+<span class="k">requires</span> pts_to r0 &#39;v0
+<span class="k">requires</span> pts_to r1 &#39;v1
+<span class="k">ensures</span> pts_to r0 &#39;v1
+<span class="k">ensures</span> pts_to r1 &#39;v0
+{
+    <span class="k">let</span> v0 = !r0;
+    <span class="k">let</span> v1 = !r1;
+    r0 := v1;
+    r1 := v0;
+}
+</pre></div>
+</div>
+<section id="reading-a-reference">
+<h3>Reading a reference<a class="headerlink" href="#reading-a-reference" title="Link to this heading"></a></h3>
+<p>Let’s start by taking a closer look at how dereferencing works in the
+function <code class="docutils literal notranslate"><span class="pre">value_of</span></code> below:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> value_of u#a (#a:Type u#a) (r:ref a)
+preserves pts_to r &#39;v
+<span class="k">returns</span> v:a
+<span class="k">ensures</span> pure (v == &#39;v)
+{
+    !r;
+}
+</pre></div>
+</div>
+<p>Its slightly more explicit form is shown below, where <code class="docutils literal notranslate"><span class="pre">w:erased</span> <span class="pre">a</span></code>
+is an erased value witnessing the current contents referenced by
+<code class="docutils literal notranslate"><span class="pre">r</span></code>.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> value_of_explicit u#a (#a:Type u#a) (r:ref a) (#w:erased a)
+preserves pts_to r w
+<span class="k">returns</span> v:a
+<span class="k">ensures</span> pure (v == reveal w)
+{
+    !r;
+}
+</pre></div>
+</div>
+<p>Notice how the precondition requires <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">r</span> <span class="pre">w</span></code> while the
+postcondition retains <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">r</span> <span class="pre">w</span></code>, along with the property that <code class="docutils literal notranslate"><span class="pre">v</span>
+<span class="pre">==</span> <span class="pre">reveal</span> <span class="pre">w</span></code>, i.e., the type proves that if we read the reference the
+value we get is equal to the logical witness provided.</p>
+</section>
+<section id="erased-values-are-for-specification-and-proof-only">
+<h3>Erased values are for specification and proof only<a class="headerlink" href="#erased-values-are-for-specification-and-proof-only" title="Link to this heading"></a></h3>
+<p>The logical witness is an erased value, so one cannot directly use it
+in a non-ghost computation. For example, if instead of reading the
+reference, we attempt to just return <code class="docutils literal notranslate"><span class="pre">reveal</span> <span class="pre">w</span></code>, the
+code fails to check with the error shown below.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> value_of_explicit_fail u#a (#a:Type u#a) (r:ref a) (#w:erased a)
+preserves pts_to r w
+<span class="k">returns</span> v:a
+<span class="k">ensures</span> pure (v == reveal w)
+{
+    reveal w
+}
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Expected</span> <span class="n">a</span> <span class="n">Total</span> <span class="n">computation</span><span class="p">,</span> <span class="n">but</span> <span class="n">got</span> <span class="n">Ghost</span>
+</pre></div>
+</div>
+</section>
+<section id="writing-through-a-reference">
+<h3>Writing through a reference<a class="headerlink" href="#writing-through-a-reference" title="Link to this heading"></a></h3>
+<p>The function <code class="docutils literal notranslate"><span class="pre">assign</span></code> below shows how to mutate the contents of a
+reference—the specification shows that when the function returns,
+<code class="docutils literal notranslate"><span class="pre">r</span></code> points to the assigned value <code class="docutils literal notranslate"><span class="pre">v</span></code>.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> assign u#a (#a:Type u#a) (r:ref a) (v:a)
+<span class="k">requires</span> pts_to r &#39;v
+<span class="k">ensures</span> pts_to r v
+{
+    r := v;
+}
+</pre></div>
+</div>
+</section>
+<section id="dereferencing-is-explicit">
+<h3>Dereferencing is explicit<a class="headerlink" href="#dereferencing-is-explicit" title="Link to this heading"></a></h3>
+<p>Unlike languages like C or Rust which make a distinction between
+l-values and r-values and implicitly read the content of references,
+in Pulse (like in OCaml), references are explicitly dereferenced.
+As the program below illustrates, references themselves can be passed
+to other functions (e.g., as in/out-parameters) while their current
+values must be passed explicitly.</p>
+<p>The function <code class="docutils literal notranslate"><span class="pre">add</span></code> takes both a reference <code class="docutils literal notranslate"><span class="pre">r:ref</span> <span class="pre">int</span></code> and a value
+<code class="docutils literal notranslate"><span class="pre">n:int</span></code> as arguments:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> add (r:ref int) (n:int)
+<span class="k">requires</span> pts_to r &#39;v
+<span class="k">ensures</span> pts_to r (&#39;v + n)
+{
+    <span class="k">let</span> v = !r;
+    r := v + n;
+}
+</pre></div>
+</div>
+<p>Meanwhile, the function <code class="docutils literal notranslate"><span class="pre">quadruple</span></code> calls <code class="docutils literal notranslate"><span class="pre">add</span></code> twice to double
+the value stored in <code class="docutils literal notranslate"><span class="pre">r</span></code> each time.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> quadruple (r:ref int)
+<span class="k">requires</span> pts_to r &#39;v
+<span class="k">ensures</span> pts_to r (4 * &#39;v)
+{
+    <span class="k">let</span> v1 = !r;
+    add r v1;
+    <span class="k">let</span> v2 = !r;
+    add r v2;
+}
+</pre></div>
+</div>
+</section>
+<section id="inspecting-the-proof-state">
+<h3>Inspecting the proof state<a class="headerlink" href="#inspecting-the-proof-state" title="Link to this heading"></a></h3>
+<p>A Pulse program is checked one stateful operation at a time, “pushing
+through” the <code class="docutils literal notranslate"><span class="pre">slprop</span></code> assertions starting with the precondition,
+until the end of function’s body. The inferred <code class="docutils literal notranslate"><span class="pre">slprop</span></code> at the exit
+of a function must match the annotated postcondition. Along the way,
+the Pulse checker will make several calls to the SMT solver to prove
+that, say, <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">x</span> <span class="pre">(v</span> <span class="pre">+</span> <span class="pre">v)</span></code> is equal to <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">x</span> <span class="pre">(2</span> <span class="pre">*</span> <span class="pre">v)</span></code>.</p>
+<p>At each point in the program, the Pulse checker maintains a proof
+state, which has two components:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>A typing environment, binding variables in scope to their types,
+including some refinement types that reflect properties about
+those variables in scope, e.g., <code class="docutils literal notranslate"><span class="pre">x:int;</span> <span class="pre">y:erased</span> <span class="pre">int;</span> <span class="pre">_:squash</span> <span class="pre">(x</span> <span class="pre">==</span> <span class="pre">reveal</span> <span class="pre">y)</span></code>.</p></li>
+<li><p>A separation logic context, called just “the context”, or
+sometimes “the <code class="docutils literal notranslate"><span class="pre">slprop</span></code> context”. The context contains all known
+facts about the current state of the program.</p></li>
+</ul>
+</div></blockquote>
+<p>Pulse provides a command called <code class="docutils literal notranslate"><span class="pre">show_proof_state</span></code> that allows the
+user to inspect the proof state at a particular program point,
+aborting the Pulse checker at that point. It’s quite common when
+developing a Pulse program to repeatedly inspect the proof state and
+to advance it by a single or just a few steps at a time. This makes
+the experience of developing a Pulse program quite interactive,
+similar perhaps to writing tactics in F* or other languages. Except,
+in Pulse, one incrementally writes an imperative program together with
+its proof of correctness.</p>
+<p>Here below is the <code class="docutils literal notranslate"><span class="pre">quadruple</span></code> program again, with the proof states
+annotated at each point, and a <code class="docutils literal notranslate"><span class="pre">show_proof_state</span></code> command in the
+middle.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> quadruple (r:ref int)
+<span class="k">requires</span> pts_to r &#39;v
+<span class="k">ensures</span> pts_to r (4 * &#39;v)
+{
+    <span class="k">let</span> v1 = !r; <span class="c">// Env=v1:int; _:squash (v1 == &#39;v)       Ctxt= pts_to r v1</span>
+    add r v1;    <span class="c">// ...                                   Ctxt= pts_to r (v1 + v1)</span>
+    <span class="k">show_proof_state</span>;
+    <span class="k">let</span> v2 = !r; <span class="c">// Env=...; v2:int; _:squash(v2==v1+v1)  Ctxt= pts_to r v2 </span>
+    add r v2;    <span class="c">// Env=...                               Ctxt= pts_to r (v2 + v2)</span>
+                 <span class="c">// ..                                    Ctxt= pts_to r (4 * &#39;v)</span>
+}
+</pre></div>
+</div>
+<p>The output from <code class="docutils literal notranslate"><span class="pre">show_proof_state</span></code> is shown below:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span>- Current context:
+    pts_to r (reveal (hide v1) + v1) **
+    emp
+- In typing environment:
+    [<span class="k">_</span>#5 : unit,
+    <span class="k">_</span>#4 : squash (reveal &#39;v == v1),
+    v1#3 : int,
+    &#39;v#2 : erased int,
+    r#1 : ref int]
+</pre></div>
+</div>
+<p>The comments show how the proof state evolves after each command.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Pulse typechecks each step of a program by checking the current
+assumptions in the proof state are sufficient to prove the
+precondition of that step, ensuring that all unused permissions
+are retained in the context—using the frame rule, discussed in
+the previous section. Given a context that is equivalent to <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">**</span>
+<span class="pre">q</span></code>, if <code class="docutils literal notranslate"><span class="pre">p</span></code> is sufficient to prove <code class="docutils literal notranslate"><span class="pre">goal</span></code>, then <code class="docutils literal notranslate"><span class="pre">p</span></code> is
+called <em>the support</em> for <code class="docutils literal notranslate"><span class="pre">goal</span></code>, while <code class="docutils literal notranslate"><span class="pre">q</span></code> is the <em>frame</em>.</p></li>
+<li><p>Like F*, Pulse tries to instantiate implicit arguments
+automatically, e.g., at the second call to <code class="docutils literal notranslate"><span class="pre">add</span></code>, Pulse
+automatically instantiates <code class="docutils literal notranslate"><span class="pre">'v</span></code> to <code class="docutils literal notranslate"><span class="pre">v2</span></code>.</p></li>
+<li><p>Pulse automatically moves any <code class="docutils literal notranslate"><span class="pre">pure</span> <span class="pre">p</span></code> property in the <code class="docutils literal notranslate"><span class="pre">slprop</span></code>
+context to a <code class="docutils literal notranslate"><span class="pre">squash</span> <span class="pre">p</span></code> hypothesis in the typing
+environment. Pulse also proves <code class="docutils literal notranslate"><span class="pre">pure</span></code> properties automatically,
+by sending queries to the SMT solver, which can make use of the
+hypothesis in the typing environment only.</p></li>
+<li><p>Pulse also uses the SMT solver to convert <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">r</span> <span class="pre">(v2</span> <span class="pre">+</span> <span class="pre">v2)</span></code>
+to <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">r</span> <span class="pre">(4</span> <span class="pre">*</span> <span class="pre">'v)</span></code>.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="fractional-permissions">
+<h3>Fractional Permissions<a class="headerlink" href="#fractional-permissions" title="Link to this heading"></a></h3>
+<p>Pulse distinguishes read-only references from read/write
+references. As in languages like Rust, Pulse ensures that there can be
+at most one thread that holds read/write permission to a reference,
+although many threads can share read-only references. This ensures
+that Pulse programs are free of data races. At a more abstract level,
+Pulse’s permission system ensures that one can reason locally about
+the contents of memory, since if one holds read/write permission to a
+reference, one can be sure that its contents cannot be changed by some
+part of the program.</p>
+<p>To implement this permission discipline, Pulse uses a system of
+fractional permissions, an idea due to <a class="reference external" href="https://link.springer.com/chapter/10.1007/3-540-44898-5_4">John Boyland</a>.  In
+particular, the <code class="docutils literal notranslate"><span class="pre">pts_to</span></code> predicate that we have been using actually
+has an additional implicit arguments that describes how much
+permission one holds on a reference.</p>
+<p>The full type of the <code class="docutils literal notranslate"><span class="pre">pts_to</span></code> predicate is shown below:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> pts_to (#a:Type u#0) (r:ref a) (#p:perm) (v:a) : slprop
+</pre></div>
+</div>
+<p>We have so far been writing <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">r</span> <span class="pre">v</span></code> instead of <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">#a</span> <span class="pre">r</span> <span class="pre">#p</span>
+<span class="pre">v</span></code>. Usually, one does not need to write the first argument <code class="docutils literal notranslate"><span class="pre">#a</span></code>
+since it is computed by type inference; the <code class="docutils literal notranslate"><span class="pre">#p:perm</span></code> argument is
+more interesting—when omitted, it defaults to the value
+<code class="docutils literal notranslate"><span class="pre">1.0R</span></code>. The type <code class="docutils literal notranslate"><span class="pre">perm</span></code> (defined in
+<code class="docutils literal notranslate"><span class="pre">PulseCore.FractionalPermission</span></code>) is a real number strictly greater than
+<code class="docutils literal notranslate"><span class="pre">0.0R</span></code> and less than or equal to <code class="docutils literal notranslate"><span class="pre">1.0R</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">r</span> <span class="pre">#1.0R</span> <span class="pre">v</span></code> represents exclusive, read/write
+permission on a reference. Revisiting the <code class="docutils literal notranslate"><span class="pre">assign</span></code> function from
+previously, we can write down the permissions explicitly.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> assign_full_perm u#a (#a:Type u#a) (r:ref a) (v:a)
+<span class="k">requires</span> pts_to r #1.0R &#39;v
+<span class="k">ensures</span> pts_to r #1.0R v
+{
+    r := v;
+}
+</pre></div>
+</div>
+<p>In contrast, when reading a reference, any permission <code class="docutils literal notranslate"><span class="pre">p</span></code> will do,
+as shown below:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> value_of_perm u#a (#a: Type u#a) #p (r:ref a)
+preserves pts_to r #p &#39;v
+<span class="k">returns</span> v:a
+<span class="k">ensures</span> pure (v == &#39;v)
+{
+    !r;
+}
+</pre></div>
+</div>
+<p>If we try to write to a reference without holding full permission on
+it, Pulse rejects the program, as shown below.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span>[@@expect_failure [19]]
+
+<span class="k">fn</span> assign_perm u#a (#a: Type u#a) #p (r:ref a) (v:a) (#w:erased a)
+preserves pts_to r #p w
+{
+    r := v;
+}
+</pre></div>
+</div>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span>- Cannot prove:
+    pts_to #a r #1.0R (reveal #a <span class="k">_</span>)
+- In the context:
+    pts_to #a r #p (reveal #a w)
+</pre></div>
+</div>
+<p>The full error message requires the F* option <code class="docutils literal notranslate"><span class="pre">--print_implicits</span></code>.</p>
+<p>The functions <code class="docutils literal notranslate"><span class="pre">share</span></code> and <code class="docutils literal notranslate"><span class="pre">gather</span></code> allow one to divide and combine
+permissions on references, as shown below.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> share_ref u#a (#a: Type u#a) #p (r:ref a)
+<span class="k">requires</span> pts_to r #p &#39;v
+<span class="k">ensures</span> pts_to r #(p /. 2.0R) &#39;v
+<span class="k">ensures</span> pts_to r #(p /. 2.0R) &#39;v
+{
+    share r;
+}
+</pre></div>
+</div>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> gather_ref u#a (#a: Type u#a) (#p:perm) (r:ref a)
+<span class="k">requires</span>
+    pts_to r #(p /. 2.0R) &#39;v0 **
+    pts_to r #(p /. 2.0R) &#39;v1
+<span class="k">ensures</span>
+    pts_to r #p &#39;v0 **
+    pure (&#39;v0 == &#39;v1)
+{
+    gather r
+}
+</pre></div>
+</div>
+<p>The type of <code class="docutils literal notranslate"><span class="pre">gather_ref</span></code> has an additional interesting element: its
+postcondition proves that <code class="docutils literal notranslate"><span class="pre">'v0</span> <span class="pre">==</span> <span class="pre">'v1</span></code>. That is, since <code class="docutils literal notranslate"><span class="pre">x</span></code> can
+point to at most one value, given two separate points-to assertions
+about <code class="docutils literal notranslate"><span class="pre">x</span></code>, allows one to conclude that the pointed-to witnesses are
+identical.</p>
+</section>
+</section>
+<section id="stack-references">
+<h2>Stack references<a class="headerlink" href="#stack-references" title="Link to this heading"></a></h2>
+<section id="let-mut-creates-a-new-stack-ref">
+<h3><code class="docutils literal notranslate"><span class="pre">let</span> <span class="pre">mut</span></code> creates a new stack ref<a class="headerlink" href="#let-mut-creates-a-new-stack-ref" title="Link to this heading"></a></h3>
+<p>To create a new <code class="docutils literal notranslate"><span class="pre">ref</span> <span class="pre">t</span></code>, one uses the <code class="docutils literal notranslate"><span class="pre">let</span> <span class="pre">mut</span></code> construct of
+Pulse, as shown below.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> one ()
+<span class="k">returns</span> v:int
+<span class="k">ensures</span> pure (v == 1)
+{
+                   <span class="c">//     .     |- emp</span>
+    <span class="k">let</span> <span class="k">mut</span> i = 0; <span class="c">// i:ref int |- pts_to i 0</span>
+    incr i;        <span class="c">// i:ref int |- pts_to i (0 + 1)</span>
+    !i             <span class="c">//      .    |- v:int. emp ** pure (v == 1) </span>
+
+}
+</pre></div>
+</div>
+<p>The body of the program is annotated to show program assertions that
+are true after each command.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Initially, only the precondition <code class="docutils literal notranslate"><span class="pre">emp</span></code> is valid.</p></li>
+<li><p>After <code class="docutils literal notranslate"><span class="pre">let</span> <span class="pre">mut</span> <span class="pre">i</span> <span class="pre">=</span> <span class="pre">0</span></code>, we have <code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">:</span> <span class="pre">ref</span> <span class="pre">int</span></code> and <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">i</span>
+<span class="pre">0</span></code>, meaning that <code class="docutils literal notranslate"><span class="pre">i</span></code> points to a stack slot that holds the
+value <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p></li>
+<li><p>After calling <code class="docutils literal notranslate"><span class="pre">incr</span> <span class="pre">i</span></code>, we have <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">i</span> <span class="pre">(0</span> <span class="pre">+</span> <span class="pre">1)</span></code></p></li>
+<li><p>Finally, we dereference <code class="docutils literal notranslate"><span class="pre">i</span></code> using <code class="docutils literal notranslate"><span class="pre">!i</span></code> and return <code class="docutils literal notranslate"><span class="pre">v:int</span></code>
+the current value of <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p></li>
+<li><p>At the point where the scope of a <code class="docutils literal notranslate"><span class="pre">let</span> <span class="pre">mut</span> <span class="pre">x</span></code> ends, the Pulse
+checker requires that the context contains <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">x</span> <span class="pre">#1.0R</span>
+<span class="pre">_v</span></code> for some value <code class="docutils literal notranslate"><span class="pre">_v</span></code>. This ensures that the code cannot
+squirrel away a permission to the soon-to-be out-of-scope
+reference in some other permission. Once the scope ends, and the
+memory it points to is reclaimed, and the <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">x</span> <span class="pre">#1.0R</span>
+<span class="pre">_v</span></code> is consumed.</p></li>
+</ul>
+</div></blockquote>
+<p>A few additional points to note here:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Pulse proves <code class="docutils literal notranslate"><span class="pre">pure</span></code> properties automatically, by sending queries
+to the SMT solver.</p></li>
+<li><p>Pulse simplifies <code class="docutils literal notranslate"><span class="pre">slprop</span></code> implicitly, e.g., Pulse will
+automatically rewrite <code class="docutils literal notranslate"><span class="pre">emp</span> <span class="pre">**</span> <span class="pre">p</span></code> to <code class="docutils literal notranslate"><span class="pre">p</span></code>.</p></li>
+<li><p>Like F*, Pulse tries to instantiate implicit arguments
+automatically, e.g., at the call to <code class="docutils literal notranslate"><span class="pre">incr</span></code>, Pulse automatically
+instantiates <code class="docutils literal notranslate"><span class="pre">'v</span></code> to <code class="docutils literal notranslate"><span class="pre">0</span></code> (actually, to <code class="docutils literal notranslate"><span class="pre">hide</span> <span class="pre">0</span></code>).</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="stack-references-are-scoped-and-implicitly-reclaimed">
+<h3>Stack references are scoped and implicitly reclaimed<a class="headerlink" href="#stack-references-are-scoped-and-implicitly-reclaimed" title="Link to this heading"></a></h3>
+<p>To emphasize that stack references allocated with <code class="docutils literal notranslate"><span class="pre">let</span> <span class="pre">mut</span></code> are
+scoped, let’s look at the program below that Pulse refuses to check:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> refs_are_scoped ()
+<span class="k">returns</span> s:ref int
+<span class="k">ensures</span> pts_to s 0
+{
+    <span class="k">let</span> <span class="k">mut</span> s = 0;
+    s
+}
+</pre></div>
+</div>
+<p>The error points to the location of <code class="docutils literal notranslate"><span class="pre">s</span></code> with the message below,
+meaning that the current assertion on the heap is only <code class="docutils literal notranslate"><span class="pre">emp</span></code>, while
+the goal to be proven for the postcondition is <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">s</span> <span class="pre">0</span></code>. In
+other words, we no longer have ownership on <code class="docutils literal notranslate"><span class="pre">s</span></code> once it goes out of
+scope.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span>- Cannot prove:
+    pts_to s 0
+- In the context:
+    emp
+</pre></div>
+</div>
+</section>
+</section>
+<section id="heap-references">
+<h2>Heap references<a class="headerlink" href="#heap-references" title="Link to this heading"></a></h2>
+<p>The type <code class="docutils literal notranslate"><span class="pre">Pulse.Lib.Box.box</span> <span class="pre">t</span></code> is the type of heap references—the
+name is meant to evoke Rust’s type of heap references, <code class="docutils literal notranslate"><span class="pre">Box&lt;T&gt;</span></code>. We
+use the module alias <code class="docutils literal notranslate"><span class="pre">Box</span></code> in what follows:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">module</span> Box = Pulse.Lib.Box
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">Box</span></code> module provides most of the same predicates and functions
+that we have with regular references, including <code class="docutils literal notranslate"><span class="pre">pts_to</span></code>, <code class="docutils literal notranslate"><span class="pre">(!)</span></code>,
+<code class="docutils literal notranslate"><span class="pre">(:=)</span></code>, <code class="docutils literal notranslate"><span class="pre">share</span></code>, and <code class="docutils literal notranslate"><span class="pre">gather</span></code>. Additionally, heap references are
+explicitly allocated using <code class="docutils literal notranslate"><span class="pre">alloc</span></code> and deallocated using <code class="docutils literal notranslate"><span class="pre">free</span></code>,
+as shown below.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> new_heap_ref (#a:Type) (v:a)
+<span class="k">returns</span> r:Box.box a
+<span class="k">ensures</span> Box.pts_to r v
+{
+    Box.alloc v
+}
+</pre></div>
+</div>
+<p>Note, we can return a freshly allocated heap reference from a
+function, unlike a <code class="docutils literal notranslate"><span class="pre">let</span> <span class="pre">mut</span></code> scoped, stack-allocated reference.</p>
+<p>In the following example, we use <code class="docutils literal notranslate"><span class="pre">open</span> <span class="pre">Box;</span></code> to open the namespace
+<code class="docutils literal notranslate"><span class="pre">Box</span></code> in the following scope.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> last_value_of #a (r:Box.box a)
+<span class="k">requires</span> Box.pts_to r &#39;v
+<span class="k">returns</span> v:a
+<span class="k">ensures</span> pure (v == &#39;v)
+{
+    <span class="k">open</span> Box;
+    <span class="k">let</span> v = !r;
+    free r;
+    v
+}
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">box</span> <span class="pre">t</span></code> references can be demoted to regular <code class="docutils literal notranslate"><span class="pre">ref</span> <span class="pre">t</span></code> references
+for code reuse. For example, in the code below, we increment the
+contents of <code class="docutils literal notranslate"><span class="pre">r:box</span> <span class="pre">int</span></code> by first calling <code class="docutils literal notranslate"><span class="pre">Box.to_ref_pts_to</span></code> to
+convert <code class="docutils literal notranslate"><span class="pre">Box.pts_to</span> <span class="pre">r</span> <span class="pre">'v</span></code> to a regular <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">(box_to_ref</span> <span class="pre">r)</span> <span class="pre">'v</span></code>;
+then calling <code class="docutils literal notranslate"><span class="pre">incr</span> <span class="pre">(box_to_ref</span> <span class="pre">r)</span></code>; and then converting back to a
+<code class="docutils literal notranslate"><span class="pre">Box.pts_to</span></code>.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> incr_box (r:Box.box int)
+<span class="k">requires</span> Box.pts_to r &#39;v
+<span class="k">ensures</span> Box.pts_to r (&#39;v + 1)
+{
+    Box.to_ref_pts_to r;     <span class="c">//Box.pts_to (box_to_ref r) &#39;v</span>
+    incr (Box.box_to_ref r); <span class="c">//pts_to (box_to_ref r) (&#39;v + 1)</span>
+    Box.to_box_pts_to r      <span class="c">//Box.pts_to r (&#39;v + 1)</span>
+}
+</pre></div>
+</div>
+<p>Finally, unlike Rust’s <code class="docutils literal notranslate"><span class="pre">Box&lt;T&gt;</span></code> type, which is always treated
+linearly (i.e., in Rust, one always holds exclusive read/write
+permission on a ` <code class="docutils literal notranslate"><span class="pre">Box&lt;T&gt;</span></code>), in Pulse, <code class="docutils literal notranslate"><span class="pre">Box.pts_to</span> <span class="pre">r</span> <span class="pre">#p</span> <span class="pre">v</span></code> has an
+implicit fractional permission as with regular references.</p>
+</section>
+<section id="ghost-references">
+<h2>Ghost references<a class="headerlink" href="#ghost-references" title="Link to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pulse_ch1.html" class="btn btn-neutral float-left" title="Pulse Basics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pulse_existentials.html" class="btn btn-neutral float-right" title="Existential Quantification" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

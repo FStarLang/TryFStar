@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Loops &amp; Recursion &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Mutable Arrays" href="pulse_arrays.html" />
+    <link rel="prev" title="Conditionals" href="pulse_conditionals.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pulse_getting_started.html">Getting up and running with Codespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ch1.html">Pulse Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ch2.html">Mutable References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_existentials.html">Existential Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_user_defined_predicates.html">User-defined Predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_conditionals.html">Conditionals</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Loops &amp; Recursion</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#while-loops-general-form">While loops: General form</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#countdown">Countdown</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#partial-correctness">Partial correctness</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#multiply-by-repeated-addition">Multiply by repeated addition</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#summing-the-first-n-numbers">Summing the first <code class="docutils literal notranslate"><span class="pre">N</span></code> numbers</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#recursion">Recursion</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_arrays.html">Mutable Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ghost.html">Ghost Computations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_higher_order.html">Higher Order Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_implication_and_forall.html">Implication and Universal Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_linked_list.html">Linked Lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_atomics_and_invariants.html">Atomic Operations and Invariants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_spin_lock.html">Spin Locks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_parallel_increment.html">Parallel Increment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_extraction.html">Extraction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+      <li class="breadcrumb-item active">Loops &amp; Recursion</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="loops-recursion">
+<span id="pulse-loops"></span><h1>Loops &amp; Recursion<a class="headerlink" href="#loops-recursion" title="Link to this heading"></a></h1>
+<p>In this chapter, we’ll see how various looping constructs work in
+Pulse, starting with <code class="docutils literal notranslate"><span class="pre">while</span></code> and also recursive functions.</p>
+<p>By default, Pulse’s logic is designed for partial correctness. This
+means that programs are allowed to loop forever. When we say that
+program returns <code class="docutils literal notranslate"><span class="pre">v:t</span></code> satisfying a postcondition <code class="docutils literal notranslate"><span class="pre">p</span></code>, this should
+be understood to mean that the program could loop forever, but if it
+does return, it is guaranteed to return a <code class="docutils literal notranslate"><span class="pre">v:t</span></code> where the state
+satisfies <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">v</span></code>.</p>
+<section id="while-loops-general-form">
+<h2>While loops: General form<a class="headerlink" href="#while-loops-general-form" title="Link to this heading"></a></h2>
+<p>The form of a while loop is:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">while</span> ( guard )
+<span class="k">invariant</span> (b:bool). p
+{ body }
+</pre></div>
+</div>
+<p>Where</p>
+<blockquote>
+<div><ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">guard</span></code> is a Pulse program that returns a <code class="docutils literal notranslate"><span class="pre">b:bool</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">body</span></code> is a Pulse program that returns <code class="docutils literal notranslate"><span class="pre">unit</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">invariant</span> <span class="pre">(b:bool).</span> <span class="pre">p</span></code> is an invariant where</p>
+<ul>
+<li><p><code class="docutils literal notranslate"><span class="pre">exists*</span> <span class="pre">b.</span> <span class="pre">p</span></code> must be provable before the loop is entered and as a postcondition of <code class="docutils literal notranslate"><span class="pre">body</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">exists*</span> <span class="pre">b.</span> <span class="pre">p</span></code> is the precondition of the guard, and <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">b</span></code>
+is its postcondition, i.e., the <code class="docutils literal notranslate"><span class="pre">guard</span></code> must satisfy:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">requires</span> <span class="k">exists</span>* b. p
+<span class="k">returns</span> b:bool
+<span class="k">ensures</span> p
+</pre></div>
+</div>
+</li>
+<li><p>the postcondition of the entire loop is <code class="docutils literal notranslate"><span class="pre">invariant</span> <span class="pre">false</span></code>.</p></li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+<p>One way to understand the invariant is that it describes program
+assertions at three different program points.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>When <code class="docutils literal notranslate"><span class="pre">b==true</span></code>, the invariant describes the program state at the
+start of the loop body;</p></li>
+<li><p>when <code class="docutils literal notranslate"><span class="pre">b==false</span></code>, the invariant describes the state at the end of
+the loop;</p></li>
+<li><p>when <code class="docutils literal notranslate"><span class="pre">b</span></code> is undetermined, the invariant describes the property
+of the program state just before the guard is (re)executed, i.e.,
+at the entry to the loop and at the end of loop body.</p></li>
+</ul>
+</div></blockquote>
+<p>Coming up with an invariant to describe a loop often requires some
+careful thinking. We’ll see many examples in the remaining chapters,
+starting with some simple loops here.</p>
+<section id="countdown">
+<h3>Countdown<a class="headerlink" href="#countdown" title="Link to this heading"></a></h3>
+<p>Here’s our first Pulse program with a loop: <code class="docutils literal notranslate"><span class="pre">count_down</span></code> repeatedly
+decrements a reference until it reaches <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> count_down (x:ref nat)
+<span class="k">requires</span> R.pts_to x &#39;v
+<span class="k">ensures</span>  R.pts_to x 0
+{
+    <span class="k">while</span> (<span class="k">true</span>)
+        <span class="k">invariant</span> live x
+        <span class="k">ensures</span> (!x == 0)
+    {
+        <span class="k">if</span> (!x = 0) {
+            break;
+        } <span class="k">else</span> {
+            x := !x - 1;
+        }
+    }
+}
+</pre></div>
+</div>
+<p>While loops in Pulse are perhaps a bit more general than in other
+languages. The <code class="docutils literal notranslate"><span class="pre">guard</span></code> is an arbitrary Pulse program, not just a
+program that reads some local variables. For example, here’s another
+version of <code class="docutils literal notranslate"><span class="pre">count_down</span></code> where the <code class="docutils literal notranslate"><span class="pre">guard</span></code> does all the work and
+the loop body is empty, and we don’t need an auxiliary <code class="docutils literal notranslate"><span class="pre">keep_going</span></code>
+variable.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> count_down3 (x:ref nat)
+<span class="k">requires</span> R.pts_to x &#39;v
+<span class="k">ensures</span>  R.pts_to x 0
+{
+    <span class="k">while</span> (
+        <span class="k">let</span> n = !x;
+        <span class="k">if</span> (n = 0)
+        {
+            <span class="k">false</span>
+        } 
+        <span class="k">else</span>
+        {
+            x := n - 1;
+            <span class="k">true</span>
+        }
+    )
+    <span class="k">invariant</span>
+      <span class="k">exists</span>* (v:nat). pts_to x v
+    { () }
+}
+</pre></div>
+</div>
+</section>
+<section id="partial-correctness">
+<h3>Partial correctness<a class="headerlink" href="#partial-correctness" title="Link to this heading"></a></h3>
+<p>The partial correctness interpretation means that the following
+infinitely looping variant of our program is also accepted:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> count_down_loopy (x:ref nat)
+<span class="k">requires</span> R.pts_to x &#39;v
+<span class="k">ensures</span>  R.pts_to x 0
+{
+    <span class="k">while</span> (
+        <span class="k">let</span> n = !x;
+        <span class="k">if</span> (n = 0)
+        {
+            <span class="k">false</span>
+        }
+        <span class="k">else</span>
+        {
+            x := n + 1;
+            <span class="k">true</span>
+        }
+    )
+    <span class="k">invariant</span> <span class="k">exists</span>* v. R.pts_to x v
+    { () }
+}
+</pre></div>
+</div>
+<p>This program increments instead of decrementing <code class="docutils literal notranslate"><span class="pre">x</span></code>, but it still
+satisfies the same invariant as before, since it always loops forever.</p>
+<p>We do have a fragment of the Pulse logic, notably the logic of
+<code class="docutils literal notranslate"><span class="pre">ghost</span></code> and <code class="docutils literal notranslate"><span class="pre">atomic</span></code> computations that is guaranteed to always
+terminate. We plan to also support a version of the Pulse logic for
+general purpose sequential programs (i.e., no concurrency) that is
+also terminating.</p>
+</section>
+<section id="multiply-by-repeated-addition">
+<h3>Multiply by repeated addition<a class="headerlink" href="#multiply-by-repeated-addition" title="Link to this heading"></a></h3>
+<p>Our next program with a loop multiplies two natural numbers <code class="docutils literal notranslate"><span class="pre">x,</span> <span class="pre">y</span></code>
+by repeatedly adding <code class="docutils literal notranslate"><span class="pre">y</span></code> to an accumulator <code class="docutils literal notranslate"><span class="pre">x</span></code> times.  This
+program has a bit of history: A 1949 paper by Alan Turing titled
+<a class="reference external" href="https://turingarchive.kings.cam.ac.uk/checking-large-routine">“Checking a Large Routine”</a> is
+often cited as the first paper about proving the correctness of a
+computer program. The program that Turing describes is one that
+implements multiplication by repeated addition.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> multiply_by_repeated_addition (x y:nat)
+    <span class="k">returns</span> z:nat
+    <span class="k">ensures</span> pure (z == x * y)
+{
+    <span class="k">let</span> <span class="k">mut</span> ctr : nat = 0;
+    <span class="k">let</span> <span class="k">mut</span> acc : nat = 0;
+    <span class="k">while</span> ( (!ctr &lt; x) )
+    <span class="k">invariant</span> 
+    <span class="k">exists</span>* (c a : nat).
+        R.pts_to ctr c **
+        R.pts_to acc a **
+        pure (c &lt;= x /\
+              a == (c * y))
+    {
+        <span class="k">let</span> a = !acc;
+        acc := a + y;
+        <span class="k">let</span> c = !ctr;
+        ctr := c + 1;
+    };
+    !acc
+}
+</pre></div>
+</div>
+<p>A few noteworthy points:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Both the counter <code class="docutils literal notranslate"><span class="pre">ctr</span></code> and the accumulator <code class="docutils literal notranslate"><span class="pre">acc</span></code> are declared
+<code class="docutils literal notranslate"><span class="pre">nat</span></code>, which implicitly, by refinement typing, provides an
+invariant that they are both always at least <code class="docutils literal notranslate"><span class="pre">0</span></code>. This
+illustrates how Pulse provides a separation logic on top of F*’s
+existing dependent type system.</p></li>
+<li><p>The invariant says that the counter never exceeds <code class="docutils literal notranslate"><span class="pre">x</span></code>; the
+accumulator is always the product of counter and <code class="docutils literal notranslate"><span class="pre">y</span></code>; and the
+loop continues so long as the counter is strictly less than <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="summing-the-first-n-numbers">
+<h3>Summing the first <code class="docutils literal notranslate"><span class="pre">N</span></code> numbers<a class="headerlink" href="#summing-the-first-n-numbers" title="Link to this heading"></a></h3>
+<p>This next example shows a Pulse program that sums the first <code class="docutils literal notranslate"><span class="pre">n</span></code>
+natural numbers. It illustrates how Pulse programs can be developed along
+with pure F* specifications and lemmas.</p>
+<p>We start with a specification of <code class="docutils literal notranslate"><span class="pre">sum</span></code>, a simple recursive function
+in F* along with a lemma that proves the well-known identity about
+this sum.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> sum (n:nat)
+: nat
+= <span class="k">if</span> n = 0 <span class="k">then</span> 0 <span class="k">else</span> n + sum (n - 1)
+
+#push-options &quot;--z3rlimit 20&quot;
+<span class="k">noextract</span>
+<span class="k">let</span> <span class="k">rec</span> sum_lemma (n:nat)
+: <span class="k">Lemma</span> (sum n == n * (n + 1) / 2)
+= <span class="k">if</span> n = 0 <span class="k">then</span> ()
+  <span class="k">else</span> sum_lemma (n - 1)
+#pop-options
+</pre></div>
+</div>
+<p>Now, let’s say we want to implement <code class="docutils literal notranslate"><span class="pre">isum</span></code>, an iterative version of
+<code class="docutils literal notranslate"><span class="pre">sum</span></code>, and prove that it satisfies the identity proven by
+<code class="docutils literal notranslate"><span class="pre">sum_lemma</span></code>.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span>#push-options &quot;--z3cliopt &#39;smt.arith.nl=<span class="k">false</span>&#39;&quot;
+<span class="k">noextract</span>
+
+<span class="k">fn</span> isum (n:nat)
+<span class="k">returns</span> z:nat
+<span class="k">ensures</span> pure ((n * (n + 1) / 2) == z)
+{
+    <span class="k">let</span> <span class="k">mut</span> acc : nat = 0;
+    <span class="k">let</span> <span class="k">mut</span> ctr : nat = 0;
+    <span class="k">while</span> ( (!ctr &lt; n ) )
+    <span class="k">invariant</span> 
+    <span class="k">exists</span>* (c a : nat).
+        R.pts_to ctr c **
+        R.pts_to acc a **
+        pure (c &lt;= n /\
+              a == sum c)
+    {
+        <span class="k">let</span> a = !acc;
+        <span class="k">let</span> c = !ctr;
+        ctr := c + 1;
+        acc := a + c + 1;
+    };
+    sum_lemma n; <span class="c">//call an F* lemma inside Pulse</span>
+    !acc;
+}
+#pop-options
+</pre></div>
+</div>
+<p>This program is quite similar to <code class="docutils literal notranslate"><span class="pre">multiply_by_repeated_addition</span></code>,
+but with a couple of differences:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The invariant says that the current value of the accumulator holds
+the sum of the first <code class="docutils literal notranslate"><span class="pre">c</span></code> numbers, i.e., we prove that the
+loop refines the recursive implementation of <code class="docutils literal notranslate"><span class="pre">sum</span></code>, without
+relying on any properties of non-linear arithmetic—notice, we
+have disabled non-linear arithmetic in Z3 with a pragma.</p></li>
+<li><p>Finally, to prove the identity we’re after, we just call the F*
+<code class="docutils literal notranslate"><span class="pre">sum_lemma</span></code> that has already been proven from within Pulse, and
+the proof is concluded.</p></li>
+</ul>
+</div></blockquote>
+<p>The program is a bit artificial, but hopefully it illustrates how
+Pulse programs can be shown to first refine a pure F* function, and
+then to rely on mathematical reasoning on those pure functions to
+conclude properties about the Pulse program itself.</p>
+</section>
+</section>
+<section id="recursion">
+<h2>Recursion<a class="headerlink" href="#recursion" title="Link to this heading"></a></h2>
+<p>Pulse also supports general recursion, i.e., recursive functions that
+may not terminate. Here is a simple example—we’ll see more examples
+later.</p>
+<p>Let’s start with a standard F* (doubly) recursive definition that
+computes the nth Fibonacci number.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> fib (n:nat) : nat =
+  <span class="k">if</span> n &lt;= 1 <span class="k">then</span> 1
+  <span class="k">else</span> fib (n - 1) + fib (n - 2)
+</pre></div>
+</div>
+<p>One can also implement it in Pulse, as <code class="docutils literal notranslate"><span class="pre">fib_rec</span></code> while using an
+out-parameter to hold that values of the last two Fibonacci numbers in
+the sequence.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> <span class="k">rec</span> fib_rec (n:pos) (out:ref (nat &amp; nat))
+<span class="k">requires</span>
+    pts_to out &#39;v
+<span class="k">ensures</span>
+    <span class="k">exists</span>* v.
+        pts_to out v **
+        pure (
+          fst v == fib (n - 1) /\
+          snd v == fib n 
+        )
+{
+  <span class="k">if</span> (n = 1)
+  {
+    <span class="c">//type inference in Pulse doesn&#39;t work well here:</span>
+    <span class="c">//it picks (1, 1) to have type (int &amp; int)</span>
+    <span class="c">//so we have to annotate</span>
+    out := ((1 &lt;: nat), (1 &lt;: nat)); 
+  }
+  <span class="k">else</span>
+  {
+    fib_rec (n - 1) out;
+    <span class="k">let</span> v = !out;
+    out := (snd v, fst v + snd v);
+  }
+}
+</pre></div>
+</div>
+<p>Some points to note here:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Recursive definitions in Pulse are introduced with <code class="docutils literal notranslate"><span class="pre">fn</span> <span class="pre">rec</span></code>.</p></li>
+<li><p>So that we can easily memoize the last two values of <code class="docutils literal notranslate"><span class="pre">fib</span></code>, we
+expect the argument <code class="docutils literal notranslate"><span class="pre">n</span></code> to be a positive number, rather than
+also allowing <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p></li>
+<li><p>A quirk shown in the comments: We need an additional type
+annotation to properly type <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">1)</span></code> as a pair of nats.</p></li>
+</ul>
+</div></blockquote>
+<p>Of course, one can also define fibonacci iteratively, with a while
+loop, as shown below.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> fib_loop (k:pos)
+  <span class="k">returns</span> r:nat
+  <span class="k">ensures</span> pure (r == fib k)
+{
+  <span class="k">let</span> <span class="k">mut</span> i : nat = 1;
+  <span class="k">let</span> <span class="k">mut</span> j : nat = 1;
+  <span class="k">let</span> <span class="k">mut</span> ctr : nat = 1;
+  <span class="k">while</span> (!ctr &lt; k)
+  <span class="k">invariant</span>
+    <span class="k">exists</span>* (vi vj vctr : nat).
+        R.pts_to i vi **
+        R.pts_to j vj **
+        R.pts_to ctr vctr **
+        pure (
+            1 &lt;= vctr /\
+            vctr &lt;= k /\
+            vi == fib (vctr - 1) /\
+            vj == fib vctr) 
+  {
+      <span class="k">let</span> vi = !i;
+      <span class="k">let</span> vj = !j;
+      <span class="k">let</span> c = !ctr;
+      ctr := c + 1;
+      i := vj;
+      j := vi + vj;
+  };
+  !j
+}
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pulse_conditionals.html" class="btn btn-neutral float-left" title="Conditionals" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pulse_arrays.html" class="btn btn-neutral float-right" title="Mutable Arrays" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

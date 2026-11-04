@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Conditionals &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Loops &amp; Recursion" href="pulse_loops.html" />
+    <link rel="prev" title="User-defined Predicates" href="pulse_user_defined_predicates.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pulse_getting_started.html">Getting up and running with Codespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ch1.html">Pulse Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ch2.html">Mutable References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_existentials.html">Existential Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_user_defined_predicates.html">User-defined Predicates</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Conditionals</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#a-simple-branching-program-max">A Simple Branching Program: Max</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#limitation-non-tail-conditionals">Limitation: Non-tail Conditionals</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#pattern-matching-with-nullable-references">Pattern matching with nullable references</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#representation-predicate">Representation predicate</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#reading-a-nullable-ref">Reading a nullable ref</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#helpers">Helpers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#writing-a-nullable-reference">Writing a nullable reference</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_loops.html">Loops &amp; Recursion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_arrays.html">Mutable Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ghost.html">Ghost Computations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_higher_order.html">Higher Order Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_implication_and_forall.html">Implication and Universal Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_linked_list.html">Linked Lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_atomics_and_invariants.html">Atomic Operations and Invariants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_spin_lock.html">Spin Locks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_parallel_increment.html">Parallel Increment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_extraction.html">Extraction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+      <li class="breadcrumb-item active">Conditionals</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="conditionals">
+<span id="pulse-conditionals"></span><h1>Conditionals<a class="headerlink" href="#conditionals" title="Link to this heading"></a></h1>
+<p>To start writing interesting programs, we need a few control
+constructs. In this chapter, we’ll write some programs with branches
+of two kinds: <code class="docutils literal notranslate"><span class="pre">if/else</span></code> and <code class="docutils literal notranslate"><span class="pre">match</span></code>.</p>
+<section id="a-simple-branching-program-max">
+<h2>A Simple Branching Program: Max<a class="headerlink" href="#a-simple-branching-program-max" title="Link to this heading"></a></h2>
+<p>Here’s a simple program that returns the maximum value stored in two
+references.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> max_spec x y = <span class="k">if</span> x &lt; y <span class="k">then</span> y <span class="k">else</span> x
+
+<span class="k">fn</span> max #p #q (x y:ref int)
+preserves pts_to x #p &#39;vx
+<span class="k">requires</span> pts_to y #q &#39;vy
+<span class="k">returns</span> n:int
+<span class="k">ensures</span> pts_to y #q &#39;vy
+        ** pure (n == max_spec &#39;vx &#39;vy)
+{
+    <span class="k">let</span> vx = !x;
+    <span class="k">let</span> vy = !y;
+    <span class="k">if</span> (vx &gt; vy)
+    {
+        vx
+    }
+    <span class="k">else</span>
+    {
+        vy
+    }
+}
+</pre></div>
+</div>
+<p>This program illustrates a very common specification style.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>We have a pure, F* function <code class="docutils literal notranslate"><span class="pre">max_spec</span></code></p></li>
+<li><p>And a Pulse function working on mutable references, with a
+specification that relates it to the pure F* spec. In this case,
+we prove that <code class="docutils literal notranslate"><span class="pre">max</span></code> behaves like <code class="docutils literal notranslate"><span class="pre">max_spec</span></code> on the logical
+values that witness the contents of the two references.</p></li>
+</ul>
+</div></blockquote>
+<p>The implementation of <code class="docutils literal notranslate"><span class="pre">max</span></code> uses a Pulse conditional statement. Its
+syntax is different from the F* <code class="docutils literal notranslate"><span class="pre">if-then-else</span></code> expression: Pulse
+uses a more imperative syntax with curly braces, which should be
+familiar from languages like C.</p>
+<section id="limitation-non-tail-conditionals">
+<h3>Limitation: Non-tail Conditionals<a class="headerlink" href="#limitation-non-tail-conditionals" title="Link to this heading"></a></h3>
+<p>Pulse’s inference machinery does not yet support conditionals that
+appear in non-tail position. For example, this variant of <code class="docutils literal notranslate"><span class="pre">max</span></code>
+fails, with the error message shown below.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> max_alt #p #q (x y:ref int)
+preserves pts_to x #p &#39;vx
+<span class="k">requires</span> pts_to y #q &#39;vy
+<span class="k">returns</span> n:int
+<span class="k">ensures</span> pts_to y #q &#39;vy
+        ** pure (n == max_spec &#39;vx &#39;vy)
+{
+    <span class="k">let</span> <span class="k">mut</span> result = 0;
+    <span class="k">let</span> vx = !x;
+    <span class="k">let</span> vy = !y;
+    <span class="k">if</span> (vx &gt; vy)
+    {
+        result := vx;
+    }
+    <span class="k">else</span>
+    {
+        result := vy;
+    };
+    !result;
+}
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Pulse cannot yet infer a postcondition for a non-tail conditional statement;
+Either annotate this `if` with `returns` clause; or rewrite your code to use a tail conditional
+</pre></div>
+</div>
+<p>Here’s an annotated version of <code class="docutils literal notranslate"><span class="pre">max_alt</span></code> that succeeds.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> max_alt2 #p #q (x y:ref int)
+preserves pts_to x #p &#39;vx
+<span class="k">requires</span> pts_to y #q &#39;vy
+<span class="k">returns</span> n:int
+<span class="k">ensures</span> pts_to y #q &#39;vy
+        ** pure (n == max_spec &#39;vx &#39;vy)
+{
+    <span class="k">let</span> <span class="k">mut</span> result = 0;
+    <span class="k">let</span> vx = !x;
+    <span class="k">let</span> vy = !y;
+    <span class="k">if</span> (vx &gt; vy)
+    <span class="k">ensures</span>
+     <span class="k">exists</span>* r.
+       pts_to x #p &#39;vx **
+       pts_to y #q &#39;vy **
+       pts_to result r **
+       pure (r == max_spec &#39;vx &#39;vy)
+    {
+        result := vx;
+    }
+    <span class="k">else</span>
+    {
+        result := vy;
+    };
+    !result;
+}
+</pre></div>
+</div>
+<p>We are working on adding inference for non-tail conditionals.</p>
+</section>
+</section>
+<section id="pattern-matching-with-nullable-references">
+<h2>Pattern matching with nullable references<a class="headerlink" href="#pattern-matching-with-nullable-references" title="Link to this heading"></a></h2>
+<p>To illustrate the use of pattern matching, consider the following
+representation of a possibly null reference.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> nullable_ref (a: Type0) = option (ref a)
+
+<span class="k">let</span> pts_to_or_null #a
+        ([@@@mkey] x:nullable_ref a) 
+        (#[default_arg (`1.0R)] p:perm) <span class="c">//implicit argument with a default</span>
+        (v:option a)
+: slprop
+= <span class="k">match</span> x <span class="k">with</span>
+  | None -&gt; pure (v == None)
+  | Some x -&gt; <span class="k">exists</span>* w. pts_to x #p w ** pure (v == Some w)
+</pre></div>
+</div>
+<section id="representation-predicate">
+<h3>Representation predicate<a class="headerlink" href="#representation-predicate" title="Link to this heading"></a></h3>
+<p>We can represent a nullable ref as just an <code class="docutils literal notranslate"><span class="pre">option</span> <span class="pre">(ref</span> <span class="pre">a)</span></code> coupled
+with a representation predicate, <code class="docutils literal notranslate"><span class="pre">pts_to_or_null</span></code>. A few points to
+note:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The notation <code class="docutils literal notranslate"><span class="pre">(#[default_arg</span> <span class="pre">(\`1.0R)]</span> <span class="pre">p:perm)</span></code> is F*
+syntax for an implicit argument which when omitted defaults to
+<code class="docutils literal notranslate"><span class="pre">1.0R</span></code>—this is exactly how predicates like
+<code class="docutils literal notranslate"><span class="pre">Pulse.Lib.Reference.pts_to</span></code> are defined.</p></li>
+<li><p>The definition is by cases: if the reference <code class="docutils literal notranslate"><span class="pre">x</span></code> is <code class="docutils literal notranslate"><span class="pre">None</span></code>,
+then the logical witness is <code class="docutils literal notranslate"><span class="pre">None</span></code> too.</p></li>
+<li><p>Otherwise, the underlying reference points to some value <code class="docutils literal notranslate"><span class="pre">w</span></code> and
+the logical witness <code class="docutils literal notranslate"><span class="pre">v</span> <span class="pre">==</span> <span class="pre">Some</span> <span class="pre">w</span></code> agrees with that value.</p></li>
+</ul>
+</div></blockquote>
+<p>Note, one might consider defining it this way:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> pts_to_or_null #a
+     (x:nullable_ref a)
+     (#[default_arg (`1.0R)] p:perm)
+     (v:option a)
+: slprop
+= <span class="k">match</span> x <span class="k">with</span>
+  | None -&gt; pure (v == None)
+  | Some x -&gt; pure (Some? v) ** pts_to x #p (Some?.v v)
+</pre></div>
+</div>
+<p>However, unlike F*’s conjunction <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">/\</span> <span class="pre">q</span></code> where the well-typedness
+of <code class="docutils literal notranslate"><span class="pre">q</span></code> can rely on <code class="docutils literal notranslate"><span class="pre">p</span></code>, the <code class="docutils literal notranslate"><span class="pre">**</span></code> operator is not left-biased; so
+<code class="docutils literal notranslate"><span class="pre">(Some?.v</span> <span class="pre">v)</span></code> cannot be proven in this context and the definition is
+rejected.</p>
+<p>Another style might be as follows:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> pts_to_or_null #a
+     (x:nullable_ref a)
+     (#[default_arg (`1.0R)] p:perm)
+     (v:option a)
+: slprop
+= <span class="k">match</span> x, v <span class="k">with</span>
+  | None, None -&gt; emp
+  | Some x, Some w -&gt; pts_to x #p w
+  | <span class="k">_</span> -&gt; pure False
+</pre></div>
+</div>
+<p>This could also work, though it would require handling an additional
+(impossible) case.</p>
+</section>
+<section id="reading-a-nullable-ref">
+<h3>Reading a nullable ref<a class="headerlink" href="#reading-a-nullable-ref" title="Link to this heading"></a></h3>
+<p>Let’s try our first pattern match in Pulse:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> read_nullable #a #p (r:nullable_ref a)
+<span class="k">requires</span> pts_to_or_null r #p &#39;v
+<span class="k">returns</span> o:option a
+<span class="k">ensures</span> pts_to_or_null r #p &#39;v
+        ** pure (&#39;v == o)
+{
+    <span class="k">match</span> r {
+     Some x -&gt; {
+        <span class="k">unfold</span> (pts_to_or_null (Some x) #p &#39;v);
+        <span class="k">let</span> o = !x;
+        <span class="k">fold</span> (pts_to_or_null (Some x) #p &#39;v);
+        <span class="k">rewrite</span> <span class="k">each</span> (Some x) as r;
+        Some o
+     }
+     None -&gt; {
+        <span class="k">unfold</span> (pts_to_or_null None #p &#39;v);
+        <span class="k">fold</span> (pts_to_or_null None #p &#39;v);
+        <span class="k">rewrite</span> <span class="k">each</span> (None #(ref a)) as r;
+        None
+     }
+    }
+}
+</pre></div>
+</div>
+<p>The syntax of pattern matching in Pulse is more imperative and
+Rust-like than what F* uses.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The entire body of match is enclosed within braces</p></li>
+<li><p>Each branch is also enclosed within braces.</p></li>
+<li><p>Pulse (for now) only supports simple patterns with a single top-level
+constructor applied to variables, or variable patterns: e.g., you
+cannot write <code class="docutils literal notranslate"><span class="pre">Some</span> <span class="pre">(Some</span> <span class="pre">x)</span></code> as a pattern.</p></li>
+</ul>
+</div></blockquote>
+<p>The type of <code class="docutils literal notranslate"><span class="pre">read_nullable</span></code> promises to return a value equal to the
+logical witness of its representation predicate.</p>
+<p>The code is a little tedious—we’ll see how to clean it up a bit
+shortly.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">show_proof_state</span></code> in the <code class="docutils literal notranslate"><span class="pre">Some</span> <span class="pre">x</span></code> branch prints the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">-</span> <span class="n">Current</span> <span class="n">context</span><span class="p">:</span>
+    <span class="n">pts_to_or_null</span> <span class="n">r</span> <span class="p">(</span><span class="n">reveal</span> <span class="s1">&#39;v)</span>
+<span class="o">-</span> <span class="n">In</span> <span class="n">typing</span> <span class="n">environment</span><span class="p">:</span>
+    <span class="p">[</span><span class="n">branch</span> <span class="n">equality</span><span class="c1">#684 : squash (eq2 r (Some x)),</span>
+     <span class="o">...</span>
+</pre></div>
+</div>
+<p>The interesting part is the <code class="docutils literal notranslate"><span class="pre">branch</span> <span class="pre">equality</span></code> hypothesis, meaning
+that in this branch, we can assume that <code class="docutils literal notranslate"><span class="pre">(r</span> <span class="pre">==</span> <span class="pre">Some</span> <span class="pre">x)</span></code>. So, the
+first thing we do is to rewrite <code class="docutils literal notranslate"><span class="pre">r</span></code>; then we <code class="docutils literal notranslate"><span class="pre">unfold</span></code> the
+representation predicate; read the value <code class="docutils literal notranslate"><span class="pre">o</span></code> out of <code class="docutils literal notranslate"><span class="pre">x</span></code>; fold the
+predicate back; rewrite in the other direction; and return <code class="docutils literal notranslate"><span class="pre">Some</span>
+<span class="pre">o</span></code>. The <code class="docutils literal notranslate"><span class="pre">None</span></code> case is similar.</p>
+<p>Another difference between Pulse and F* matches is that Pulse does not
+provide any negated path conditions. For example, in the example
+below, the assertion fails, since the pattern is only a wildcard and
+the Pulse checker does not prove <code class="docutils literal notranslate"><span class="pre">not</span> <span class="pre">(Some?</span> <span class="pre">x)</span></code> as the path
+condition hypothesis for the preceding branches not taken.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span>[@@expect_failure]
+<span class="k">fn</span> read_nullable_alt #a #p (r:nullable_ref a)
+<span class="k">requires</span> pts_to_or_null r #p &#39;v
+<span class="k">returns</span> o:option a
+{
+    <span class="k">match</span> r {
+     Some x -&gt; { admit () }
+     <span class="k">_</span> -&gt; { 
+        <span class="c">// we only have `r == _` in scope</span>
+        <span class="c">// not the negation of the prior branch conditions</span>
+        <span class="c">// i.e., unlike F*, we don&#39;t have not (Some? r)</span>
+        <span class="c">// so the assertion below fails</span>
+        <span class="k">assert</span> (pure (r == None)); 
+        admit() }
+    }
+}
+</pre></div>
+</div>
+<p>We plan to enhance the Pulse checker to also provide these negated
+path conditions.</p>
+</section>
+<section id="helpers">
+<span id="pulse-nullable-ref-helpers"></span><h3>Helpers<a class="headerlink" href="#helpers" title="Link to this heading"></a></h3>
+<p>When a <code class="docutils literal notranslate"><span class="pre">slprop</span></code> is defined by cases (like <code class="docutils literal notranslate"><span class="pre">pts_to_or_null</span></code>) it is
+very common to have to reason according to those cases when pattern
+matching. Instead of rewriting, unfolding, folding, and rewriting
+every time, one can define helper functions to handle these cases.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span>
+<span class="k">fn</span> elim_pts_to_or_null_none #a #p (r:nullable_ref a)
+preserves pts_to_or_null r #p &#39;v
+<span class="k">requires</span> pure (r == None)
+<span class="k">ensures</span> pure (&#39;v == None)
+{
+    <span class="k">rewrite</span> <span class="k">each</span> r as None;
+    <span class="k">unfold</span> (pts_to_or_null None #p &#39;v);
+    <span class="k">fold</span> (pts_to_or_null None #p &#39;v);
+    <span class="k">rewrite</span> <span class="k">each</span> (None #(ref a)) as r;
+}
+
+<span class="k">ghost</span>
+<span class="k">fn</span> intro_pts_to_or_null_none #a #p (r:nullable_ref a)
+<span class="k">requires</span> pure (r == None)
+<span class="k">ensures</span> pts_to_or_null r #p None
+{
+    <span class="k">fold</span> (pts_to_or_null #a None #p None);
+    <span class="k">rewrite</span> <span class="k">each</span> (None #(ref a)) as r;
+}
+
+<span class="k">ghost</span>
+<span class="k">fn</span> elim_pts_to_or_null_some #a #p (r:nullable_ref a) (x:ref a)
+<span class="k">requires</span> pts_to_or_null r #p &#39;v
+<span class="k">requires</span> pure (r == Some x)
+<span class="k">ensures</span> <span class="k">exists</span>* w. pts_to x #p w ** pure (&#39;v == Some w)
+{
+    <span class="k">rewrite</span> <span class="k">each</span> r as (Some x);
+    <span class="k">unfold</span> (pts_to_or_null (Some x) #p &#39;v);
+}
+
+<span class="k">ghost</span>
+<span class="k">fn</span> intro_pts_to_or_null_some #a #p (r:nullable_ref a) (x:ref a)
+<span class="k">requires</span> pts_to x #p &#39;v
+<span class="k">requires</span> pure (r == Some x)
+<span class="k">ensures</span> pts_to_or_null r #p (Some &#39;v)
+{
+    <span class="k">fold</span> (pts_to_or_null (Some x) #p (Some (reveal &#39;v)));
+    <span class="k">rewrite</span> <span class="k">each</span> (Some x) as r;
+}
+</pre></div>
+</div>
+<p>These functions are all marked <code class="docutils literal notranslate"><span class="pre">ghost</span></code>, indicating that they are
+purely for proof purposes only.</p>
+<p>Writing these helpers is often quite mechanical: One could imagine
+that the Pulse checker could automatically generate them from the
+definition of <code class="docutils literal notranslate"><span class="pre">pts_to_or_null</span></code>. Using F*’s metaprogramming support,
+a user could also auto-generate them in a custom way. For now, we
+write them by hand.</p>
+<p>Using the helpers, case analyzing a nullable reference is somewhat
+easier:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> read_nullable_alt #a #p (r:nullable_ref a)
+<span class="k">requires</span> pts_to_or_null r #p &#39;v
+<span class="k">returns</span> o:option a
+<span class="k">ensures</span> pts_to_or_null r #p &#39;v
+        ** pure (&#39;v == o)
+{
+    <span class="k">match</span> r {
+     Some x -&gt; {
+        elim_pts_to_or_null_some (Some x) x;
+        <span class="k">let</span> o = !x;
+        intro_pts_to_or_null_some r x;
+        Some o
+     }
+     None -&gt; {
+        <span class="k">unfold</span> pts_to_or_null None &#39;v;
+        <span class="k">fold</span> pts_to_or_null None &#39;v;
+        <span class="k">rewrite</span> <span class="k">each</span> None #(ref a) as r;
+        None
+     }
+    }
+}
+</pre></div>
+</div>
+</section>
+<section id="writing-a-nullable-reference">
+<h3>Writing a nullable reference<a class="headerlink" href="#writing-a-nullable-reference" title="Link to this heading"></a></h3>
+<p>Having defined our helpers, we can use them repeatedly. For example,
+here is a  function to write a nullable reference.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> write_nullable #a (r:nullable_ref a) (v:a)
+<span class="k">requires</span> pts_to_or_null r &#39;v
+<span class="k">ensures</span> <span class="k">exists</span>* w. pts_to_or_null r w ** pure (Some? r ==&gt; w == Some v)
+{
+    <span class="k">match</span> r {
+     None -&gt; {
+        <span class="k">rewrite</span> pts_to_or_null None &#39;v
+             as pts_to_or_null r &#39;v;
+     }
+     Some x -&gt; {
+        <span class="k">unfold</span> pts_to_or_null (Some x) &#39;v;
+        x := v;
+        intro_pts_to_or_null_some r x;
+     }
+    }
+}
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pulse_user_defined_predicates.html" class="btn btn-neutral float-left" title="User-defined Predicates" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pulse_loops.html" class="btn btn-neutral float-right" title="Loops &amp; Recursion" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

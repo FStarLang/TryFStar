@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Equality &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Interfacing with an SMT solver" href="part1_prop_assertions.html" />
+    <link rel="prev" title="Polymorphism and type inference" href="part1_polymorphism.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="part1.html">Programming and Proving with Total Functions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="part1_getting_off_the_ground.html">Getting off the ground</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part1_polymorphism.html">Polymorphism and type inference</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Equality</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#decidable-equality-and-eqtype">Decidable equality and <code class="docutils literal notranslate"><span class="pre">eqtype</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#propositional-equality">Propositional equality</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="part1_prop_assertions.html">Interfacing with an SMT solver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part1_inductives.html">Inductive types and pattern matching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part1_termination.html">Proofs of termination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part1_lemmas.html">Lemmas and proofs by induction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part1_quicksort.html">Case Study: Quicksort</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part1_execution.html">Executing programs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part1_wrap.html">Wrapping up</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pulse/pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="part1.html">Programming and Proving with Total Functions</a></li>
+      <li class="breadcrumb-item active">Equality</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="equality">
+<span id="part1-equality"></span><h1>Equality<a class="headerlink" href="#equality" title="Link to this heading"></a></h1>
+<p>Equality is a subtle issue that pervades the design of all dependent
+type theories, and F* is no exception. In this first chapter, we
+briefly touch upon two different kinds of equality in F*, providing
+some basic information sufficient for the simplest usages. In a
+<a class="reference internal" href="../part2/part2_equality.html#part2-equality"><span class="std std-ref">subsequent chapter</span></a>, we’ll cover equality in
+much greater depth.</p>
+<section id="decidable-equality-and-eqtype">
+<h2>Decidable equality and <code class="docutils literal notranslate"><span class="pre">eqtype</span></code><a class="headerlink" href="#decidable-equality-and-eqtype" title="Link to this heading"></a></h2>
+<p>We’ve implicitly used the equality operator <code class="docutils literal notranslate"><span class="pre">=</span></code> already (e.g., when
+defining <code class="docutils literal notranslate"><span class="pre">factorial</span></code>). This is the <em>boolean</em> equality
+operator. Given two terms <code class="docutils literal notranslate"><span class="pre">e₁</span> <span class="pre">:</span> <span class="pre">t</span></code> and <code class="docutils literal notranslate"><span class="pre">e₂</span> <span class="pre">:</span> <span class="pre">t</span></code>, so long as <code class="docutils literal notranslate"><span class="pre">t</span></code>
+supports a notion of decidable equality, <code class="docutils literal notranslate"><span class="pre">(e₁</span> <span class="pre">=</span> <span class="pre">e₂)</span> <span class="pre">:</span> <span class="pre">bool</span></code>.</p>
+<p>To see why not all types support decidable equality, consider <code class="docutils literal notranslate"><span class="pre">t</span></code> to
+be a function type, like <code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">-&gt;</span> <span class="pre">int</span></code>. To decide if two functions
+<code class="docutils literal notranslate"><span class="pre">f₁,</span> <span class="pre">f₂</span> <span class="pre">:</span> <span class="pre">int</span> <span class="pre">-&gt;</span> <span class="pre">int</span></code> are equal, we’d have to apply them to all the
+infinitely many integers and compare their results—clearly, this is
+not decidable.</p>
+<p>The type <code class="docutils literal notranslate"><span class="pre">eqtype</span></code> is the type of types that support decidable
+equality. That is, given <code class="docutils literal notranslate"><span class="pre">e₁</span> <span class="pre">:</span> <span class="pre">t</span></code> and <code class="docutils literal notranslate"><span class="pre">e₂</span> <span class="pre">:</span> <span class="pre">t</span></code>, it is only
+permissible to compare <code class="docutils literal notranslate"><span class="pre">e₁</span> <span class="pre">=</span> <span class="pre">e₂</span></code> if <code class="docutils literal notranslate"><span class="pre">t</span> <span class="pre">:</span> <span class="pre">eqtype</span></code>.</p>
+<p>For any type definition, F* automatically computes whether or not that
+type is an <code class="docutils literal notranslate"><span class="pre">eqtype</span></code>. We’ll explain later exactly how F* decides
+whether or not a type is an <code class="docutils literal notranslate"><span class="pre">eqtype</span></code>. Roughly, F* has built-in
+knowledge that various primitive types like integers and booleans
+support decidable equality. When defining a new type, F* checks
+that all values of the new type are composed structurally of terms
+that support decidable equality. In particular, if an <code class="docutils literal notranslate"><span class="pre">e</span> <span class="pre">:</span> <span class="pre">t</span></code> may
+contain a sub-term that is a function, then <code class="docutils literal notranslate"><span class="pre">t</span></code> cannot be an
+<code class="docutils literal notranslate"><span class="pre">eqtype</span></code>.</p>
+<p>As such, the type of the decidable equality operator is</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> ( = ) (#a:eqtype) (x:a) (y:a) : bool
+</pre></div>
+</div>
+<p>That is, <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">=</span> <span class="pre">y</span></code> is well-typed only when <code class="docutils literal notranslate"><span class="pre">x</span> <span class="pre">:</span> <span class="pre">a</span></code> and <code class="docutils literal notranslate"><span class="pre">y</span> <span class="pre">:</span> <span class="pre">a</span></code> and
+<code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">:</span> <span class="pre">eqtype</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We see here a bit of F* syntax for defining infix operators. Rather
+than only using the <code class="docutils literal notranslate"><span class="pre">val</span></code> or <code class="docutils literal notranslate"><span class="pre">let</span></code> notation with alphanumeric
+identifiers, the notation <code class="docutils literal notranslate"><span class="pre">(</span> <span class="pre">=</span> <span class="pre">)</span></code> introduces an infix operator
+defined with non-alphanumeric symbols. You can read more about this
+<a class="reference external" href="https://github.com/FStarLang/FStar/wiki/Parsing-and-operator-precedence">here</a>.</p>
+</div>
+</section>
+<section id="propositional-equality">
+<h2>Propositional equality<a class="headerlink" href="#propositional-equality" title="Link to this heading"></a></h2>
+<p>F* offers another notion of equality, propositional equality, written
+<code class="docutils literal notranslate"><span class="pre">==</span></code>. For <em>any type</em> <code class="docutils literal notranslate"><span class="pre">t</span></code>, given terms <code class="docutils literal notranslate"><span class="pre">e₁,</span> <span class="pre">e₂</span> <span class="pre">:</span> <span class="pre">t</span></code>, the
+proposition <code class="docutils literal notranslate"><span class="pre">e₁</span> <span class="pre">==</span> <span class="pre">e₂</span></code> asserts the (possibly undecidable) equality
+of <code class="docutils literal notranslate"><span class="pre">e₁</span></code> and <code class="docutils literal notranslate"><span class="pre">e₂</span></code>. The type of the propositional equality operator
+is shown below:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> ( == ) (#a:Type) (x:a) (y:a) : prop
+</pre></div>
+</div>
+<p>Unlike decidable equality <code class="docutils literal notranslate"><span class="pre">(=)</span></code>, propositional equality is defined
+for all types. The result type of <code class="docutils literal notranslate"><span class="pre">(==)</span></code> is <code class="docutils literal notranslate"><span class="pre">prop</span></code>, the type of
+propositions. We’ll learn more about that in the <a class="reference internal" href="part1_prop_assertions.html#part1-prop-assertions"><span class="std std-ref">next chapter</span></a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="part1_polymorphism.html" class="btn btn-neutral float-left" title="Polymorphism and type inference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="part1_prop_assertions.html" class="btn btn-neutral float-right" title="Interfacing with an SMT solver" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

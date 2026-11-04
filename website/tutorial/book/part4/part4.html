@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Computational Effects &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Computation Types to Track Dependences" href="part4_background.html" />
+    <link rel="prev" title="Fun with Typeclasses: Datatypes a la Carte" href="../part3/part3_alacarte.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Computational Effects</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="part4_background.html">Computation Types to Track Dependences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part4_computation_types_and_tot.html">The Effect of Total Computations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part4_ghost.html">Erasure and the Ghost Effect</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part4_div.html">Divergence, or Non-Termination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part4_pure.html">Primitive Effect Refinements</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pulse/pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Computational Effects</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="computational-effects">
+<span id="part4"></span><h1>Computational Effects<a class="headerlink" href="#computational-effects" title="Link to this heading"></a></h1>
+<p>All the programs we’ve considered so far have been <em>pure</em>, which is to
+say that only thing that can be observed about a program by its
+context is the value that the program returns—the inner workings of
+the program (e.g., whether it multiplies two numbers by repeated
+addition or by using a primitive operation for multiplication) cannot
+influence the behavior of its context. That is, pure terms can be
+reasoned about like pure mathematical functions. <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a></p>
+<p>However, many practical programs exhibit behaviors that are beyond
+just their output. For example, they may mutate some global state, or
+they may read and write files, or receive or send messages over the
+network—such behaviors are often called <em>side effects</em>,
+<em>computational effects</em>, or just <em>effects</em>.</p>
+<p>In this section, we look at F*’s effect system which allows users to</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Model the semantics of various kinds of effects, e.g., mutable
+state, input/output, concurrency, etc.</p></li>
+<li><p>Develop reasoning principles that enable building proofs of
+various properties of effectful programs</p></li>
+<li><p>Simplify effectful program construction by encapsulating the
+semantic model and reasoning principles within an abstraction that
+allows users to write programs in F*’s native syntax while behind
+the scenes, for reasoning and execution purposes, programs are
+elaborated into the semantic model</p></li>
+</ul>
+</div></blockquote>
+<p>Aside from user-defined effects, F* also supports the following
+<em>primitive</em> effects:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>Ghost</strong>: An effect which describes which parts of a program have
+no observable behavior at all, and do not even influence the
+result returned by the program. This allows optimizing a program
+by erasing the parts of a program that are computationally
+irrelevant.</p></li>
+<li><p><strong>Divergence</strong>: An effect that encapsulates computations which may
+run forever. Potentially divergent computations cannot be used as
+proofs (see <a class="reference internal" href="../part1/part1_termination.html#part1-termination"><span class="std std-ref">termination</span></a>) and the effect
+system ensures that this is so.</p></li>
+<li><p><strong>Partiality</strong>: Partial functions are only defined over a subset
+of their domain. F* provides primitive support for partial
+functions as an effect. Although currently primitive, in the
+future, we hope to remove the special status of partial functions
+and make partial functions a user-defined notion too.</p></li>
+</ul>
+</div></blockquote>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id2" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>Although pure F* programs are mathematical functions
+in the ideal sense, when executing these programs on a
+computer, they do exhibit various side effects, including
+consuming resources like time, power, and memory. Although
+these side effects are clearly observable to an external
+observer of a running F* program, the resource-usage side
+effects of one component of a pure F* program are not visible
+to another component of the same program.</p>
+</aside>
+</aside>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="part4_background.html">Computation Types to Track Dependences</a></li>
+<li class="toctree-l1"><a class="reference internal" href="part4_computation_types_and_tot.html">The Effect of Total Computations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="part4_ghost.html">Erasure and the Ghost Effect</a></li>
+<li class="toctree-l1"><a class="reference internal" href="part4_div.html">Divergence, or Non-Termination</a></li>
+<li class="toctree-l1"><a class="reference internal" href="part4_pure.html">Primitive Effect Refinements</a></li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../part3/part3_alacarte.html" class="btn btn-neutral float-left" title="Fun with Typeclasses: Datatypes a la Carte" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="part4_background.html" class="btn btn-neutral float-right" title="Computation Types to Track Dependences" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

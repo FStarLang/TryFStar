@@ -1,0 +1,19 @@
+TryFStar
+
+The F* and Pulse tutorial sources and static book originate from the
+FStarLang/FStar website/tutorial/book tree:
+https://github.com/FStarLang/FStar
+Existing copyright and license notices are retained in the copied files.
+
+The PAL example includes material from FStarLang/pal:
+https://github.com/FStarLang/pal
+Its MIT license is retained in website/examples/pal/LICENSE.pal.
+
+The PAL-CSharp insertion-sort example includes material from
+FStarLang/pal-csharp:
+https://github.com/FStarLang/pal-csharp
+Its MIT license is retained in website/examples/pal-cs/LICENSE.
+
+F*, Pulse, PAL, PAL-CSharp, and the remaining development tools are installed
+from their upstream releases or repositories when building the container.
+They retain their upstream licenses.

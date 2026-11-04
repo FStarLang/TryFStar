@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Existential Quantification &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="User-defined Predicates" href="pulse_user_defined_predicates.html" />
+    <link rel="prev" title="Mutable References" href="pulse_ch2.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pulse_getting_started.html">Getting up and running with Codespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ch1.html">Pulse Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ch2.html">Mutable References</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Existential Quantification</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#some-simple-examples">Some simple examples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#manipulating-existentials">Manipulating existentials</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#eliminating-existentials">Eliminating existentials</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#introducing-existentials">Introducing existentials</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_user_defined_predicates.html">User-defined Predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_conditionals.html">Conditionals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_loops.html">Loops &amp; Recursion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_arrays.html">Mutable Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ghost.html">Ghost Computations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_higher_order.html">Higher Order Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_implication_and_forall.html">Implication and Universal Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_linked_list.html">Linked Lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_atomics_and_invariants.html">Atomic Operations and Invariants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_spin_lock.html">Spin Locks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_parallel_increment.html">Parallel Increment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_extraction.html">Extraction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+      <li class="breadcrumb-item active">Existential Quantification</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="existential-quantification">
+<span id="pulse-existentials"></span><h1>Existential Quantification<a class="headerlink" href="#existential-quantification" title="Link to this heading"></a></h1>
+<p>A very common specification style in Pulse involves the use of the
+existential quantifier. Before we can start to write interesting
+examples, let’s take a brief look at how existential quantification
+works.</p>
+<p>As mentioned in the <a class="reference internal" href="pulse_ch1.html#pulse-basics"><span class="std std-ref">introduction to Pulse</span></a>, one
+of the connectives of Pulse’s separation logic is the existential
+quantifier. Its syntax is similar to F*’s existential quantifier,
+except it is written <code class="docutils literal notranslate"><span class="pre">exists*</span></code> instead of just <code class="docutils literal notranslate"><span class="pre">exists</span></code>, and its
+body is a <code class="docutils literal notranslate"><span class="pre">slprop</span></code>, as in the examples shown below.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">exists</span>* (v:nat). pts_to x v
+
+<span class="k">exists</span>* v. pts_to x v
+
+<span class="k">exists</span>* v1 v2. pts_to x v1 ** pts_to y v2
+
+...
+</pre></div>
+</div>
+<section id="some-simple-examples">
+<h2>Some simple examples<a class="headerlink" href="#some-simple-examples" title="Link to this heading"></a></h2>
+<p>Looking back to the <code class="docutils literal notranslate"><span class="pre">assign</span></code> example from the previous chapter
+(shown below), you may have wondered why we bothered to bind a logical
+variable <code class="docutils literal notranslate"><span class="pre">'v</span></code> in the precondition of the specification, since it is
+never actually used in any other predicate.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> assign u#a (#a:Type u#a) (r:ref a) (v:a)
+<span class="k">requires</span> pts_to r &#39;v
+<span class="k">ensures</span> pts_to r v
+{
+    r := v;
+}
+</pre></div>
+</div>
+<p>And indeed, another way to write the specification of <code class="docutils literal notranslate"><span class="pre">assign</span></code>, without
+the logical variable argument, is shown below.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> assign (#a: Type0) (x:ref a) (v:a)
+<span class="k">requires</span>
+  <span class="k">exists</span>* w. pts_to x w
+<span class="k">ensures</span>
+  pts_to x v
+{
+  x := v
+}
+</pre></div>
+</div>
+<p>This time, in the precondition, we use an existential quantifier to
+say that <code class="docutils literal notranslate"><span class="pre">assign</span></code> is callable in a context where <code class="docutils literal notranslate"><span class="pre">x</span></code> points to any
+value <code class="docutils literal notranslate"><span class="pre">w</span></code>.</p>
+<p>Usually, however, the postcondition of a function <em>relates</em> the
+initial state prior to the call to the state after the call and
+existential variables are only in scope as far to the right as
+possible of the enclosing <code class="docutils literal notranslate"><span class="pre">slprop</span></code>. So, existential quantifiers in
+the precondition of a function are not so common.</p>
+<p>To illustrate, the following attempted specification of <code class="docutils literal notranslate"><span class="pre">incr</span></code> does
+not work, since the existentially bound <code class="docutils literal notranslate"><span class="pre">w0</span></code> is not in scope for the
+postcondition.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span>[@@expect_failure] 
+<span class="k">fn</span> incr #a (x:ref int)
+<span class="k">requires</span>
+  <span class="k">exists</span>* w0. pts_to x w
+<span class="k">ensures</span> 
+  pts_to x (w0 + 1) <span class="c">//w0 is not in scope here</span>
+{
+  <span class="k">let</span> w = !x
+  x := w + 1
+}
+</pre></div>
+</div>
+<p>However, existential quantification often appears in postconditions,
+e.g., in order to abstract the behavior of function by underspecifying
+it. To illustrate, consider the function <code class="docutils literal notranslate"><span class="pre">make_even</span></code> below. Its
+type states that it sets the contents of <code class="docutils literal notranslate"><span class="pre">x</span></code> to some even number
+<code class="docutils literal notranslate"><span class="pre">w1</span></code>, without specifying <code class="docutils literal notranslate"><span class="pre">w1</span></code> exactly. It also uses an existential
+quantification in its precondition, since its postcondition does not
+depend on the initial value of <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> make_even (x:ref int)
+<span class="k">requires</span>
+  <span class="k">exists</span>* w0. pts_to x w0
+<span class="k">ensures</span>
+  <span class="k">exists</span>* w1. pts_to x w1 ** pure (w1 % 2 == 0)
+{
+  <span class="k">let</span> v = !x;
+  x := v + v;
+}
+</pre></div>
+</div>
+</section>
+<section id="manipulating-existentials">
+<h2>Manipulating existentials<a class="headerlink" href="#manipulating-existentials" title="Link to this heading"></a></h2>
+<p>In a previous chapter on <a class="reference internal" href="../part2/part2_logical_connectives.html#part2-connectives"><span class="std std-ref">handling classical connectives</span></a>, we saw how F* provides various constructs for
+introducing and eliminating logical connectives, including the
+existential quantifier. Pulse also provides constructs for working
+explicitly with existential quantifiers, though, usually, Pulse
+automation takes care of introducing and eliminating existentials
+behind the scenes. However, the explicit operations are sometimes
+useful, and we show a first example of how they work below</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> make_even_explicit (x:ref int)
+<span class="k">requires</span>
+  <span class="k">exists</span>* w0. pts_to x w0
+<span class="k">ensures</span>
+  <span class="k">exists</span>* w1. pts_to x w1 ** pure (w1 % 2 == 0)
+{
+  <span class="k">with</span> w0. <span class="k">assert</span> (pts_to x w0);
+  <span class="k">let</span> v = !x; <span class="c">// v:int; _:squash(v==w0); Ctxt=pts_to x v</span>
+  x := v + v; <span class="c">//                          ... pts_to x (v + v)</span>
+  <span class="k">introduce</span>
+  <span class="k">exists</span>* w1. pts_to x w1 ** pure (w1 % 2 == 0)
+  <span class="k">with</span> (v + v);
+}
+</pre></div>
+</div>
+<section id="eliminating-existentials">
+<h3>Eliminating existentials<a class="headerlink" href="#eliminating-existentials" title="Link to this heading"></a></h3>
+<p>The form <code class="docutils literal notranslate"><span class="pre">with</span> <span class="pre">w0...wn.</span> <span class="pre">assert</span> <span class="pre">p;</span> <span class="pre">rest</span></code> is often used as an
+eliminator for an existential. When the context contains <code class="docutils literal notranslate"><span class="pre">exists*</span>
+<span class="pre">x0...xn.</span> <span class="pre">p</span></code>, the <code class="docutils literal notranslate"><span class="pre">with</span></code> construct binds <code class="docutils literal notranslate"><span class="pre">w0</span> <span class="pre">...</span> <span class="pre">wn</span></code> to the
+existentially bound variables in the remainder of the scope <code class="docutils literal notranslate"><span class="pre">rest</span></code>.</p>
+<p>A <code class="docutils literal notranslate"><span class="pre">show_proof_state</span></code> immediately after the <code class="docutils literal notranslate"><span class="pre">with</span> <span class="pre">w0.</span> <span class="pre">assert</span> <span class="pre">(pts_to</span>
+<span class="pre">x</span> <span class="pre">w0)</span></code> prints the following:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span>- Current context:
+    pts_to x (reveal w0) **
+    emp
+- In typing environment:
+    [w0#2 : erased int,
+    x#1 : ref int]
+</pre></div>
+</div>
+<p>That is, we have <code class="docutils literal notranslate"><span class="pre">w0:erased</span> <span class="pre">int</span></code> in scope, and <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">x</span> <span class="pre">(reveal</span>
+<span class="pre">w0)</span></code> in context.</p>
+<p>Here is another example usage of <code class="docutils literal notranslate"><span class="pre">with</span></code>, this time with multiple
+binders.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> make_even_explicit_alt (x y:ref int)
+<span class="k">requires</span>
+  <span class="k">exists</span>* wx wy. pts_to x wx ** pts_to y wy ** pure (wx % 2 == wy % 2)
+<span class="k">ensures</span>
+  <span class="k">exists</span>* wx&#39; wy&#39;. pts_to x wx&#39; ** pts_to y wy&#39; ** pure (wx&#39; % 2 == 0)
+{
+  <span class="k">let</span> vx = !x; 
+  <span class="k">let</span> vy = !y;
+  x := vx + vy;
+  <span class="k">introduce</span> <span class="k">exists</span>* wx&#39; wy&#39;. pts_to x wx&#39; ** pts_to y wy&#39; ** pure (wx&#39; % 2 == 0)
+  <span class="k">with</span> (vx + vy) vy;
+}
+</pre></div>
+</div>
+<p>When there is a single existential formula in the context, one can
+write <code class="docutils literal notranslate"><span class="pre">with</span> <span class="pre">x1..xn.</span> <span class="pre">_</span></code> to “open” the formula, binding its witnesses
+in scope. A <code class="docutils literal notranslate"><span class="pre">show_proof_state</span></code> after the first line prints:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span>- Current context:
+    pts_to x (reveal wx) **
+    pts_to y (reveal wy) **
+    pure (eq2 (op_Modulus (reveal wx) 2) (op_Modulus (reveal wy) 2)) **
+    emp
+- In typing environment:
+    [<span class="k">_</span>#5 : squash (eq2 (op_Modulus (reveal wx) 2) (op_Modulus (reveal wy) 2)),
+    wy#4 : erased int,
+    wx#3 : erased int,
+    y#2 : ref int,
+    x#1 : ref int]
+</pre></div>
+</div>
+</section>
+<section id="introducing-existentials">
+<h3>Introducing existentials<a class="headerlink" href="#introducing-existentials" title="Link to this heading"></a></h3>
+<p>The Pulse checker will automatically introduce existential formulas by
+introduces new unification variables for each existentially bound
+variable, and then trying to find solutions for those variables by
+matching <code class="docutils literal notranslate"><span class="pre">slprops</span></code> in the goal with those in the context.</p>
+<p>However, one can also introduce existential formulas explicitly, using
+the <code class="docutils literal notranslate"><span class="pre">introduce</span> <span class="pre">exists*</span></code> syntax, as seen in the two examples
+above. In general, one can write</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">introduce</span> <span class="k">exists</span>* x1 .. xn. p
+<span class="k">with</span> w1...wn
+</pre></div>
+</div>
+<p>explicitly providing witnesses <code class="docutils literal notranslate"><span class="pre">w1..wn</span></code> for each of the
+existentially bound variables <code class="docutils literal notranslate"><span class="pre">x1..xn</span></code>.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pulse_ch2.html" class="btn btn-neutral float-left" title="Mutable References" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pulse_user_defined_predicates.html" class="btn btn-neutral float-right" title="User-defined Predicates" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

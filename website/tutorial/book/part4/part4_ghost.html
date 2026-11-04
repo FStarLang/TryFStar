@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Erasure and the Ghost Effect &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Divergence, or Non-Termination" href="part4_div.html" />
+    <link rel="prev" title="The Effect of Total Computations" href="part4_computation_types_and_tot.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="part4.html">Computational Effects</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="part4_background.html">Computation Types to Track Dependences</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part4_computation_types_and_tot.html">The Effect of Total Computations</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Erasure and the Ghost Effect</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ghost-a-primitive-effect">Ghost: A Primitive Effect</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ghost-computations-as-specifications">Ghost Computations as Specifications</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#erasable-and-non-informative-types">Erasable and Non-informative Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-erased-type-reveal-and-hide">The <cite>erased</cite> type, <cite>reveal</cite>, and <cite>hide</cite></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-ghost-computations-in-total-contexts">Using Ghost Computations in Total Contexts</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#effect-promotion-for-non-informative-types">Effect Promotion for Non-informative Types</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#revisiting-vector-concatenation">Revisiting Vector Concatenation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="part4_div.html">Divergence, or Non-Termination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part4_pure.html">Primitive Effect Refinements</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pulse/pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="part4.html">Computational Effects</a></li>
+      <li class="breadcrumb-item active">Erasure and the Ghost Effect</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="erasure-and-the-ghost-effect">
+<span id="part4-ghost"></span><h1>Erasure and the Ghost Effect<a class="headerlink" href="#erasure-and-the-ghost-effect" title="Link to this heading"></a></h1>
+<p>When writing proof-oriented programs, inevitably, some parts of the
+program serve only to state and prove properties about the code that
+actually executes. Our first non-trivial effect separates the
+computationally relevant parts of the program from the computationally
+irrelevant (i.e., specificational or <em>ghost</em>) parts of a program. This
+separation enables the F* compiler to guarantee that all the ghost
+parts of a program are optimized away entirely.</p>
+<p>For a glimpse of what all of this is about, let’s take a look again at
+length-indexed vectors—we saw them first <a class="reference internal" href="../part2/part2_vectors.html#part2-vectors"><span class="std std-ref">here</span></a>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> vec (a:Type) : nat -&gt; Type =
+  | Nil : vec a 0
+  | Cons : #n:nat -&gt; hd:a -&gt; tl:vec a n -&gt; vec a (n + 1)
+</pre></div>
+</div>
+<p>and a function to concatenate two vectors:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> append #a #n #m (v1:vec a n) (v2:vec a m)
+  : vec a (n + m)
+  = <span class="k">match</span> v1 <span class="k">with</span>
+    | Nil -&gt; v2
+    | Cons hd tl -&gt; Cons hd (append tl v2)
+</pre></div>
+</div>
+<p>Compare this with concatenating two lists:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> list_append #a (l1 l2:list a) =
+    <span class="k">match</span> l1 <span class="k">with</span>
+    | [] -&gt; []
+    | hd::tl -&gt; hd :: list_append tl l2
+</pre></div>
+</div>
+<p>Superficially, because of the implicit arguments, it may look like
+concatenating vectors with <code class="docutils literal notranslate"><span class="pre">append</span></code> is just as efficient as
+concatenating lists—the length indexes seem to impose no
+overhead. But, let’s look at the code that F* extracts to OCaml for
+length-indexed vectors.</p>
+<p>First, in the definition of the <code class="docutils literal notranslate"><span class="pre">vec</span></code> type, since OCaml is not
+dependently typed, the <code class="docutils literal notranslate"><span class="pre">nat</span></code>-index of the F* <code class="docutils literal notranslate"><span class="pre">vec</span></code> is replaced by
+a <code class="docutils literal notranslate"><span class="pre">'dummy</span></code> type argument—that’s fine. But, notice that the
+<code class="docutils literal notranslate"><span class="pre">Cons</span></code> constructor contains three fields: a <code class="docutils literal notranslate"><span class="pre">Prims.nat</span></code> for the
+length of the tail of the list, the head of the list, and then then
+tail, i.e., the length of the tail of the list is stored at every
+<code class="docutils literal notranslate"><span class="pre">Cons</span></code> cell, so the <code class="docutils literal notranslate"><span class="pre">vec</span></code> type is actually less space efficient
+than an ordinary <code class="docutils literal notranslate"><span class="pre">list</span></code>.</p>
+<div class="highlight-ocaml notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span><span class="o">,</span> <span class="k">&#39;</span><span class="n">dummy</span><span class="o">)</span> <span class="n">vec</span> <span class="o">=</span>
+  <span class="o">|</span> <span class="nc">Nil</span> 
+  <span class="o">|</span> <span class="nc">Cons</span> <span class="k">of</span> <span class="nn">Prims</span><span class="p">.</span><span class="n">nat</span> <span class="o">*</span> <span class="k">&#39;</span><span class="n">a</span> <span class="o">*</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span><span class="o">,</span> <span class="kt">unit</span><span class="o">)</span> <span class="n">vec</span>
+</pre></div>
+</div>
+<p>Next, in the OCaml definition of <code class="docutils literal notranslate"><span class="pre">append</span></code>, we see that it receives
+additional arguments <code class="docutils literal notranslate"><span class="pre">n</span></code> and <code class="docutils literal notranslate"><span class="pre">m</span></code> for the lengths of the vectors,
+and worse, in the last case, it incurs an addition to sum <code class="docutils literal notranslate"><span class="pre">n'</span> <span class="pre">+</span> <span class="pre">m</span></code>
+when building the result vector. So, <code class="docutils literal notranslate"><span class="pre">append</span></code> is also less
+time-efficient than <code class="docutils literal notranslate"><span class="pre">List.append</span></code>.</p>
+<div class="highlight-ocaml notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> <span class="n">append</span> <span class="o">:</span>
+  <span class="k">&#39;</span><span class="n">a</span> <span class="o">.</span>
+    <span class="nn">Prims</span><span class="p">.</span><span class="n">nat</span> <span class="o">-&gt;</span>
+      <span class="nn">Prims</span><span class="p">.</span><span class="n">nat</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span><span class="o">,</span> <span class="kt">unit</span><span class="o">)</span> <span class="n">vec</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span><span class="o">,</span> <span class="kt">unit</span><span class="o">)</span> <span class="n">vec</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span><span class="o">,</span> <span class="kt">unit</span><span class="o">)</span> <span class="n">vec</span>
+  <span class="o">=</span>
+  <span class="k">fun</span> <span class="n">n</span> <span class="o">-&gt;</span>
+    <span class="k">fun</span> <span class="n">m</span> <span class="o">-&gt;</span>
+      <span class="k">fun</span> <span class="n">v1</span> <span class="o">-&gt;</span>
+        <span class="k">fun</span> <span class="n">v2</span> <span class="o">-&gt;</span>
+          <span class="k">match</span> <span class="n">v1</span> <span class="k">with</span>
+          <span class="o">|</span> <span class="nc">Nil</span> <span class="o">-&gt;</span> <span class="n">v2</span>
+          <span class="o">|</span> <span class="nc">Cons</span> <span class="o">(</span><span class="n">n&#39;</span><span class="o">,</span> <span class="n">hd</span><span class="o">,</span> <span class="n">tl</span><span class="o">)</span> <span class="o">-&gt;</span>
+              <span class="nc">Cons</span> <span class="o">((</span><span class="n">n&#39;</span> <span class="o">+</span> <span class="n">m</span><span class="o">),</span> <span class="n">hd</span><span class="o">,</span> <span class="o">(</span><span class="n">append</span> <span class="n">n&#39;</span> <span class="n">m</span> <span class="n">tl</span> <span class="n">v2</span><span class="o">))</span>
+</pre></div>
+</div>
+<p>This is particularly unfortunate, since the computational behavior of
+<code class="docutils literal notranslate"><span class="pre">append</span></code> doesn’t actually depend on the length indexes of the input
+vectors. What we need is a principled way to indicate to the F*
+compiler that some parts of a computation are actually only there for
+specification or proof purposes and that they can be removed when
+compiling the code, without changing the observable result computed by
+the program. This is what <em>erasure</em> is about—removing the
+computationally irrelevant parts of a term for compilation.</p>
+<p>Here’s a revised version of vectors, making use of the <code class="docutils literal notranslate"><span class="pre">erased</span></code> type
+from the <code class="docutils literal notranslate"><span class="pre">FStar.Ghost</span></code> library to indicate to F* which parts must be
+erased by the compiler.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">module</span> VecErased
+<span class="k">open</span> FStar.Ghost
+
+<span class="k">noeq</span>
+<span class="k">type</span> vec a : nat -&gt; Type = 
+  | Nil : vec a 0
+  | Cons : #n:erased nat -&gt; hd:a -&gt; tl:vec a n -&gt; vec a (n + 1)
+
+<span class="k">let</span> <span class="k">rec</span> append #a (#n #m:erased nat) (v0:vec a n) (v1:vec a m)
+  : vec a (n + m)
+  = <span class="k">match</span> v0 <span class="k">with</span>   
+    | Nil -&gt; v1
+    | Cons hd tl -&gt; Cons hd (append tl v1)
+</pre></div>
+</div>
+<p>We’ll look into this in much more detail in what follows, but notice
+for now that:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>The first argument of <code class="docutils literal notranslate"><span class="pre">Cons</span></code> now has type <code class="docutils literal notranslate"><span class="pre">erased</span> <span class="pre">nat</span></code>.</p></li>
+<li><p>The implicit arguments of <code class="docutils literal notranslate"><span class="pre">append</span></code> corresponding to the
+indexes of the input vectors have type <code class="docutils literal notranslate"><span class="pre">erased</span> <span class="pre">nat</span></code>.</p></li>
+</ol>
+</div></blockquote>
+<p>If we extract this code to OCaml, here’s what we get:</p>
+<div class="highlight-ocaml notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span><span class="o">,</span> <span class="k">&#39;</span><span class="n">dummy</span><span class="o">)</span> <span class="n">vec</span> <span class="o">=</span>
+  <span class="o">|</span> <span class="nc">Nil</span> 
+  <span class="o">|</span> <span class="nc">Cons</span> <span class="k">of</span> <span class="kt">unit</span> <span class="o">*</span> <span class="k">&#39;</span><span class="n">a</span> <span class="o">*</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span><span class="o">,</span> <span class="kt">unit</span><span class="o">)</span> <span class="n">vec</span>
+</pre></div>
+</div>
+<div class="highlight-ocaml notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> <span class="n">append</span> <span class="o">:</span>
+  <span class="k">&#39;</span><span class="n">a</span> <span class="o">.</span> <span class="kt">unit</span> <span class="o">-&gt;</span> <span class="kt">unit</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span><span class="o">,</span> <span class="kt">unit</span><span class="o">)</span> <span class="n">vec</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span><span class="o">,</span> <span class="kt">unit</span><span class="o">)</span> <span class="n">vec</span> <span class="o">-&gt;</span> <span class="o">(</span><span class="k">&#39;</span><span class="n">a</span><span class="o">,</span> <span class="kt">unit</span><span class="o">)</span> <span class="n">vec</span> <span class="o">=</span>
+  <span class="k">fun</span> <span class="n">n</span> <span class="o">-&gt;</span>
+    <span class="k">fun</span> <span class="n">m</span> <span class="o">-&gt;</span>
+      <span class="k">fun</span> <span class="n">v0</span> <span class="o">-&gt;</span>
+        <span class="k">fun</span> <span class="n">v1</span> <span class="o">-&gt;</span>
+          <span class="k">match</span> <span class="n">v0</span> <span class="k">with</span>
+          <span class="o">|</span> <span class="nc">Nil</span> <span class="o">-&gt;</span> <span class="n">v1</span>
+          <span class="o">|</span> <span class="nc">Cons</span> <span class="o">(</span><span class="n">uu___</span><span class="o">,</span> <span class="n">hd</span><span class="o">,</span> <span class="n">tl</span><span class="o">)</span> <span class="o">-&gt;</span> <span class="nc">Cons</span> <span class="o">(</span><span class="bp">()</span><span class="o">,</span> <span class="n">hd</span><span class="o">,</span> <span class="o">(</span><span class="n">append</span> <span class="bp">()</span> <span class="bp">()</span> <span class="n">tl</span> <span class="n">v1</span><span class="o">))</span>
+</pre></div>
+</div>
+<p>Notice that the erased arguments have all been turned into the unit
+value <code class="docutils literal notranslate"><span class="pre">()</span></code>, and the needless addition in <code class="docutils literal notranslate"><span class="pre">append</span></code> is gone too.</p>
+<p>Of course, the code would be cleaner if F* were to have entirely
+removed the argument instead of leaving behind a unit term, but we
+leave it to the downstream compiler, e.g., OCaml itself, to remove
+these needless units. Further, if we’re compiling the ML code
+extracted from F* to C, then KaRaMeL does remove these additional
+units in the C code it produces.</p>
+<section id="ghost-a-primitive-effect">
+<h2>Ghost: A Primitive Effect<a class="headerlink" href="#ghost-a-primitive-effect" title="Link to this heading"></a></h2>
+<p>The second, primitive effect in F*’s effect system is the effect of
+<em>ghost</em> computations, i.e., computation types whose effect label is
+<code class="docutils literal notranslate"><span class="pre">GTot</span></code>. <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> The label <code class="docutils literal notranslate"><span class="pre">GTot</span></code> is strictly above <code class="docutils literal notranslate"><span class="pre">Tot</span></code> in the
+effect hierarchy, i.e., <code class="docutils literal notranslate"><span class="pre">Tot</span> <span class="pre">&lt;</span> <span class="pre">GTot</span></code>. This means that a term with
+computation type <code class="docutils literal notranslate"><span class="pre">GTot</span> <span class="pre">t</span></code> cannot influence the behavior of a term
+whose type is <code class="docutils literal notranslate"><span class="pre">Tot</span> <span class="pre">s</span></code>. Conversely, every <code class="docutils literal notranslate"><span class="pre">Tot</span></code> computation can be
+implicitly promoted to a <code class="docutils literal notranslate"><span class="pre">GTot</span></code> computation.</p>
+<p>Ghost computations are just as well-behaved as pure, total
+terms—they always terminate on all inputs and exhibit no observable
+effects, except for the value they return. As such, F*’s logical core
+really includes both <code class="docutils literal notranslate"><span class="pre">Tot</span></code> and <code class="docutils literal notranslate"><span class="pre">GTot</span></code> computations. The
+distinction between <code class="docutils literal notranslate"><span class="pre">Tot</span></code> and <code class="docutils literal notranslate"><span class="pre">GTot</span></code> is only relevant when
+considering how programs are compiled. Ghost computations are
+guaranteed to be erased by the compiler, while <code class="docutils literal notranslate"><span class="pre">Tot</span></code>
+computations are retained.</p>
+<p>Since <code class="docutils literal notranslate"><span class="pre">Tot</span></code> terms are implicitly promoted to <code class="docutils literal notranslate"><span class="pre">GTot</span></code>, it is easy to
+designate that some piece of code should be erased just by annotating
+it with a <code class="docutils literal notranslate"><span class="pre">GTot</span></code> effect label. For example, here is an ghost version
+of the factorial function:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> factorial (n:nat)
+  : <span class="k">GTot</span> nat
+  = <span class="k">if</span> n = 0 <span class="k">then</span> 1 <span class="k">else</span> n * factorial (n - 1)
+</pre></div>
+</div>
+<p>Its definition is identical to the corresponding total function that
+we saw earlier, except that we have annotated the return computation
+type of the function as <code class="docutils literal notranslate"><span class="pre">GTot</span> <span class="pre">nat</span></code>. This indicates to F* that
+<code class="docutils literal notranslate"><span class="pre">factorial</span></code> is to be erased during compilation, and the F*
+type-and-effect checker ensures that <code class="docutils literal notranslate"><span class="pre">Tot</span></code> computations cannot depend
+on an application of <code class="docutils literal notranslate"><span class="pre">factorial</span> <span class="pre">n</span></code>.</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id2" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>The name <code class="docutils literal notranslate"><span class="pre">GTot</span></code> is meant to stand for “Ghost and Total”
+computations, and is pronounced “gee tote”. However, it’s a
+poor name and is far from self-explanatory. We plan to change
+the name of this effect in the future (e.g., to something like
+<code class="docutils literal notranslate"><span class="pre">Spec</span></code>, <code class="docutils literal notranslate"><span class="pre">Ghost</span></code>, or <code class="docutils literal notranslate"><span class="pre">Erased</span></code>), though this is a breaking
+change to a large amount of existing F* code.</p>
+</aside>
+</aside>
+</section>
+<section id="ghost-computations-as-specifications">
+<h2>Ghost Computations as Specifications<a class="headerlink" href="#ghost-computations-as-specifications" title="Link to this heading"></a></h2>
+<p>A ghost function like <code class="docutils literal notranslate"><span class="pre">factorial</span></code> can be used in specifications,
+e.g., in a proof that a tail recursion optimization <code class="docutils literal notranslate"><span class="pre">factorial_tail</span></code>
+is equivalent to <code class="docutils literal notranslate"><span class="pre">factorial</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> factorial_tail (n:nat) (out:nat)
+  : <span class="k">Tot</span> (r:nat { r == out * factorial n })
+  = <span class="k">if</span> n = 0 <span class="k">then</span> out
+    <span class="k">else</span> factorial_tail (n - 1) (n * out)
+
+<span class="k">let</span> fact (n:nat) 
+  : <span class="k">Tot</span> (r:nat { r == factorial n })
+  = factorial_tail n 1
+</pre></div>
+</div>
+<p>This type allows a client to use the more efficient <code class="docutils literal notranslate"><span class="pre">fact</span></code>, but for
+reasoning purposes, one can use the more canonical <code class="docutils literal notranslate"><span class="pre">factorial</span></code>,
+proven equivalent to <code class="docutils literal notranslate"><span class="pre">fact</span></code>.</p>
+<p>In contrast, if we were to try to implement the same specification by
+directly using the factorial ghost function, F* complains with a
+effect incompatibility error.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span>[@@expect_failure]
+<span class="k">let</span> factorial_bad (n:nat) (out:nat)
+  : <span class="k">Tot</span> (r:nat { r == out * factorial n })
+  = out * factorial n
+</pre></div>
+</div>
+<p>The error is:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Computed type &quot;r: nat{r == out * factorial n}&quot; and
+effect &quot;GTot&quot; is not compatible with the annotated
+type &quot;r: nat{r == out * factorial n}&quot; effect &quot;Tot&quot;
+</pre></div>
+</div>
+<p>So, while F* forbids using ghost computations in <code class="docutils literal notranslate"><span class="pre">Tot</span></code> contexts, it
+seems to be fine with accepting a use of factorial in specifications,
+e.g., in the type <code class="docutils literal notranslate"><span class="pre">r:nat</span> <span class="pre">{</span> <span class="pre">r</span> <span class="pre">==</span> <span class="pre">out</span> <span class="pre">*</span> <span class="pre">factorial</span> <span class="pre">n</span> <span class="pre">}</span></code>. We’ll see in a
+moment why this is permitted.</p>
+</section>
+<section id="erasable-and-non-informative-types">
+<h2>Erasable and Non-informative Types<a class="headerlink" href="#erasable-and-non-informative-types" title="Link to this heading"></a></h2>
+<p>In addition to using the <code class="docutils literal notranslate"><span class="pre">GTot</span></code> effect to classify computations
+that must be erased, F* also provides a way to mark certain <em>value
+types</em> as erasable.</p>
+<p>Consider introducing an inductive type definition that is meant to
+describe a proof term only and for that proof term to introduce no
+runtime overhead. In a system like Coq, the type of Coq propositions
+<code class="docutils literal notranslate"><span class="pre">Prop</span></code> serves this purpose, but <code class="docutils literal notranslate"><span class="pre">prop</span></code> in F* is quite
+different. Instead, F* allows an inductive type definition to be
+marked as <code class="docutils literal notranslate"><span class="pre">erasable</span></code>.</p>
+<p>For example, when we looked at the <a class="reference internal" href="../part2/part2_stlc.html#part2-stlc-typing"><span class="std std-ref">simply typed lambda calculus
+(STLC)</span></a>, we introduced the inductive type below,
+to represent a typing derivation for an STLC term. One could define a
+typechecker for STLC and give it the type shown below to prove it
+correct:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> check (g:env) (e:exp) : (t : typ &amp; typing g e t)
+</pre></div>
+</div>
+<p>However, this function returns both the type <code class="docutils literal notranslate"><span class="pre">t:typ</span></code> computed for
+<code class="docutils literal notranslate"><span class="pre">e</span></code>, we well as the typing derivation. Although the typing
+derivation may be useful in some cases, often returning the whole
+derivation is unnecessary. By marking the definition of the <code class="docutils literal notranslate"><span class="pre">typing</span></code>
+inductive as shown below (and keeping the rest of the definition the
+same), F* guarantees that the compiler will extract <code class="docutils literal notranslate"><span class="pre">typing</span> <span class="pre">g</span> <span class="pre">e</span> <span class="pre">t</span></code>
+to the <code class="docutils literal notranslate"><span class="pre">unit</span></code> type and correspondingly, all values of <code class="docutils literal notranslate"><span class="pre">typing</span> <span class="pre">g</span> <span class="pre">e</span>
+<span class="pre">t</span></code> will be erased to the unit value <code class="docutils literal notranslate"><span class="pre">()</span></code></p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span>[@@erasable]
+<span class="k">noeq</span>
+<span class="k">type</span> typing : env -&gt; exp -&gt; typ -&gt; Type = ...
+</pre></div>
+</div>
+<p>Marking a type with the <code class="docutils literal notranslate"><span class="pre">erasable</span></code> attribute and having it be erased
+to <code class="docutils literal notranslate"><span class="pre">unit</span></code> is safe because F* restricts how <code class="docutils literal notranslate"><span class="pre">erasable</span></code> types can be
+used. In particular, no <code class="docutils literal notranslate"><span class="pre">Tot</span></code> computations should be able to extract
+information from a value of an erasable type.</p>
+<p>Closely related to erasable types are a class of types that are called
+<em>non-informative</em>, defined inductively as follows:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>The type <code class="docutils literal notranslate"><span class="pre">Type</span></code> is non-informative</p></li>
+<li><p>The type <code class="docutils literal notranslate"><span class="pre">prop</span></code> is non-informative (i.e., unit and all its
+subtypes)</p></li>
+<li><p>An erasable type is non-informative</p></li>
+<li><p>A function type <code class="docutils literal notranslate"><span class="pre">x:t</span> <span class="pre">-&gt;</span> <span class="pre">Tot</span> <span class="pre">s</span></code> is non-informative, if <code class="docutils literal notranslate"><span class="pre">s</span></code> is
+non-informative</p></li>
+<li><p>A ghost function type <code class="docutils literal notranslate"><span class="pre">x:t</span> <span class="pre">-&gt;</span> <span class="pre">GTot</span> <span class="pre">s</span></code> is non-informative</p></li>
+<li><p>A function type <code class="docutils literal notranslate"><span class="pre">x:t</span> <span class="pre">-&gt;</span> <span class="pre">C</span></code>, with user-defined computation type
+<code class="docutils literal notranslate"><span class="pre">C</span></code>, is non-informative if the effect label of <code class="docutils literal notranslate"><span class="pre">C</span></code> has the
+erasable attribute.</p></li>
+</ol>
+</div></blockquote>
+<p>Intuitively, a non-informative type is a type that cannot be
+case-analyzed in a <code class="docutils literal notranslate"><span class="pre">Tot</span></code> context.</p>
+<p>With this notion of non-informative types, we can now define the
+restrictions on an <code class="docutils literal notranslate"><span class="pre">erasable</span></code> type:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Any computation that pattern matches on an erasable type must
+return a non-informative type.</p></li>
+<li><p>Inductive types with the <code class="docutils literal notranslate"><span class="pre">erasable</span></code> attribute do not support
+built-in decidable equality and must also be marked <code class="docutils literal notranslate"><span class="pre">noeq</span></code>.</p></li>
+</ol>
+</div></blockquote>
+</section>
+<section id="the-erased-type-reveal-and-hide">
+<h2>The <cite>erased</cite> type, <cite>reveal</cite>, and <cite>hide</cite><a class="headerlink" href="#the-erased-type-reveal-and-hide" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">erasable</span></code> attribute can only be added to new inductive type
+definitions and every instance of that type becomes erasable. If you
+have a type like <code class="docutils literal notranslate"><span class="pre">nat</span></code>, which is not erasable, but some occurrences
+of it (e.g., in the arguments to <code class="docutils literal notranslate"><span class="pre">Vector.append</span></code>) need to be erased,
+the F* standard library <code class="docutils literal notranslate"><span class="pre">FStar.Ghost.fsti</span></code> offers the following:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="c">(** [erased t] is the computationally irrelevant counterpart of [t] *)</span>
+[@@ erasable]
+<span class="k">val</span> erased (t:Type u#a) : Type u#a
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">FStar.Ghost</span></code> also offers a pair of functions, <code class="docutils literal notranslate"><span class="pre">reveal</span></code> and
+<code class="docutils literal notranslate"><span class="pre">hide</span></code>, that form a bijection between <code class="docutils literal notranslate"><span class="pre">a</span></code> and <code class="docutils literal notranslate"><span class="pre">erased</span> <span class="pre">a</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> reveal (#a: Type u#a) (v:erased a) : <span class="k">GTot</span> a
+
+<span class="k">val</span> hide (#a: Type u#a) (v:a) : <span class="k">Tot</span> (erased a)
+
+<span class="k">val</span> hide_reveal (#a: Type) (x: erased a)
+  : <span class="k">Lemma</span> (<span class="k">ensures</span> (hide (reveal x) == x))
+          [<span class="k">SMTPat</span> (reveal x)]
+
+<span class="k">val</span> reveal_hide (#a: Type) (x: a)
+  : <span class="k">Lemma</span> (<span class="k">ensures</span> (reveal (hide x) == x))
+          [<span class="k">SMTPat</span> (hide x)]
+</pre></div>
+</div>
+<p>Importantly, <code class="docutils literal notranslate"><span class="pre">reveal</span> <span class="pre">v</span></code> breaks the abstraction of <code class="docutils literal notranslate"><span class="pre">v:erased</span> <span class="pre">a</span></code>
+returning just an <code class="docutils literal notranslate"><span class="pre">a</span></code>, but doing so incurs a <code class="docutils literal notranslate"><span class="pre">GTot</span></code> effect—so,
+<code class="docutils literal notranslate"><span class="pre">reveal</span></code> cannot be used in an arbitrary <code class="docutils literal notranslate"><span class="pre">Tot</span></code> contexts.</p>
+<p>Dually, <code class="docutils literal notranslate"><span class="pre">hide</span> <span class="pre">v</span></code> can be used to erase <code class="docutils literal notranslate"><span class="pre">v:a</span></code>, since a <code class="docutils literal notranslate"><span class="pre">Tot</span></code>
+context cannot depend on the value of an <code class="docutils literal notranslate"><span class="pre">erased</span> <span class="pre">a</span></code>.</p>
+<p>The SMT patterns on the two lemmas allow F* and Z3 to automatically
+instantiate the lemmas to relate a value and its hidden
+counterpart—<a class="reference internal" href="../under_the_hood/uth_smt.html#uth-smt"><span class="std std-ref">this chapter</span></a> provides more details on
+how SMT patterns work.</p>
+<p><strong>Implicit coercions</strong></p>
+<p><code class="docutils literal notranslate"><span class="pre">FStar.Ghost.erased</span></code>, <code class="docutils literal notranslate"><span class="pre">reveal</span></code>, and <code class="docutils literal notranslate"><span class="pre">hide</span></code> are so commonly used
+in F* that the compiler provides some special support for it. In
+particular, when a term <code class="docutils literal notranslate"><span class="pre">v:t</span></code> is used in a context that expects an
+<code class="docutils literal notranslate"><span class="pre">erased</span> <span class="pre">t</span></code>, F* implictly coerces <code class="docutils literal notranslate"><span class="pre">v</span></code> to <code class="docutils literal notranslate"><span class="pre">hide</span> <span class="pre">v</span></code>. Likewise, when
+the context expects a <code class="docutils literal notranslate"><span class="pre">t</span></code> where <code class="docutils literal notranslate"><span class="pre">v:erased</span> <span class="pre">t</span></code> is provided, F*
+implicitly coerces <code class="docutils literal notranslate"><span class="pre">v</span></code> to <code class="docutils literal notranslate"><span class="pre">reveal</span> <span class="pre">v</span></code>.</p>
+<p>The following examples illustrates a few usages and limitations. You
+can ask F* to print the code with implicits enabled by using
+<code class="docutils literal notranslate"><span class="pre">--dump_module</span> <span class="pre">RevealHideCoercions</span> <span class="pre">--print_implicits</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">module</span> RevealHideCoercions
+<span class="k">open</span> FStar.Ghost
+
+<span class="k">let</span> auto_hide (x:nat) : erased nat = x
+<span class="k">let</span> auto_reveal (x:erased nat) : <span class="k">GTot</span> nat = x
+
+[@@expect_failure] <span class="c">//Expect GTot</span>
+<span class="k">let</span> auto_reveal_2 (x:erased nat) : <span class="k">Tot</span> nat = x
+
+<span class="k">let</span> incr (x:nat) : nat = x + 1
+<span class="k">let</span> incr_e (x:erased nat) : erased nat = incr x
+
+<span class="k">let</span> incr&#39; (x:nat) : <span class="k">GTot</span> nat = incr_e x
+
+[@@expect_failure]
+<span class="k">let</span> poly (x:nat) (y:erased nat) = x == y
+</pre></div>
+</div>
+<p>A few comments on these examples:</p>
+<ul class="simple">
+<li><p>The first two functions illustrate how a <code class="docutils literal notranslate"><span class="pre">nat</span></code> is coerced
+implicitly to <code class="docutils literal notranslate"><span class="pre">erased</span> <span class="pre">nat</span></code>. Note, the effect of <code class="docutils literal notranslate"><span class="pre">auto_reveal</span></code> is
+<code class="docutils literal notranslate"><span class="pre">GTot</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">auto_reveal_2</span></code> fails, since the annotation claims,
+incorrectly, that the effect label is <code class="docutils literal notranslate"><span class="pre">Tot</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">incr</span></code> is just a <code class="docutils literal notranslate"><span class="pre">nat</span> <span class="pre">-&gt;</span> <span class="pre">nat</span></code> function.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">incr_e</span></code> is interesting because it calls <code class="docutils literal notranslate"><span class="pre">incr</span></code> with an
+<code class="docutils literal notranslate"><span class="pre">erased</span> <span class="pre">nat</span></code> and the annotation expects an <code class="docutils literal notranslate"><span class="pre">erased</span> <span class="pre">nat</span></code>
+too. The body of <code class="docutils literal notranslate"><span class="pre">incr_e</span></code> is implicitly coerced to <code class="docutils literal notranslate"><span class="pre">hide</span> <span class="pre">(incr</span>
+<span class="pre">(reveal</span> <span class="pre">x))</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">incr'</span></code> is interesting, since it calls <code class="docutils literal notranslate"><span class="pre">incr_e</span></code>: its body
+is implicitly coerced to <code class="docutils literal notranslate"><span class="pre">reveal</span> <span class="pre">(incr_e</span> <span class="pre">(hide</span> <span class="pre">x))</span></code></p></li>
+<li><p>Finally, <code class="docutils literal notranslate"><span class="pre">poly</span></code> shows the limitations of implicit coercion: F*
+only inserts coercions when the expected type of the term in a
+context and the type of the term differ by an <code class="docutils literal notranslate"><span class="pre">erased</span></code>
+constructor. In <code class="docutils literal notranslate"><span class="pre">poly</span></code>, since <code class="docutils literal notranslate"><span class="pre">==</span></code> is polymorphic, the expected
+type of the context is just an unresolved unification variable and,
+so, no coercion is inserted. Instead, F* complains that <code class="docutils literal notranslate"><span class="pre">y</span></code> has
+type <code class="docutils literal notranslate"><span class="pre">erased</span> <span class="pre">nat</span></code> when the type <code class="docutils literal notranslate"><span class="pre">nat</span></code> was expected.</p></li>
+</ul>
+</section>
+<section id="using-ghost-computations-in-total-contexts">
+<span id="ghost-in-total-contexts"></span><h2>Using Ghost Computations in Total Contexts<a class="headerlink" href="#using-ghost-computations-in-total-contexts" title="Link to this heading"></a></h2>
+<p>We have already noted that <code class="docutils literal notranslate"><span class="pre">Tot</span> <span class="pre">&lt;</span> <span class="pre">GTot</span></code>, enabling <code class="docutils literal notranslate"><span class="pre">Tot</span></code>
+computations to be re-used in <code class="docutils literal notranslate"><span class="pre">GTot</span></code> contexts. For erasure to be
+sound, it is crucial that <code class="docutils literal notranslate"><span class="pre">GTot</span></code> terms cannot be used in <code class="docutils literal notranslate"><span class="pre">Tot</span></code>
+contexts, and indeed, F* forbids this in general.
+However, there is one exception where
+we can directly invoke a <code class="docutils literal notranslate"><span class="pre">GTot</span></code> computation in a <code class="docutils literal notranslate"><span class="pre">Tot</span></code> context
+without wrapping the result in <code class="docutils literal notranslate"><span class="pre">Ghost.erased</span></code>.</p>
+<section id="effect-promotion-for-non-informative-types">
+<h3>Effect Promotion for Non-informative Types<a class="headerlink" href="#effect-promotion-for-non-informative-types" title="Link to this heading"></a></h3>
+<p>Consider a term <code class="docutils literal notranslate"><span class="pre">f</span></code> with type <code class="docutils literal notranslate"><span class="pre">GTot</span> <span class="pre">s</span></code>, where <code class="docutils literal notranslate"><span class="pre">s</span></code> is a
+non-informative type. Since <code class="docutils literal notranslate"><span class="pre">s</span></code> is non-informative, no total context
+can extract any information from <code class="docutils literal notranslate"><span class="pre">f</span></code>. As such, F* allows implicitly
+promoting <code class="docutils literal notranslate"><span class="pre">GTot</span> <span class="pre">s</span></code> to <code class="docutils literal notranslate"><span class="pre">Tot</span> <span class="pre">s</span></code>, when <code class="docutils literal notranslate"><span class="pre">s</span></code> is a non-informative
+type.</p>
+<p>For instance, the following is derivable,
+<code class="docutils literal notranslate"><span class="pre">hide</span> <span class="pre">(factorial</span> <span class="pre">0)</span> <span class="pre">:</span> <span class="pre">Tot</span> <span class="pre">(erased</span> <span class="pre">nat)</span></code>: let’s work through it in detail.</p>
+<ol class="arabic simple">
+<li><p>We know that that <code class="docutils literal notranslate"><span class="pre">factorial</span> <span class="pre">n</span> <span class="pre">:</span> <span class="pre">GTot</span> <span class="pre">nat</span></code></p></li>
+<li><p>Recall from the discussion on <a class="reference internal" href="part4_computation_types_and_tot.html#part4-evaluation-order"><span class="std std-ref">evaluation order</span></a> and the application of functions to
+effectful arguments, <code class="docutils literal notranslate"><span class="pre">hide</span> <span class="pre">(factorial</span> <span class="pre">0)</span></code> is equivalent to <code class="docutils literal notranslate"><span class="pre">let</span>
+<span class="pre">x</span> <span class="pre">=</span> <span class="pre">factorial</span> <span class="pre">0</span> <span class="pre">in</span> <span class="pre">hide</span> <span class="pre">x</span></code>, where <code class="docutils literal notranslate"><span class="pre">x:nat</span></code> and
+<code class="docutils literal notranslate"><span class="pre">hide</span> <span class="pre">x</span> <span class="pre">:</span> <span class="pre">Tot</span> <span class="pre">(erased</span> <span class="pre">nat)</span></code>.</p></li>
+<li><p>From the rule for sequential composition of effectful terms, the
+type of <code class="docutils literal notranslate"><span class="pre">let</span> <span class="pre">x</span> <span class="pre">=</span> <span class="pre">factorial</span> <span class="pre">0</span> <span class="pre">in</span> <span class="pre">hide</span> <span class="pre">x</span></code> should be <code class="docutils literal notranslate"><span class="pre">GTot</span> <span class="pre">(erased</span>
+<span class="pre">nat)</span></code>, since <code class="docutils literal notranslate"><span class="pre">GTot</span> <span class="pre">=</span> <span class="pre">lub</span> <span class="pre">GTot</span> <span class="pre">Tot</span></code>.</p></li>
+<li><p>Since <code class="docutils literal notranslate"><span class="pre">erased</span> <span class="pre">nat</span></code> is a non-informative type, <code class="docutils literal notranslate"><span class="pre">GTot</span> <span class="pre">(erased</span>
+<span class="pre">nat)</span></code> is promoted to <code class="docutils literal notranslate"><span class="pre">Tot</span> <span class="pre">(erased</span> <span class="pre">nat)</span></code>, which is then the type
+of <code class="docutils literal notranslate"><span class="pre">hide</span> <span class="pre">(factorial</span> <span class="pre">0)</span></code>.</p></li>
+</ol>
+<p>Effect promotion for ghost functions returning non-informative types
+is very useful. It allows one to mix ghost computations with total
+computations, so long as the result of the ghost sub-computation is
+hidden with an erased type. For instance, in the code below, we use
+<code class="docutils literal notranslate"><span class="pre">hide</span> <span class="pre">(factorial</span> <span class="pre">(n</span> <span class="pre">-</span> <span class="pre">1))</span></code> and use the result <code class="docutils literal notranslate"><span class="pre">f_n_1</span></code> in an
+assertion to or some other proof step, all within a function that is
+in the <code class="docutils literal notranslate"><span class="pre">Tot</span></code> effect.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> factorial_tail_alt (n:nat) (out:nat)
+  : <span class="k">Tot</span> (r:nat { r == out * factorial n })
+  = <span class="k">if</span> n = 0 <span class="k">then</span> out
+    <span class="k">else</span> (
+      <span class="k">let</span> f_n_1 = hide (factorial (n - 1)) <span class="k">in</span>
+      <span class="k">let</span> result = factorial_tail_alt (n - 1) (n * out) <span class="k">in</span>
+      <span class="k">assert</span> (result == (n * out) * f_n_1);
+      result
+    )
+</pre></div>
+</div>
+</section>
+</section>
+<section id="revisiting-vector-concatenation">
+<h2>Revisiting Vector Concatenation<a class="headerlink" href="#revisiting-vector-concatenation" title="Link to this heading"></a></h2>
+<p>We now have all the ingredients to understand how the vector append
+example shown at the start of this chapter works. Here, below, is a
+version of the same code with all the implicit arguments and
+reveal/hide operations made explicit.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">module</span> VecErasedExplicit
+<span class="k">open</span> FStar.Ghost
+
+<span class="k">noeq</span>
+<span class="k">type</span> vec a : nat -&gt; Type = 
+  | Nil : vec a 0
+  | Cons : #n:erased nat -&gt; hd:a -&gt; tl:vec a (reveal n) -&gt; vec a (reveal n + 1)
+
+<span class="k">let</span> <span class="k">rec</span> append #a (#n #m:erased nat) (v0:vec a (reveal n)) (v1:vec a (reveal m))
+  : <span class="k">Tot</span> (vec a (reveal n + reveal m))
+        (<span class="k">decreases</span> (reveal n))
+  = <span class="k">match</span> v0 <span class="k">with</span>   
+    | Nil -&gt; v1
+    | Cons #<span class="k">_</span> #n_tl hd tl -&gt;
+      Cons #a 
+           #(hide (reveal n_tl + reveal m))
+           hd 
+           (append #a 
+                   #n_tl
+                   #m
+                   tl
+                   v1)
+</pre></div>
+</div>
+<p><strong>Definition of vec</strong></p>
+<p>In the definition of the inductive type <code class="docutils literal notranslate"><span class="pre">vec</span> <span class="pre">a</span></code>, we have two
+occurrences of <code class="docutils literal notranslate"><span class="pre">reveal</span></code>. Consider <code class="docutils literal notranslate"><span class="pre">vec</span> <span class="pre">a</span> <span class="pre">(reveal</span> <span class="pre">n)</span></code>, the type of
+the <code class="docutils literal notranslate"><span class="pre">tl</span></code> of the vector. <code class="docutils literal notranslate"><span class="pre">reveal</span> <span class="pre">n</span></code> is a ghost computation of type
+<code class="docutils literal notranslate"><span class="pre">GTot</span> <span class="pre">nat</span></code>, so <code class="docutils literal notranslate"><span class="pre">vec</span> <span class="pre">a</span> <span class="pre">(reveal</span> <span class="pre">n)</span> <span class="pre">:</span> <span class="pre">GTot</span> <span class="pre">Type</span></code>. But, since <code class="docutils literal notranslate"><span class="pre">Type</span></code>
+is non-informative, <code class="docutils literal notranslate"><span class="pre">GTot</span> <span class="pre">Type</span></code> is promoted to <code class="docutils literal notranslate"><span class="pre">Tot</span> <span class="pre">Type</span></code>. The
+promotion from <code class="docutils literal notranslate"><span class="pre">GTot</span> <span class="pre">Type</span></code> to <code class="docutils literal notranslate"><span class="pre">Tot</span> <span class="pre">Type</span></code> is pervasive in F* and
+enables ghost computations to be freely used in types and other
+specifications.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">vec</span> <span class="pre">a</span> <span class="pre">(reveal</span> <span class="pre">n</span> <span class="pre">+</span> <span class="pre">1)</span></code> in the result type of <code class="docutils literal notranslate"><span class="pre">Cons</span></code> is
+similar. Here <code class="docutils literal notranslate"><span class="pre">reveal</span> <span class="pre">n</span> <span class="pre">+</span> <span class="pre">1</span></code> has type <code class="docutils literal notranslate"><span class="pre">GTot</span> <span class="pre">nat</span></code>, but applying it
+to <code class="docutils literal notranslate"><span class="pre">vec</span> <span class="pre">a</span></code> produces a <code class="docutils literal notranslate"><span class="pre">GTot</span> <span class="pre">Type</span></code>, which is promoted to <code class="docutils literal notranslate"><span class="pre">Tot</span>
+<span class="pre">Type</span></code>.</p>
+<p><strong>Type of append</strong></p>
+<p>The type of <code class="docutils literal notranslate"><span class="pre">append</span></code> has four occurrences of <code class="docutils literal notranslate"><span class="pre">reveal</span></code>. Three of
+them, in the type of <code class="docutils literal notranslate"><span class="pre">v0</span></code>, <code class="docutils literal notranslate"><span class="pre">v1</span></code>, and the return type behave the
+same as the typing the fields of <code class="docutils literal notranslate"><span class="pre">Cons</span></code>: the <code class="docutils literal notranslate"><span class="pre">GTot</span> <span class="pre">Type</span></code> is
+promoted to <code class="docutils literal notranslate"><span class="pre">Tot</span> <span class="pre">Type</span></code>.</p>
+<p>One additional wrinkle is in the decreases clause, where we have an
+explicit <code class="docutils literal notranslate"><span class="pre">reveal</span> <span class="pre">n</span></code>, since what decreases on each recursive call is
+the <code class="docutils literal notranslate"><span class="pre">nat</span></code> that’s in bijection with the parameter <code class="docutils literal notranslate"><span class="pre">n</span></code>, rather than
+<code class="docutils literal notranslate"><span class="pre">n</span></code> itself. When F* infers a decreases clause for a function, any
+erased terms in the clause are automatically revealed.</p>
+<p><strong>Definition of append</strong></p>
+<p>The recursive call instantiates the index parameters to <code class="docutils literal notranslate"><span class="pre">n_tl</span></code> and
+<code class="docutils literal notranslate"><span class="pre">m</span></code>, which are both erased.</p>
+<p>When constructing the <code class="docutils literal notranslate"><span class="pre">Cons</span></code> node, its index argument is
+instantiated to <code class="docutils literal notranslate"><span class="pre">hide</span> <span class="pre">(reveal</span> <span class="pre">n_tl</span> <span class="pre">+</span> <span class="pre">reveal</span> <span class="pre">m)</span></code>. The needless
+addition is marked with a <code class="docutils literal notranslate"><span class="pre">hide</span></code> enabling that F* compiler to erase
+it. As we saw before in <code class="docutils literal notranslate"><span class="pre">factorial_tail_alt</span></code>, using <code class="docutils literal notranslate"><span class="pre">hide</span></code> allows
+one to mingle ghost computations (like <code class="docutils literal notranslate"><span class="pre">(reveal</span> <span class="pre">n</span> <span class="pre">-</span> <span class="pre">1)</span></code>) with total
+computations, as needed for specifications and proofs.</p>
+<p>All of this is painfully explicit, but the implicit reveal/hide
+coercions inserted by F* go a long way towards make things relatively
+smooth.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="part4_computation_types_and_tot.html" class="btn btn-neutral float-left" title="The Effect of Total Computations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="part4_div.html" class="btn btn-neutral float-right" title="Divergence, or Non-Termination" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

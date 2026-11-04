@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Getting Started &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Rubrics, Templates, and Audits" href="agentic_rubrics_templates_audits.html" />
+    <link rel="prev" title="Agentic Proof-Oriented Programming" href="agentic.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pulse/pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="agentic.html">Agentic Proof-Oriented Programming</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agentic_rubrics_templates_audits.html">Rubrics, Templates, and Audits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agentic_sorting_algorithms.html">On Abstraction &amp; Rubrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agentic_rubrics_as_templates.html">Rubrics as Templates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agentic_state_machines.html">Stateful Services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agentic_tls.html">A Verified TLS-1.3 Client and Server</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="agentic.html">Agentic Proof-Oriented Programming</a></li>
+      <li class="breadcrumb-item active">Getting Started</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="getting-started">
+<span id="agentic-getting-started"></span><h1>Getting Started<a class="headerlink" href="#getting-started" title="Link to this heading"></a></h1>
+<p>Getting started is easy.</p>
+<ol class="arabic">
+<li><p>Install the latest version of F* and Pulse by doing</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-fsSL<span class="w"> </span>https://aka.ms/install-fstar<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash<span class="w"> </span>-s<span class="w"> </span>--<span class="w"> </span>--release
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+<p>It installs in ~/.local/bin/fstar.exe, by default.</p>
+<ol class="arabic" start="2">
+<li><p>Install a coding agent of your choice, e.g., GitHub Copilot CLI, Clause Code
+etc. For example:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>npm<span class="w"> </span>install<span class="w"> </span>-g<span class="w"> </span>@github/copilot
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+<p>We’ll base most of what follows on GitHub Copilot CLI, but the same thing should
+apply to other agents.</p>
+<ol class="arabic" start="3">
+<li><p>You’ll need a way to authenticate with GitHub to use Copilot CLI. The easiest
+way is to create a personal access token (PAT) on GitHub, and then set it in
+your environment. For example, you can add the following line to your
+~/.bashrc file:</p>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">COPILOT_GITHUB_TOKEN</span><span class="o">=</span><span class="s2">&quot;your_personal_access_token_here&quot;</span>
+</pre></div>
+</div>
+</div></blockquote>
+</li>
+</ol>
+<p>At this point, you should be able to launch copilot and in chat session say something like:</p>
+<blockquote>
+<div><div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Write a pure F* function to reverse a list and prove that it is involutive.
+Write it in RevSample.fst and use fstar.exe to check that it verifies correctly.
+</pre></div>
+</div>
+</div></blockquote>
+<p>A run that I did cost around $0.33 with Claude Sonnet 4.6, producing a 43 line
+file with an implementation of <code class="docutils literal notranslate"><span class="pre">rev</span></code> and its proof, shown below. For a first
+try, a default GitHub profile should suffice, but for anything more serious, you
+will probably need a paid plan (more on that below).</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">module</span> RevSample
+
+<span class="k">open</span> FStar.List.<span class="k">Tot</span>
+
+<span class="k">let</span> <span class="k">rec</span> rev_aux (#a: Type) (acc: list a) (l: list a) : <span class="k">Tot</span> (list a) (<span class="k">decreases</span> l) =
+  <span class="k">match</span> l <span class="k">with</span>
+  | [] -&gt; acc
+  | hd :: tl -&gt; rev_aux (hd :: acc) tl
+
+<span class="k">let</span> rev (#a: Type) (l: list a) : list a =
+  rev_aux [] l
+
+<span class="c">(* Lemma: rev_aux acc l == (rev_aux [] l) @ acc *)</span>
+<span class="k">let</span> <span class="k">rec</span> rev_aux_append (#a: Type) (acc: list a) (l: list a)
+: <span class="k">Lemma</span> (<span class="k">ensures</span> rev_aux acc l == rev_aux [] l @ acc) (<span class="k">decreases</span> l)
+= <span class="k">match</span> l <span class="k">with</span>
+  | [] -&gt; ()
+  | hd :: tl -&gt;
+    rev_aux_append (hd :: acc) tl;
+    rev_aux_append [hd] tl;
+    append_assoc (rev_aux [] tl) [hd] acc
+
+<span class="c">(* Lemma: rev (l1 @ l2) == rev l2 @ rev l1 *)</span>
+<span class="k">let</span> <span class="k">rec</span> rev_append (#a: Type) (l1 l2: list a)
+: <span class="k">Lemma</span> (<span class="k">ensures</span> rev (l1 @ l2) == rev l2 @ rev l1) (<span class="k">decreases</span> l1)
+= <span class="k">match</span> l1 <span class="k">with</span>
+  | [] -&gt; ()
+  | hd :: tl -&gt;
+    rev_append tl l2;
+    rev_aux_append [hd] (tl @ l2);
+    rev_aux_append [hd] tl;
+    append_assoc (rev l2) (rev tl) [hd]
+
+<span class="c">(* Main theorem: rev (rev l) == l *)</span>
+<span class="k">let</span> <span class="k">rec</span> rev_involutive (#a: Type) (l: list a)
+: <span class="k">Lemma</span> (<span class="k">ensures</span> rev (rev l) == l) (<span class="k">decreases</span> l)
+= <span class="k">match</span> l <span class="k">with</span>
+  | [] -&gt; ()
+  | hd :: tl -&gt;
+    rev_involutive tl;
+    rev_aux_append [hd] tl;
+    rev_append (rev tl) [hd];
+    <span class="k">assert</span> (rev [hd] == [hd])
+</pre></div>
+</div>
+<ol class="arabic simple" start="4">
+<li><p>Optionally, one can install the <a class="reference external" href="https://github.com/FStarLang/proof-copilot#installation">FStarLang/proof-copilot</a> plugin. It
+contains various tips and tricks for agents to use F*, Pulse, KaRaMeL, Z3,
+and related tools.</p></li>
+</ol>
+<p>This example is very simple—a version of it even appears in <a class="reference external" href="_Part1_intrinsic_extrinsic">a previous
+chapter</a> of this book. But, even on this example
+you can start to see how things work.</p>
+<ul class="simple">
+<li><p>Agents start with a few steps of “thinking”—natural language output that
+describes the approach to solving the problem</p></li>
+<li><p>Then, they emit various tool calls, to read files, write files, call fstar.exe
+etc. (which need to be authorized)</p></li>
+<li><p>They read feedback from the tool calls (e.g., error messages from failed
+verification runs), followed by attempts to fix it.</p></li>
+<li><p>And, eventually, after several rounds, a solution is declared complete.</p></li>
+</ul>
+<p>Despite being very simple, this example already raises several interesting
+questions. On the one hand, that agents can automate so much is incredibly
+exciting, and raised many questions around the scale of program proofs one might
+attempt today with agentic automation. But, there are also some significant
+challenges to address, some technical, some societal—we outline just a few of
+them below.</p>
+<p><strong>Intent Confirmation</strong>: How is one to judge whether or not the task is actually
+completed? In this case, we have a function called <code class="docutils literal notranslate"><span class="pre">rev</span></code> and a lemma
+<code class="docutils literal notranslate"><span class="pre">rev_involutive</span></code> proving that <code class="docutils literal notranslate"><span class="pre">rev</span> <span class="pre">(rev</span> <span class="pre">l)</span> <span class="pre">==</span> <span class="pre">l</span></code>. Does this <code class="docutils literal notranslate"><span class="pre">rev</span></code> function
+really reverse a list? What if the agent produce <code class="docutils literal notranslate"><span class="pre">let</span> <span class="pre">rev</span> <span class="pre">l</span> <span class="pre">=</span> <span class="pre">l</span></code> instead? And
+is <code class="docutils literal notranslate"><span class="pre">rev</span> <span class="pre">(rev</span> <span class="pre">l)</span> <span class="pre">==</span> <span class="pre">l</span></code> the involution that we had in mind? Answering such
+questions effectively is perhaps the central question in agentic programming.</p>
+<p><strong>Agent Direction</strong>: For this simple problem, we didn’t need to say much. The
+background knowledge of the agents was sufficient to solve the problem (likely a
+version of the solution appears in the pre-training data in many forms). But,
+for more complex problems, what form of assistance should one provide to the
+agent to help it complete a task more effectively, e.g., with fewer attempts,
+consuming fewer tokens, or producing a higher quality results that is more
+likely to match a user’s intent.</p>
+<p><strong>Access Inequalities</strong>: It cost me $0.33 cents to do this one example. As we do
+more interesting examples, we’ll start to rack up bigger bills. Not everyone has
+access to such resources, and if state-of-the-art programming and proving is
+gated by access to the most powerful and expensive models, this is a very
+significant issue.</p>
+<p><strong>Environmental Resources</strong>: The computing resources used to train models and
+serve agents is substantial. The actual impact of this resource consumption is
+hard to assess properly, with many conflicting reports, but what is clear is
+that if the pace of agentic AI adoption increases as expected, the resource
+consumption will grow to be a substantial problem, unless better energy and
+cooling technologies are developed.</p>
+<p><strong>Pedagogical Issues</strong>: With many programming and proving tasks now
+substantially automatable, how will we teach the next generation these skills?
+Will these skills even be necessary in the future? And how should we teach
+agentic programming itself—is there any method to it?</p>
+<p>Of course, there are many more questions, spanning areas from labor issues to
+cognition and psychology. We will not attempt to address most of these issues,
+and instead focus primarily on the questions of <em>intent confirmation</em> and <em>agent
+direction</em>, while providing some steps towards a <em>pedagogy</em> of agentic
+programming. These are the beginnings of a what we believe is a new paradigm in
+which agents and human proof-oriented system architects work closely together to
+build verified software systems at scale.</p>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="agentic.html" class="btn btn-neutral float-left" title="Agentic Proof-Oriented Programming" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="agentic_rubrics_templates_audits.html" class="btn btn-neutral float-right" title="Rubrics, Templates, and Audits" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

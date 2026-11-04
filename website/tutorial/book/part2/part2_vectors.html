@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Length-indexed Lists &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Merkle Trees" href="part2_merkle.html" />
+    <link rel="prev" title="Inductive type definitions" href="part2_inductive_type_families.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="part2.html">Representing Data, Proofs, and Computations with Inductive Types</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="part2_inductive_type_families.html">Inductive type definitions</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Length-indexed Lists</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#even-and-odd-lengthed-lists">Even and Odd-lengthed Lists</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vectors">Vectors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getting-an-element-from-a-vector">Getting an element from a vector</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#exercises">Exercises</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#exercise-concatenating-vectors">Exercise: Concatenating vectors</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#exercise-splitting-a-vector">Exercise: Splitting a vector</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#vectors-probably-not-worth-it">Vectors: Probably not worth it</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="part2_merkle.html">Merkle Trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_equality.html">Equality Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_logical_connectives.html">Constructive &amp; Classical Connectives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_stlc.html">Simply Typed Lambda Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_phoas.html">Higher-order Abstract Syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_well_founded.html">Well-founded Relations and Termination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_par.html">A First Model of Computational Effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_universes.html">Universes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pulse/pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+      <li class="breadcrumb-item active">Length-indexed Lists</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="length-indexed-lists">
+<span id="part2-vectors"></span><h1>Length-indexed Lists<a class="headerlink" href="#length-indexed-lists" title="Link to this heading"></a></h1>
+<p>To make concrete some aspects of the formal definitions above, we’ll
+look at several variants of a parameterized list datatype augmented
+with indexes that carry information about the list’s length.</p>
+<section id="even-and-odd-lengthed-lists">
+<h2>Even and Odd-lengthed Lists<a class="headerlink" href="#even-and-odd-lengthed-lists" title="Link to this heading"></a></h2>
+<p>Our first example is a bit artificial, but helps illustrate a usage of
+mutually inductive types.</p>
+<p>Here, we’re defining two type constructors called <code class="docutils literal notranslate"><span class="pre">even</span></code> and
+<code class="docutils literal notranslate"><span class="pre">odd</span></code>, (i.e., just <span class="math notranslate nohighlight">\(T_1\)</span> and <span class="math notranslate nohighlight">\(T_2\)</span> from our formal
+definition), both with a single parameter <code class="docutils literal notranslate"><span class="pre">(a:Type)</span></code>, for the type
+of the lists’ elements, and no indexes.</p>
+<p>All lists of type <code class="docutils literal notranslate"><span class="pre">even</span> <span class="pre">a</span></code> have an even number of elements—zero
+elements, using its first constructor <code class="docutils literal notranslate"><span class="pre">ENil</span></code>, or using <code class="docutils literal notranslate"><span class="pre">ECons</span></code>,
+one more than the number of elements in an <code class="docutils literal notranslate"><span class="pre">odd</span> <span class="pre">a</span></code>, a list with an
+odd number of elements. Elements of the type <code class="docutils literal notranslate"><span class="pre">odd</span> <span class="pre">a</span></code> are constructed
+using the constructor <code class="docutils literal notranslate"><span class="pre">OCons</span></code>, which adds a single element to an
+<code class="docutils literal notranslate"><span class="pre">even</span> <span class="pre">a</span></code> list. The types are mutually inductive since their
+definitions reference each other.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> even (a:Type) =
+ | ENil : even a
+ | ECons : a -&gt; odd a -&gt; even a
+<span class="k">and</span> odd (a:Type) =
+ | OCons : a -&gt; even a -&gt; odd a
+</pre></div>
+</div>
+<p>Although closely related, the types <code class="docutils literal notranslate"><span class="pre">even</span> <span class="pre">a</span></code> and <code class="docutils literal notranslate"><span class="pre">odd</span> <span class="pre">a</span></code> are from
+distinct inductive types. So, to compute, say, the length of one of
+these lists one generally write a pair of mutually recursive
+functions, like so:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> elength #a (e:even a)
+  : n:nat { n % 2 == 0}
+  = <span class="k">match</span> e <span class="k">with</span>
+    | ENil -&gt; 0
+    | ECons <span class="k">_</span> tl -&gt; 1 + olength tl
+<span class="k">and</span> olength #a (o:odd a)
+  : n:nat { n % 2 == 1 }
+  = <span class="k">let</span> OCons <span class="k">_</span> tl = o <span class="k">in</span>
+    1 + elength tl
+</pre></div>
+</div>
+<p>Note, we can prove that the length of an <code class="docutils literal notranslate"><span class="pre">even</span> <span class="pre">a</span></code> and <code class="docutils literal notranslate"><span class="pre">odd</span> <span class="pre">a</span></code> are
+really even and odd.</p>
+<p>Now, say, you wanted to map a function over an <code class="docutils literal notranslate"><span class="pre">even</span> <span class="pre">a</span></code>, you’d have
+to write a pair of mutually recursive functions to map simultaneously
+over them both. This can get tedious quickly. Instead of rolling out
+several mutually inductive but distinct types, one can instead use an
+<em>indexed</em> type to group related types in the same inductive family of
+types.</p>
+<p>The definition of <code class="docutils literal notranslate"><span class="pre">even_or_odd_list</span></code> below shows an inductive type
+with one parameter <code class="docutils literal notranslate"><span class="pre">a</span></code>, for the type of lists elements, and a single
+boolean index, which indicates whether the list is even or odd. Note
+how the index varies in the types of the constructors, whereas the
+parameter stays the same in all instances.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> even_or_odd_list (a:Type) : bool -&gt; Type =
+ | EONil : even_or_odd_list a <span class="k">true</span>
+ | EOCons : a -&gt; #b:bool -&gt; even_or_odd_list a b -&gt; even_or_odd_list a (not b)
+</pre></div>
+</div>
+<p>Now, we have a single family of types for both even and odd lists, and
+we can write a single function that abstracts over both even and odd
+lists, just by abstracting over the boolean index. For example,
+<code class="docutils literal notranslate"><span class="pre">eo_length</span></code> computes the length of an <code class="docutils literal notranslate"><span class="pre">even_or_odd_list</span></code>, with its
+type showing that it returns an even number with <code class="docutils literal notranslate"><span class="pre">b</span></code> is true and an
+odd number otherwise.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> eo_length #a #b (l:even_or_odd_list a b)
+  : <span class="k">Tot</span> (n:nat { <span class="k">if</span> b <span class="k">then</span> n % 2 == 0 <span class="k">else</span> n % 2 == 1})
+        (<span class="k">decreases</span> l)
+  = <span class="k">match</span> l <span class="k">with</span>
+    | EONil -&gt; 0
+    | EOCons <span class="k">_</span> tl -&gt; 1 + eo_length tl
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Note, in <code class="docutils literal notranslate"><span class="pre">eo_length</span></code> we had to explicitly specify a decreases
+clause to prove the function terminating. Why? Refer back to the
+section on <a class="reference internal" href="../part1/part1_termination.html#part1-termination-default-measures"><span class="std std-ref">default
+measures</span></a> to recall that by
+default is the lexicographic ordering of all the arguments in
+order. So, without the decreases clause, F* will try to prove that
+the index argument <code class="docutils literal notranslate"><span class="pre">b</span></code> decreases on the recursive call, which it
+does not.</p>
+</div>
+<p>This is our first type with both parameters and indices. But why
+stop at just indexing to distinguish even and odd-lengthed lists? We
+can index a list by its length itself.</p>
+</section>
+<section id="vectors">
+<h2>Vectors<a class="headerlink" href="#vectors" title="Link to this heading"></a></h2>
+<p>Let’s look again at the definition of the <code class="docutils literal notranslate"><span class="pre">vec</span></code> type, first shown in
+<a class="reference internal" href="../intro.html#intro-vec"><span class="std std-ref">the introduction</span></a>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> vec (a:Type) : nat -&gt; Type =
+  | Nil : vec a 0
+  | Cons : #n:nat -&gt; hd:a -&gt; tl:vec a n -&gt; vec a (n + 1)
+</pre></div>
+</div>
+<p>Here, we’re defining just a single type constructor called <code class="docutils literal notranslate"><span class="pre">vec</span></code>
+(i.e., just <span class="math notranslate nohighlight">\(T_1\)</span>), with a single parameter <code class="docutils literal notranslate"><span class="pre">(a:Type)</span></code> and one
+index <code class="docutils literal notranslate"><span class="pre">nat</span></code>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">vec</span></code> has two data constructors: <code class="docutils literal notranslate"><span class="pre">Nil</span></code> builds an instance of <code class="docutils literal notranslate"><span class="pre">vec</span>
+<span class="pre">a</span> <span class="pre">0</span></code>, the empty vector; and <code class="docutils literal notranslate"><span class="pre">Cons</span> <span class="pre">hd</span> <span class="pre">tl</span></code> builds an instance of
+<code class="docutils literal notranslate"><span class="pre">vec</span> <span class="pre">a</span> <span class="pre">(n</span> <span class="pre">+</span> <span class="pre">1)</span></code> from a head element <code class="docutils literal notranslate"><span class="pre">hd:a</span></code> and a tail <code class="docutils literal notranslate"><span class="pre">tl</span> <span class="pre">:</span> <span class="pre">vec</span> <span class="pre">a</span>
+<span class="pre">n</span></code>. That is, the two constructors build different instances of
+<code class="docutils literal notranslate"><span class="pre">vec</span></code>—those instances have the same parameter (<code class="docutils literal notranslate"><span class="pre">a</span></code>), but
+different indexes (<code class="docutils literal notranslate"><span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">n</span> <span class="pre">+</span> <span class="pre">1</span></code>).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Datatypes in many languages in the ML family, including OCaml and
+F#, have parameters but no indexes. So, all the data constructors
+construct the same instance of the type constructor. Further, all
+data constructors take at most one argument. If your datatype
+happens to be simple enough to fit these restrictions, you can use
+a notation similar to OCaml or F# for those types in F*. For
+example, here’s the <code class="docutils literal notranslate"><span class="pre">option</span></code> type defined in F* using an
+OCaml-like notation.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> option a =
+  | None
+  | Some <span class="k">of</span> a
+</pre></div>
+</div>
+<p>This is equivalent to</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> option a =
+  | None : option a
+  | Some : a -&gt; option a
+</pre></div>
+</div>
+</div>
+</section>
+<section id="getting-an-element-from-a-vector">
+<h2>Getting an element from a vector<a class="headerlink" href="#getting-an-element-from-a-vector" title="Link to this heading"></a></h2>
+<p>With our length-indexed <code class="docutils literal notranslate"><span class="pre">vec</span></code> type, one can write functions with
+types that make use of the length information to ensure that they are
+well-defined. For example, to get the <code class="docutils literal notranslate"><span class="pre">i</span></code> th element of a vector, one
+can write:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> get #a #n (i:nat{i &lt; n}) (v:vec a n)
+  : a
+  = <span class="k">match</span> v <span class="k">with</span>
+    | Nil -&gt; false_elim()
+    | Cons hd tl -&gt;
+      <span class="k">if</span> i = 0 <span class="k">then</span> hd
+      <span class="k">else</span> get (i - 1) tl
+</pre></div>
+</div>
+<p>The type of <code class="docutils literal notranslate"><span class="pre">get</span> <span class="pre">i</span> <span class="pre">v</span></code> says that <code class="docutils literal notranslate"><span class="pre">i</span></code> must be less than <code class="docutils literal notranslate"><span class="pre">n</span></code>, where
+<code class="docutils literal notranslate"><span class="pre">n</span></code> is the length of <code class="docutils literal notranslate"><span class="pre">v</span></code>, i.e., that <code class="docutils literal notranslate"><span class="pre">i</span></code> is within bounds of the
+vector, which is enough to prove that <code class="docutils literal notranslate"><span class="pre">get</span> <span class="pre">i</span> <span class="pre">v</span></code> can always return an
+element of type <code class="docutils literal notranslate"><span class="pre">a</span></code>. Let’s look a bit more closely at how this
+function is typechecked by F*.</p>
+<p>The first key bit is pattern matching <code class="docutils literal notranslate"><span class="pre">v</span></code>:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">match</span> v <span class="k">with</span>
+| Nil -&gt; false_elim()
+| Cons hd tl -&gt;
+</pre></div>
+</div>
+<p>In case <code class="docutils literal notranslate"><span class="pre">v</span></code> is <code class="docutils literal notranslate"><span class="pre">Nil</span></code>, we use the library function
+<code class="docutils literal notranslate"><span class="pre">Prims.false_elim</span> <span class="pre">:</span> <span class="pre">squash</span> <span class="pre">False</span> <span class="pre">-&gt;</span> <span class="pre">a</span></code> to express that this case is
+impossible. Intuitively, since the index <code class="docutils literal notranslate"><span class="pre">i</span></code> is a natural number
+strictly less than the length of the list, we should be able to
+convince F* that <code class="docutils literal notranslate"><span class="pre">n</span> <span class="pre">&lt;&gt;</span> <span class="pre">0</span></code>.</p>
+<p>The way this works is that F* typechecks the branch in a context that
+includes an <em>equation</em>, namely that the <code class="docutils literal notranslate"><span class="pre">v</span> <span class="pre">:</span> <span class="pre">vec</span> <span class="pre">a</span> <span class="pre">n</span></code> equals the
+pattern <code class="docutils literal notranslate"><span class="pre">Nil</span> <span class="pre">:</span> <span class="pre">vec</span> <span class="pre">a</span> <span class="pre">0</span></code>. With the assumption that <code class="docutils literal notranslate"><span class="pre">v</span> <span class="pre">==</span> <span class="pre">Nil</span></code> in
+the context, F* tries to check that <code class="docutils literal notranslate"><span class="pre">false_elim</span></code> is well-typed,
+which in turn requires <code class="docutils literal notranslate"><span class="pre">()</span> <span class="pre">:</span> <span class="pre">squash</span> <span class="pre">False</span></code>. This produces an proof
+obligation sent to the SMT solver, which is able to prove <code class="docutils literal notranslate"><span class="pre">False</span></code> in
+this case, since from <code class="docutils literal notranslate"><span class="pre">v</span> <span class="pre">=</span> <span class="pre">Nil</span></code> we must have that <code class="docutils literal notranslate"><span class="pre">n</span> <span class="pre">=</span> <span class="pre">0</span></code> which
+contradicts <code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">&lt;</span> <span class="pre">n</span></code>. Put another way, the branch where <code class="docutils literal notranslate"><span class="pre">v</span> <span class="pre">=</span> <span class="pre">Nil</span></code>
+is unreachable given the precondition <code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">&lt;</span> <span class="pre">n</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When a branch is unreachable, F* allows you to just omit the branch
+altogether, rather than writing it an explicitly calling
+<code class="docutils literal notranslate"><span class="pre">false_elim</span></code>. For example, it is more common to write:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> get #a #n (i:nat{i &lt; n}) (v:vec a n)
+  : a
+  = <span class="k">let</span> Cons hd tl = v <span class="k">in</span>
+    <span class="k">if</span> i = 0 <span class="k">then</span> hd
+    <span class="k">else</span> get (i - 1) tl
+</pre></div>
+</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">let</span> <span class="pre">Cons</span> <span class="pre">hd</span> <span class="pre">tl</span> <span class="pre">=</span> <span class="pre">v</span></code> pattern matches <code class="docutils literal notranslate"><span class="pre">v</span></code> against just
+<code class="docutils literal notranslate"><span class="pre">Cons</span> <span class="pre">hd</span> <span class="pre">tl</span></code>. F* automatically proves that the other cases of
+the match are unreachable.</p>
+</div>
+<p>Now, turning to the second case, we have a pattern like this:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">match</span> v <span class="k">with</span>
+| Cons hd tl -&gt;
+</pre></div>
+</div>
+<p>But, recall that <code class="docutils literal notranslate"><span class="pre">Cons</span></code> has an implicit first argument describing
+the length of <code class="docutils literal notranslate"><span class="pre">tl</span></code>. So, more explicitly, our pattern is of the form
+below, where <code class="docutils literal notranslate"><span class="pre">tl</span> <span class="pre">:</span> <span class="pre">vec</span> <span class="pre">a</span> <span class="pre">m</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">match</span> v <span class="k">with</span>
+| Cons #m hd tl -&gt;
+</pre></div>
+</div>
+<p>F* typechecks the branch in a context that includes the equation that
+<code class="docutils literal notranslate"><span class="pre">v</span> <span class="pre">==</span> <span class="pre">Cons</span> <span class="pre">#m</span> <span class="pre">hd</span> <span class="pre">tl</span></code>, which lets the solver conclude that <code class="docutils literal notranslate"><span class="pre">n</span> <span class="pre">==</span> <span class="pre">m</span> <span class="pre">+</span>
+<span class="pre">1</span></code>, from the type of <code class="docutils literal notranslate"><span class="pre">Cons</span></code>.</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">i=0</span></code>, we’ve found the element we want and return it.</p>
+<p>Otherwise, we make a recursive call <code class="docutils literal notranslate"><span class="pre">get</span> <span class="pre">(i</span> <span class="pre">-</span> <span class="pre">1)</span> <span class="pre">tl</span></code> and now F* has
+to:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Instantiate the implicit argument of <code class="docutils literal notranslate"><span class="pre">get</span></code> to <code class="docutils literal notranslate"><span class="pre">m</span></code>, the length
+of <code class="docutils literal notranslate"><span class="pre">tl</span></code>. That is, in explicit form, this recursive call is
+really <code class="docutils literal notranslate"><span class="pre">get</span> <span class="pre">#m</span> <span class="pre">(i</span> <span class="pre">-</span> <span class="pre">1)</span> <span class="pre">tl</span></code>. F* does this by relying on a
+unification algorithm implemented as part of its type inference
+procedure.</p></li>
+<li><p>Prove that <code class="docutils literal notranslate"><span class="pre">(i</span> <span class="pre">-</span> <span class="pre">1)</span> <span class="pre">&lt;</span> <span class="pre">m</span></code>, which follows from <code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">&lt;</span> <span class="pre">n</span></code> and <code class="docutils literal notranslate"><span class="pre">n</span>
+<span class="pre">==</span> <span class="pre">m</span> <span class="pre">+</span> <span class="pre">1</span></code>.</p></li>
+<li><p>Prove that the recursive call terminates, by proving that <code class="docutils literal notranslate"><span class="pre">m</span> <span class="pre">&lt;&lt;</span>
+<span class="pre">n</span></code>, or, equivalently, since <code class="docutils literal notranslate"><span class="pre">m</span></code> and <code class="docutils literal notranslate"><span class="pre">n</span></code> are natural numbers,
+<code class="docutils literal notranslate"><span class="pre">m</span> <span class="pre">&lt;</span> <span class="pre">n</span></code>. This is easy, since we have <code class="docutils literal notranslate"><span class="pre">n</span> <span class="pre">==</span> <span class="pre">m</span> <span class="pre">+</span> <span class="pre">1</span></code>.</p></li>
+</ul>
+</div></blockquote>
+<p>Let’s try a few exercises. The main work is to find a type for the
+functions in question. Once you do, the rest of the code will “write
+itself”.</p>
+</section>
+<section id="exercises">
+<h2>Exercises<a class="headerlink" href="#exercises" title="Link to this heading"></a></h2>
+<section id="exercise-concatenating-vectors">
+<h3>Exercise: Concatenating vectors<a class="headerlink" href="#exercise-concatenating-vectors" title="Link to this heading"></a></h3>
+<p><a class="reference external" href="../code/exercises/Part2.Vec.fst">Click here</a> for the exercise file.</p>
+<p>Implement a function to concatenate vectors. It should have the
+following signature:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> append (#a:Type) (#n #m:nat) (v1:vec a n) (v2:vec a m)
+  : vec a (n + m)
+</pre></div>
+</div>
+<div class="toggle docutils container">
+<div class="header docutils container">
+<p><strong>Answer</strong></p>
+</div>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> append #a #n #m (v1:vec a n) (v2:vec a m)
+  : vec a (n + m)
+  = <span class="k">match</span> v1 <span class="k">with</span>
+    | Nil -&gt; v2
+    | Cons hd tl -&gt; Cons hd (append tl v2)
+</pre></div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="exercise-splitting-a-vector">
+<h3>Exercise: Splitting a vector<a class="headerlink" href="#exercise-splitting-a-vector" title="Link to this heading"></a></h3>
+<p>Write a function called <code class="docutils literal notranslate"><span class="pre">split_at</span></code> to split a vector <code class="docutils literal notranslate"><span class="pre">v</span> <span class="pre">:</span> <span class="pre">vec</span> <span class="pre">a</span> <span class="pre">n</span></code>
+at index <code class="docutils literal notranslate"><span class="pre">i</span></code> into its <code class="docutils literal notranslate"><span class="pre">i</span></code> -length prefix from position <code class="docutils literal notranslate"><span class="pre">0</span></code> and a
+suffix starting at <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p>
+<div class="toggle docutils container">
+<div class="header docutils container">
+<p><strong>Answer</strong></p>
+</div>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> split_at #a #n (i:nat{i &lt;= n}) (v:vec a n)
+  : vec a i &amp; vec a (n - i)
+  = <span class="k">if</span> i = 0
+    <span class="k">then</span> Nil, v
+    <span class="k">else</span> <span class="k">let</span> Cons hd tl = v <span class="k">in</span>
+         <span class="k">let</span> l, r = split_at (i - 1) tl <span class="k">in</span>
+         Cons hd l, r
+</pre></div>
+</div>
+</div>
+<hr class="docutils" />
+<p>Write a tail-recursive version of <code class="docutils literal notranslate"><span class="pre">split_at</span></code>. You will need a
+<code class="docutils literal notranslate"><span class="pre">reverse</span></code> function as a helper.</p>
+<div class="toggle docutils container">
+<div class="header docutils container">
+<p><strong>Answer</strong></p>
+</div>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> reverse #a #n (v:vec a n)
+  : vec a n
+  = <span class="k">match</span> v <span class="k">with</span>
+    | Nil -&gt; Nil
+    | Cons hd tl -&gt; append (reverse tl) (Cons hd Nil)
+</pre></div>
+</div>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> split_at_tail #a #n (i:nat{i &lt;= n}) (v:vec a n)
+  : vec a i &amp; vec a (n - i)
+  = <span class="k">let</span> <span class="k">rec</span> aux (j:nat{j &lt;= i})
+                (v:vec a (n - (i - j)))
+                (out:vec a (i - j))
+      : vec a i &amp; vec a (n - i)
+      = <span class="k">if</span> j = 0
+        <span class="k">then</span> reverse out, v
+        <span class="k">else</span> <span class="k">let</span> Cons hd tl = v <span class="k">in</span>
+             aux (j - 1) tl (Cons hd out)
+    <span class="k">in</span>
+    aux i v Nil
+</pre></div>
+</div>
+</div>
+<p>Bonus: Prove <code class="docutils literal notranslate"><span class="pre">split_at</span></code> and <code class="docutils literal notranslate"><span class="pre">split_at_tail</span></code> are equivalent.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="vectors-probably-not-worth-it">
+<h2>Vectors: Probably not worth it<a class="headerlink" href="#vectors-probably-not-worth-it" title="Link to this heading"></a></h2>
+<p>Many texts about dependent types showcase length-indexed vectors, much
+as we’ve done here. Although useful as a simple illustrative example,
+the <code class="docutils literal notranslate"><span class="pre">vec</span></code> type we’ve seen is probably not what you want to use in
+practice. Especially in F*, where regular lists can easily be used
+with refinement types, length-indexed vectors are redundant because we
+simply refine our types using a <code class="docutils literal notranslate"><span class="pre">length</span></code> function. The code below
+shows how:</p>
+<blockquote>
+<div><div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">module</span> LList
+
+<span class="k">let</span> <span class="k">rec</span> length #a (l:list a)
+  : nat
+  = <span class="k">match</span> l <span class="k">with</span>
+    | [] -&gt; 0
+    | <span class="k">_</span>::tl -&gt; 1 + length tl
+
+<span class="k">let</span> <span class="k">rec</span> get #a (i:nat) (v:list a { i &lt; length v })
+  = <span class="k">let</span> hd :: tl = v <span class="k">in</span>
+    <span class="k">if</span> i = 0 <span class="k">then</span> hd
+    <span class="k">else</span> get (i - 1) tl
+
+<span class="k">let</span> <span class="k">rec</span> split_at #a (i:nat) (v:list a { i &lt;= length v })
+  : r:(list a &amp; list a){
+        length (fst r) == i /\
+        length (snd r) == (length v - i)
+     }
+  = <span class="k">if</span> i = 0
+    <span class="k">then</span> [], v
+    <span class="k">else</span> <span class="k">let</span> hd :: tl = v <span class="k">in</span>
+         <span class="k">let</span> l, r = split_at (i - 1) tl <span class="k">in</span>
+         hd::l, r
+
+<span class="k">let</span> <span class="k">rec</span> append #a (v1 v2:list a)
+  : v:list a { length v == length v1 + length v2 }
+  = <span class="k">match</span> v1 <span class="k">with</span>
+    | [] -&gt; v2
+    | hd::tl -&gt; hd :: append tl v2
+</pre></div>
+</div>
+</div></blockquote>
+<p>In the next few sections, we’ll see more useful examples of indexed
+inductive types than just mere length-indexed vectors.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="part2_inductive_type_families.html" class="btn btn-neutral float-left" title="Inductive type definitions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="part2_merkle.html" class="btn btn-neutral float-right" title="Merkle Trees" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

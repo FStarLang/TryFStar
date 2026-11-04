@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Structure of this book &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="static/custom.css?v=24463673" />
+
+  
+  
+        <script src="static/jquery.js?v=8dae8fb0"></script>
+        <script src="static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="static/documentation_options.js?v=5929fcd5"></script>
+        <script src="static/doctools.js?v=888ff710"></script>
+        <script src="static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Introduction" href="intro.html" />
+    <link rel="prev" title="Proof-oriented Programming in F*" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pulse/pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Structure of this book</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="structure-of-this-book">
+<h1>Structure of this book<a class="headerlink" href="#structure-of-this-book" title="Link to this heading"></a></h1>
+<p><strong>This book is a work in progress</strong></p>
+<p>The first four parts of this book explain the main features of the
+language using a variety of examples. You should read them
+sequentially, following along with the associated code samples and
+exercises. These first four parts are arranged in increasing order of
+complexity—you can stop after any of them and have a working
+knowledge of useful fragments of F*.</p>
+<p>If you are interested in verified programming with side effects, we
+recommend using Pulse, a DSL embedded in F* and shipping with compiler,
+with support for programming with mutable state and concurrency.</p>
+<ul class="simple">
+<li><p>Part 1: Basic Functional Programming and Proofs</p></li>
+</ul>
+<p>The first part of this book provides a basic introduction to
+programming with pure total functions, refinement types, and SMT-based
+proofs, and how to compile and execute your first F* program. This
+part of the book revises a previous online tutorial on F* and is
+targeted at an audience familiar with programming, though with no
+background in formal proofs. Even if you are familiar with program
+proofs and dependent types, it will be useful to quickly go through
+this part, since some elements are quite specific to F*.</p>
+<ul class="simple">
+<li><p>Part 2: Inductive Types for Data, Proofs, and Computations</p></li>
+</ul>
+<p>We turn next to inductive type definitions, the main mechanism by
+which a user can define new data types. F*’s indexed inductive types
+allow one to capture useful properties of data structures, and
+dependently typed functions over these indexed types can be proven to
+respect several kinds of invariants. Beyond their use for data
+structures, inductive data types are used at the core of F*’s logic to
+model fundamental notions like equality and termination proofs, and
+can also be used to model and embed other programming paradigms within
+F*.</p>
+<ul class="simple">
+<li><p>Part 3: Modularity with Interfaces and Typeclasses</p></li>
+</ul>
+<p>We discuss two main abstraction techniques, useful in structuring
+larger developments: interfaces and typeclasses. Interfaces are a
+simple information hiding mechanism built in to F*’s module
+system. Typeclasses are suitable for more advanced developments,
+providing more flexible abstraction patterns coupled with
+custom type inference.</p>
+<ul class="simple">
+<li><p>Part 4: Computational Effects</p></li>
+</ul>
+<p>We introduce F*’s effect system, starting with its primitive effects
+for total, ghost, and divergent computations. We also provide a brief
+primer on Floyd-Hoare logic and weakest precondition calculi,
+connecting them to Dijkstra monads, a core concept in the design of
+F*’s effect system.</p>
+<ul class="simple">
+<li><p>Part 5: Tactics and Metaprogramming</p></li>
+</ul>
+<p>We introduce Meta-F*, the metaprogramming system included in
+F*. Meta-F* can be used to automate the construction of proofs as well
+as programmatically construct fragments of F* programs. There’s a lot
+to cover here—the material so far presents the basics of how to get
+started with using Meta-F* to target specific assertions in your
+program and to have their proofs be solved using a mixture of tactics
+and SMT solving.</p>
+<ul class="simple">
+<li><p>Part 6: Pulse: Proof-Oriented Programming in Concurrent Separation Logic</p></li>
+</ul>
+<p>We present the Pulse DSL, an imperative DSL embedded in F* with support
+for mutable state &amp; concurrency, with proofs in modern concurrent
+separation logic.</p>
+<ul class="simple">
+<li><p>Part 7: Agentic Proof-Oriented Programming</p></li>
+</ul>
+<p>With the remarkable progress of AI agents, especially starting in late 2025,
+we have entered a world in which AI agents are able to vastly automate large
+program proofs in F* and Pulse. This part of the book provides some initial
+guidelines and principles for how to use AI agents to effectively automate
+programming and proving in F* and Pulse, while helping humans to understand
+agentically authored programs and proofs.</p>
+<ul class="simple">
+<li><p>Under the hood: F* &amp; SMT</p></li>
+</ul>
+<p>In this part of the book, we cover how F* uses the Z3 SMT solver. We
+present a brief overview of F*’s SMT encoding paying attention in
+particular to F* use of fuel to throttle SMT solver’s unfolding of
+recursive functions and inductive type definitions. We also cover a
+bit of how quantifier instantiation works, how to profile Z3’s
+quantifier instantiation, and some strategies for how to control
+proofs that are too slow because of excessive quantifier
+instantiation.</p>
+<ul class="simple" id="effects">
+<li><p>Planned content: We anticipate adding more content, focusing
+at least on the following topics.</p>
+<ul>
+<li><p>User-defined Effects</p>
+<ul>
+<li><p>State</p></li>
+<li><p>Exceptions</p></li>
+<li><p>Concurrency</p></li>
+<li><p>Algebraic Effects</p></li>
+</ul>
+</li>
+<li><p>F* Libraries</p></li>
+<li><p>A User’s Guide to Structuring and Maintaining F* Developments</p>
+<ul>
+<li><dl class="simple">
+<dt>The Build System</dt><dd><p>– Dependence Analysis
+– Checked files
+– Sample project</p>
+</dd>
+</dl>
+</li>
+<li><p>Using the F* editor</p></li>
+<li><dl class="simple">
+<dt>Proofs by normalization</dt><dd><ul>
+<li><p>Normalization steps</p></li>
+<li><p>Call-by-name vs. call-by-value</p></li>
+<li><p>Native execution and plugins</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Proof Engineering</dt><dd><ul>
+<li><p>Building, maintaining and debugging stable proofs</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Extraction</dt><dd><ul>
+<li><p>OCaml</p></li>
+<li><p>F#</p></li>
+<li><p>KaRaMeL</p></li>
+<li><p>Partial evaluation</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>Command line options</p></li>
+<li><p>A guide to various F* error messages</p></li>
+<li><p>Syntax guide</p></li>
+<li><p>FAQ</p></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Proof-oriented Programming in F*" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="intro.html" class="btn btn-neutral float-right" title="Introduction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Modularity With Interfaces and Typeclasses &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Interfaces" href="part3_interfaces.html" />
+    <link rel="prev" title="Universes" href="../part2/part2_universes.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Modularity With Interfaces and Typeclasses</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="part3_interfaces.html">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part3_typeclasses.html">Typeclasses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part3_alacarte.html">Fun with Typeclasses: Datatypes a la Carte</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pulse/pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Modularity With Interfaces and Typeclasses</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="modularity-with-interfaces-and-typeclasses">
+<span id="part3"></span><h1>Modularity With Interfaces and Typeclasses<a class="headerlink" href="#modularity-with-interfaces-and-typeclasses" title="Link to this heading"></a></h1>
+<p>In this section, we’ll learn about two abstraction techniques used to
+structure larger F* developments: <em>interfaces</em> and <em>typeclasses</em>.</p>
+<p><strong>Interfaces</strong>: An F* module <code class="docutils literal notranslate"><span class="pre">M</span></code> (in a file <code class="docutils literal notranslate"><span class="pre">M.fst</span></code>) can be paired
+with an interface (in a file <code class="docutils literal notranslate"><span class="pre">M.fsti</span></code>). A module’s interface is a
+subset of the module’s declarations and definitions. Another module
+<code class="docutils literal notranslate"><span class="pre">Client</span></code> that uses <code class="docutils literal notranslate"><span class="pre">M</span></code> can only make use of the part of <code class="docutils literal notranslate"><span class="pre">M</span></code>
+revealed in its interface—the rest of <code class="docutils literal notranslate"><span class="pre">M</span></code> is invisible to
+<code class="docutils literal notranslate"><span class="pre">Client</span></code>. As such, interfaces provide an abstraction mechanism,
+enabling the development of <code class="docutils literal notranslate"><span class="pre">Client</span></code> to be independent of any
+interface-respecting implementation of <code class="docutils literal notranslate"><span class="pre">M</span></code>.</p>
+<p>Unlike module systems in other ML-like languages (which provide more
+advanced features like signatures, functors, and first-class modules),
+F*’s module system is relatively simple.</p>
+<ul class="simple">
+<li><p>A module can have at most one interface.</p></li>
+<li><p>An interface can have at most one implementation.</p></li>
+<li><p>A module lacking an interface reveals all its details to clients.</p></li>
+<li><p>An interface lacking an implementation can be seen as an assumption or an axiom.</p></li>
+</ul>
+<p><strong>Typeclasses</strong>: Typeclasses cater to more complex abstraction
+patterns, e.g., where an interface may have several
+implementations. Many other languages, ranging from Haskell to Rust,
+support typeclasses that are similar in spirit to what F* also
+provides.</p>
+<p>Typeclasses in F* are actually defined mostly by a “user-space”
+metaprogram (relying on general support for metaprogramming in <a class="reference external" href="http://fstar-lang.org/papers/metafstar/">Meta-F*</a>), making them very
+flexible (e.g., multi-parameter classes, overlapping instances,
+etc. are easily supported).</p>
+<p>That said, typeclasses are a relatively recent addition to the
+language and most of F*’s standard library does not yet use
+typeclasses. As such, they are somewhat less mature than interfaces
+and some features require encodings (e.g., typeclass inheritance),
+rather than being supported with built-in syntax.</p>
+<p>Thanks especially to Guido Martinez, who designed and implemented
+most of F*’s typeclass system.</p>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="part3_interfaces.html">Interfaces</a></li>
+<li class="toctree-l1"><a class="reference internal" href="part3_typeclasses.html">Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="part3_alacarte.html">Fun with Typeclasses: Datatypes a la Carte</a></li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../part2/part2_universes.html" class="btn btn-neutral float-left" title="Universes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="part3_interfaces.html" class="btn btn-neutral float-right" title="Interfaces" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

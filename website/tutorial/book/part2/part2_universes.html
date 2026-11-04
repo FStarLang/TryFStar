@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Universes &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Modularity With Interfaces and Typeclasses" href="../part3/part3.html" />
+    <link rel="prev" title="A First Model of Computational Effects" href="part2_par.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="part2.html">Representing Data, Proofs, and Computations with Inductive Types</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="part2_inductive_type_families.html">Inductive type definitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_vectors.html">Length-indexed Lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_merkle.html">Merkle Trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_equality.html">Equality Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_logical_connectives.html">Constructive &amp; Classical Connectives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_stlc.html">Simply Typed Lambda Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_phoas.html">Higher-order Abstract Syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_well_founded.html">Well-founded Relations and Termination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_par.html">A First Model of Computational Effects</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Universes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basics">Basics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#universe-computations-for-other-types">Universe computations for other types</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#universe-level-of-an-inductive-type-definition">Universe level of an inductive type definition</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#russell-s-paradox">Russell’s Paradox</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#breaking-the-universe-system">Breaking the Universe System</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#encoding-russell-s-paradox">Encoding Russell’s Paradox</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#refinement-types-squash-prop-and-impredicativity">Refinement types, <code class="docutils literal notranslate"><span class="pre">squash</span></code>, <code class="docutils literal notranslate"><span class="pre">prop</span></code>, and Impredicativity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#raising-universes-and-the-lack-of-cumulativity">Raising universes and the lack of cumulativity</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tips-for-working-with-universes">Tips for working with universes</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pulse/pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+      <li class="breadcrumb-item active">Universes</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="universes">
+<span id="part2-universes"></span><h1>Universes<a class="headerlink" href="#universes" title="Link to this heading"></a></h1>
+<p>As mentioned <a class="reference internal" href="../part1/part1_polymorphism.html#part1-type-of-types"><span class="std std-ref">earlier</span></a>, <code class="docutils literal notranslate"><span class="pre">Type</span></code> is the
+type of types. So, one might ask the question, what is the type of
+<code class="docutils literal notranslate"><span class="pre">Type</span></code> itself? Indeed, one can write the following and it may appear
+at first that the type of <code class="docutils literal notranslate"><span class="pre">Type</span></code> is <code class="docutils literal notranslate"><span class="pre">Type</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> ty : Type = Type
+</pre></div>
+</div>
+<p>However, behind the scenes, F* actually has a countably infinite
+hierarchy of types, <code class="docutils literal notranslate"><span class="pre">Type</span> <span class="pre">u#0</span></code>, <code class="docutils literal notranslate"><span class="pre">Type</span> <span class="pre">u#1</span></code>, <code class="docutils literal notranslate"><span class="pre">Type</span> <span class="pre">u#2</span></code>, …, and
+the type of <code class="docutils literal notranslate"><span class="pre">Type</span> <span class="pre">u#i</span></code> is actually <code class="docutils literal notranslate"><span class="pre">Type</span> <span class="pre">u#(i</span> <span class="pre">+</span> <span class="pre">1)</span></code>.  The <code class="docutils literal notranslate"><span class="pre">u#i</span></code>
+suffixes are called <em>universe levels</em> and if you give F* the following
+option, it will actually show you the universe levels it inferred when
+it prints a term.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span>#push-options &quot;--print_universes&quot;
+</pre></div>
+</div>
+<p>With this option enabled, in fstar-mode.el, the F* emacs plugin,
+hovering on the symbol <code class="docutils literal notranslate"><span class="pre">ty</span></code> prints <code class="docutils literal notranslate"><span class="pre">Type</span> <span class="pre">u#(1</span> <span class="pre">+</span> <span class="pre">_)</span></code>, i.e., the
+type of <code class="docutils literal notranslate"><span class="pre">ty</span></code> is in a universe that is one greater than some universe
+metavariable <code class="docutils literal notranslate"><span class="pre">_</span></code>, i.e., <code class="docutils literal notranslate"><span class="pre">ty</span></code> is universe <em>polymorphic</em>. But, we’re
+getting a bit ahead of ourselves.</p>
+<p>In this chapter, we’ll look at universe levels in detail, including
+why they’re necessary to avoid paradoxes, and showing how to
+manipulate definitions that involve universes. For the most part, F*
+infers the universe levels of a term and you don’t have to think too
+much about it—in fact, in all that we’ve seen so far, F* inferred
+universe levels behind the scenes and we haven’t had to mention
+them. Though, eventually, they do crop up and understanding what they
+mean and how to work with them becomes necessary.</p>
+<p>Other resources to learn about universes:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The Agda manual has a nice <a class="reference external" href="https://agda.readthedocs.io/en/latest/language/sort-system.html#sort-system">chapter on universes</a>,
+including universe polymorphism.</p></li>
+<li><p>This chapter from Adam Chlipala’s <a class="reference external" href="http://adam.chlipala.net/cpdt/html/Cpdt.Universes.html">Certified Programming with
+Dependent Types</a>
+describes universes in Coq. While it also provides useful
+background, F*’s universe system is more similar to Agda’s and
+Lean’s than Coq’s.</p></li>
+</ul>
+</div></blockquote>
+<section id="basics">
+<h2>Basics<a class="headerlink" href="#basics" title="Link to this heading"></a></h2>
+<p>A universe annotation on a term takes the form <code class="docutils literal notranslate"><span class="pre">u#l</span></code>, where <code class="docutils literal notranslate"><span class="pre">l</span></code> is
+a universe level. The universe levels are terms from the following
+grammar:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">k</span> <span class="p">:</span><span class="o">:=</span> <span class="mi">0</span> <span class="o">|</span> <span class="mi">1</span> <span class="o">|</span> <span class="mi">2</span> <span class="o">|</span> <span class="o">...</span>    <span class="nb">any</span> <span class="n">natural</span> <span class="n">number</span> <span class="n">constant</span>
+<span class="n">l</span> <span class="p">:</span><span class="o">:=</span> <span class="n">k</span>                  <span class="n">universe</span> <span class="n">constant</span>
+    <span class="o">|</span> <span class="n">l</span> <span class="o">+</span> <span class="n">k</span> <span class="o">|</span> <span class="n">k</span> <span class="o">+</span> <span class="n">l</span>      <span class="n">constant</span> <span class="n">offset</span> <span class="kn">from</span> <span class="nn">level</span> <span class="n">l</span>
+    <span class="o">|</span> <span class="nb">max</span> <span class="n">l1</span> <span class="n">l2</span>          <span class="n">maximum</span> <span class="n">of</span> <span class="n">two</span> <span class="n">levels</span>
+    <span class="o">|</span> <span class="n">a</span> <span class="o">|</span> <span class="n">b</span> <span class="o">|</span> <span class="n">c</span> <span class="o">|</span> <span class="o">...</span>    <span class="n">level</span> <span class="n">variables</span>
+</pre></div>
+</div>
+<p>Let’s revisit our first example, this time using explicit universe
+annotations to make things clearer.</p>
+<p>We’ve defined, below, instances of <code class="docutils literal notranslate"><span class="pre">Type</span></code> for universe levels <code class="docutils literal notranslate"><span class="pre">0,</span>
+<span class="pre">1,</span> <span class="pre">2</span></code> and we see that each of them has a type at the next level. The
+constant <code class="docutils literal notranslate"><span class="pre">Type</span> <span class="pre">u#0</span></code> is common enough that F* allows you to write
+<code class="docutils literal notranslate"><span class="pre">Type0</span></code> instead.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> ty0 : Type u#1 = Type u#0
+<span class="k">let</span> ty0&#39; : Type u#1 = Type0
+<span class="k">let</span> ty1 : Type u#2 = Type u#1
+<span class="k">let</span> ty2 : Type u#3 = Type u#2
+</pre></div>
+</div>
+<p>If you try to define <code class="docutils literal notranslate"><span class="pre">ty_bad</span></code> below, F* complains with the following
+error:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> ty_bad : Type u#0 = Type u#0
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Expected</span> <span class="n">expression</span> <span class="n">of</span> <span class="nb">type</span> <span class="s2">&quot;Type0&quot;</span><span class="p">;</span> <span class="n">got</span> <span class="n">expression</span> <span class="s2">&quot;Type0&quot;</span> <span class="n">of</span> <span class="nb">type</span> <span class="s2">&quot;Type u#1&quot;</span>
+</pre></div>
+</div>
+<p>The restriction that prevents a <code class="docutils literal notranslate"><span class="pre">Type</span></code> from being an inhabitant of
+itself is sometimes called <em>predicativity</em>. The opposite,
+<em>impredicativity</em>, if not suitably restricted, usually leads to
+logical inconsistency. F* provides a limited form of impredicativity
+through the use of <code class="docutils literal notranslate"><span class="pre">squash</span></code> types, which we’ll see towards the end
+of this chapter.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>That said, if we didn’t turn on the option <code class="docutils literal notranslate"><span class="pre">--print_universes</span></code>, the
+error message you get may be, sadly, bit baffling:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Expected</span> <span class="n">expression</span> <span class="n">of</span> <span class="nb">type</span> <span class="s2">&quot;Type&quot;</span><span class="p">;</span> <span class="n">got</span> <span class="n">expression</span> <span class="s2">&quot;Type&quot;</span> <span class="n">of</span> <span class="nb">type</span> <span class="s2">&quot;Type&quot;</span>
+</pre></div>
+</div>
+<p>Turning on <code class="docutils literal notranslate"><span class="pre">--print_universes</span></code> and <code class="docutils literal notranslate"><span class="pre">--print_implicits</span></code> is a
+good way to make sense of type errors where the expected type and
+the type that was computed seem identical.</p>
+</div>
+<p>Now, instead of defining several constants like <code class="docutils literal notranslate"><span class="pre">ty0,</span> <span class="pre">ty1,</span> <span class="pre">ty2</span></code>
+etc., F* definitions can be <em>universe polymorphic</em>. Below, we define
+<code class="docutils literal notranslate"><span class="pre">ty_poly</span></code> as <code class="docutils literal notranslate"><span class="pre">Type</span> <span class="pre">u#a</span></code>, for any universe variable <code class="docutils literal notranslate"><span class="pre">a</span></code>, and so
+<code class="docutils literal notranslate"><span class="pre">ty</span></code> has type <code class="docutils literal notranslate"><span class="pre">Type</span> <span class="pre">u#(a</span> <span class="pre">+</span> <span class="pre">1)</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> ty_poly : Type u#(a + 1) = Type u#a
+</pre></div>
+</div>
+<p>One way to think of <code class="docutils literal notranslate"><span class="pre">ty_poly</span></code> is as a “definition template”
+parameterized by the universe-variable <code class="docutils literal notranslate"><span class="pre">a</span></code>. One can
+instantiate <code class="docutils literal notranslate"><span class="pre">ty_poly</span></code> with a specific universe level <code class="docutils literal notranslate"><span class="pre">l</span></code> (by
+writing <code class="docutils literal notranslate"><span class="pre">ty_poly</span> <span class="pre">u#l</span></code>) and obtain a copy of its definition
+specialized to level <code class="docutils literal notranslate"><span class="pre">l</span></code>. F* can prove that instantiations of
+<code class="docutils literal notranslate"><span class="pre">ty_poly</span></code> are equal to the non-polymorphic definitions we had
+earlier. As the last example shows, F* can usually infer the universe
+instantiation, so you often don’t need to write it.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">_</span> = <span class="k">assert</span> (ty_poly u#0 == ty0)
+<span class="k">let</span> <span class="k">_</span> = <span class="k">assert</span> (ty_poly u#1 == ty1)
+<span class="k">let</span> <span class="k">_</span> = <span class="k">assert</span> (ty_poly u#2 == ty2)
+<span class="k">let</span> <span class="k">_</span> = <span class="k">assert</span> (ty_poly == ty0)
+</pre></div>
+</div>
+</section>
+<section id="universe-computations-for-other-types">
+<h2>Universe computations for other types<a class="headerlink" href="#universe-computations-for-other-types" title="Link to this heading"></a></h2>
+<p>Every type in F* lives in a particular universe. For example, here are
+some common types in <code class="docutils literal notranslate"><span class="pre">Type</span> <span class="pre">u#0</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">_</span> : Type0 = nat
+<span class="k">let</span> <span class="k">_</span> : Type0 = bool
+<span class="k">let</span> <span class="k">_</span> : Type0 = nat -&gt; bool
+</pre></div>
+</div>
+<p><strong>Universe of an arrow type</strong>: In general, the universe of an arrow
+type <code class="docutils literal notranslate"><span class="pre">x:t</span> <span class="pre">-&gt;</span> <span class="pre">t'</span></code> is the maximum of the universe of <code class="docutils literal notranslate"><span class="pre">t</span></code> and <code class="docutils literal notranslate"><span class="pre">t'</span></code>.</p>
+<p>This means that functions that are type-polymorphic live in higher
+universes. For example, the polymorphic identity function that we saw
+in an <a class="reference internal" href="../part1/part1_polymorphism.html#part1-polymorphism-and-inference"><span class="std std-ref">earlier section</span></a>, is
+actually also polymorphic in the universe level of its type argument.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> id_t : Type u#(i + 1) = a:Type u#i -&gt; a -&gt; a
+<span class="k">let</span> id : id_t = <span class="k">fun</span> a x -&gt; x
+</pre></div>
+</div>
+<p>That is, the type of the identity function <code class="docutils literal notranslate"><span class="pre">id</span></code> is <code class="docutils literal notranslate"><span class="pre">id_t</span></code> or
+<code class="docutils literal notranslate"><span class="pre">a:Type</span> <span class="pre">u#i</span> <span class="pre">-&gt;</span> <span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">a</span></code>—meaning, for all types <code class="docutils literal notranslate"><span class="pre">a</span></code> in
+universe <code class="docutils literal notranslate"><span class="pre">Type</span> <span class="pre">u#i</span></code>, <code class="docutils literal notranslate"><span class="pre">id</span> <span class="pre">a</span></code> is a function of type <code class="docutils literal notranslate"><span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">a</span></code>.</p>
+<p>Now, <code class="docutils literal notranslate"><span class="pre">id_t</span></code> is itself a type in universe <code class="docutils literal notranslate"><span class="pre">Type</span> <span class="pre">u#(i</span> <span class="pre">+</span> <span class="pre">1)</span></code>, and
+since the <code class="docutils literal notranslate"><span class="pre">id</span></code> function can be applied to types in any universe, it
+can be applied to <code class="docutils literal notranslate"><span class="pre">id_t</span></code> too. So, it may look like this allows one
+to write functions that can be applied to themselves—which would be
+bad, since that would allow one to create infinite loops and break
+F*’s logic.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> seemingly_self_application : id_t = id <span class="k">_</span> id
+</pre></div>
+</div>
+<p>However, if we write out the universe levels explicitly, we see that
+actually we aren’t really applying the <code class="docutils literal notranslate"><span class="pre">id</span></code> function to
+itself. Things are actually stratified, so that we are instead applying an
+instance of <code class="docutils literal notranslate"><span class="pre">id</span></code> at universe <code class="docutils literal notranslate"><span class="pre">u#(i</span> <span class="pre">+</span> <span class="pre">1)</span></code> to the instance of <code class="docutils literal notranslate"><span class="pre">id</span></code>
+at universes <code class="docutils literal notranslate"><span class="pre">u#i</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> stratified_application : id_t u#i = id u#(i + 1) (id_t u#i) (id u#i)
+</pre></div>
+</div>
+<p>One intuition for what’s happening here is that there are really
+infinitely many instances of the F* type system nested within each
+other, with each instance forming a universe. Type-polymorphic
+functions (like <code class="docutils literal notranslate"><span class="pre">id</span></code>) live in some universe <code class="docutils literal notranslate"><span class="pre">u#(a</span> <span class="pre">+</span> <span class="pre">1)</span></code> and are
+parameterized over all the types in the immediately preceding universe
+<code class="docutils literal notranslate"><span class="pre">u#a</span></code>. The universe levels ensure that an F* function within
+universe level <code class="docutils literal notranslate"><span class="pre">u#a</span></code> cannot consume or produce terms that live in
+some greater universe.</p>
+<section id="universe-level-of-an-inductive-type-definition">
+<h3>Universe level of an inductive type definition<a class="headerlink" href="#universe-level-of-an-inductive-type-definition" title="Link to this heading"></a></h3>
+<p>F* computes a universe level for inductive type definitions. To
+describe the rules for this in full generality, consider again the
+general form of an inductive type definition, shown first <a class="reference internal" href="part2_inductive_type_families.html#part2-inductives"><span class="std std-ref">here</span></a>, but this time with the universe level of each
+type constructor made explicit, i.e., <span class="math notranslate nohighlight">\(T_i\)</span> constructs a type in
+universe <span class="math notranslate nohighlight">\(\mathsf{Type~u\#l_i}\)</span></p>
+<div class="math notranslate nohighlight">
+\[\begin{split}\mathsf{type}~T_1~\overline{(x_1:p_i)} : \overline{y_1:q_1} \rightarrow \mathsf{Type}~u\#l_1 = \overline{\bar D_1 : t_1} \\
+\mathsf{and}~T_n~\overline{(x_n:p_n)} : \overline{y_n:q_n} \rightarrow \mathsf{Type}~u\#l_n = \overline{\bar D_n : t_n} \\\end{split}\]</div>
+<p>Recall that each type constructor <span class="math notranslate nohighlight">\(T_i\)</span> has zero or more <em>data
+constructors</em> <span class="math notranslate nohighlight">\(\overline{D_i:t_i}\)</span> and for each data constructor
+<span class="math notranslate nohighlight">\(D_{ij}\)</span>, its type <span class="math notranslate nohighlight">\(t_{ij}\)</span> must be of the form
+<span class="math notranslate nohighlight">\(\overline{z_{ij}:s_{ij}} \rightarrow T_i~\bar{x_i}~\bar{e}\)</span></p>
+<p>In addition to checking, as usual, that the each <span class="math notranslate nohighlight">\(t_{ij}\)</span> is
+well-typed, F* also checks the universe levels according to the
+following rule:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Assuming that each <span class="math notranslate nohighlight">\(T_i\)</span> has universe level <span class="math notranslate nohighlight">\(l_i\)</span>, for
+every data constructor <span class="math notranslate nohighlight">\(D_{ij}\)</span>, and for each of its
+arguments <span class="math notranslate nohighlight">\(z_{ijk} : s_{ijk}\)</span>, check <span class="math notranslate nohighlight">\(s_{ijk} :
+\mathsf{Type}~u\#l_{ijk}\)</span> and <span class="math notranslate nohighlight">\(l_{ijk} \leq l_i\)</span>.</p></li>
+</ul>
+</div></blockquote>
+<p>In other words, the universe level of each type constructor must not
+be less than the universe of any of the fields of data constructors.</p>
+<p>In practice, F* infers the universe levels <span class="math notranslate nohighlight">\(l_1, \ldots, l_n\)</span>, by
+collecting level-inequality constraints and solving them using the
+<code class="docutils literal notranslate"><span class="pre">max</span></code> operator on universe levels, i.e., <span class="math notranslate nohighlight">\(l_i\)</span> is set to
+<span class="math notranslate nohighlight">\(max_{jk}~l_{ijk}\)</span>, the maximum of the universe levels of all
+the fields of the constructors <span class="math notranslate nohighlight">\(\overline{D_i : t_i}\)</span>. Let’s
+look at some examples.</p>
+<section id="the-list-type">
+<h4>The <code class="docutils literal notranslate"><span class="pre">list</span></code> type<a class="headerlink" href="#the-list-type" title="Link to this heading"></a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">list</span></code> type below is parameterized by <code class="docutils literal notranslate"><span class="pre">a:Type</span> <span class="pre">u#a</span></code> and
+constructs a type in the same universe.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> list (a:Type u#a) : Type u#a  =
+ | Nil : list a
+ | Cons : hd:a -&gt; tl:list a -&gt; list a
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">Nil</span></code> constructor has no fields, so it imposes no
+constraints on the universe level of <code class="docutils literal notranslate"><span class="pre">list</span> <span class="pre">a</span></code>.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">Cons</span></code> constructor has two fields. Its first field  <code class="docutils literal notranslate"><span class="pre">hd</span></code>
+has type <code class="docutils literal notranslate"><span class="pre">a:</span> <span class="pre">Type</span> <span class="pre">u#a</span></code>: we have a constraint that <code class="docutils literal notranslate"><span class="pre">u#a</span></code> <span class="math notranslate nohighlight">\(\leq\)</span> <code class="docutils literal notranslate"><span class="pre">u#a</span></code>; and
+the second field, by assumption, has type <code class="docutils literal notranslate"><span class="pre">list</span> <span class="pre">a</span> <span class="pre">:</span> <span class="pre">Type</span> <span class="pre">u#a</span></code>,
+and again we have the constraint <code class="docutils literal notranslate"><span class="pre">u#a</span></code> <span class="math notranslate nohighlight">\(\leq\)</span> <code class="docutils literal notranslate"><span class="pre">u#a</span></code>.</p></li>
+</ul>
+<p>F* infers the minimum satisfiable universe level assignment, by
+default. But, there are many solutions to the inequalities, and if
+needed, one can use annotations to pick another solution. For example,
+one could write this, though it rarely makes sense to pick a universe
+for a type higher than necessary (see <a class="reference internal" href="#part2-universes-raising"><span class="std std-ref">this section</span></a> for an exception).</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> list&#39; (a:Type u#a) : Type u#(1 + a)  =
+ | Nil&#39; : list&#39; a
+ | Cons&#39; : hd:a -&gt; tl:list&#39; a -&gt; list&#39; a
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Universe level variables are drawn from a different namespace than
+other variables. So, one often writes <code class="docutils literal notranslate"><span class="pre">a:Type</span> <span class="pre">u#a</span></code>, where <code class="docutils literal notranslate"><span class="pre">a</span></code>
+is a regular variable and <code class="docutils literal notranslate"><span class="pre">u#a</span></code> is the universe level of the type
+of <code class="docutils literal notranslate"><span class="pre">a</span></code>.</p>
+</div>
+</section>
+<section id="the-pair-type">
+<h4>The <code class="docutils literal notranslate"><span class="pre">pair</span></code> type<a class="headerlink" href="#the-pair-type" title="Link to this heading"></a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">pair</span></code> type below is parameterized by <code class="docutils literal notranslate"><span class="pre">a:Type</span> <span class="pre">u#a</span></code> and
+<code class="docutils literal notranslate"><span class="pre">b:Type</span> <span class="pre">u#b</span></code> and constructs a type in <code class="docutils literal notranslate"><span class="pre">u#(max</span> <span class="pre">a</span> <span class="pre">b)</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> pair (a:Type u#a) (b:Type u#b) : Type u#(max a b) =
+  | Pair : fst:a -&gt; snd:b -&gt; pair a b
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">fst</span></code> field is in <code class="docutils literal notranslate"><span class="pre">u#a</span></code> and so we have <code class="docutils literal notranslate"><span class="pre">u#a</span></code> <span class="math notranslate nohighlight">\(\leq\)</span> <code class="docutils literal notranslate"><span class="pre">u#(max</span> <span class="pre">a</span> <span class="pre">b)</span></code>.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">snd</span></code> field is in <code class="docutils literal notranslate"><span class="pre">u#b</span></code> and so we have <code class="docutils literal notranslate"><span class="pre">u#b</span></code> <span class="math notranslate nohighlight">\(\leq\)</span> <code class="docutils literal notranslate"><span class="pre">u#(max</span> <span class="pre">a</span> <span class="pre">b)</span></code>.</p></li>
+</ul>
+</section>
+<section id="the-top-type">
+<h4>The <code class="docutils literal notranslate"><span class="pre">top</span></code> type<a class="headerlink" href="#the-top-type" title="Link to this heading"></a></h4>
+<p>The <code class="docutils literal notranslate"><span class="pre">top</span></code> type below packages a value at any type <code class="docutils literal notranslate"><span class="pre">a:Type</span> <span class="pre">u#a</span></code>
+with its type.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">noeq</span>
+<span class="k">type</span> top : Type u#(a + 1) =
+  | Top : a:Type u#a -&gt; v:a -&gt; top
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">a</span></code> field of <code class="docutils literal notranslate"><span class="pre">Top</span></code> is in <code class="docutils literal notranslate"><span class="pre">u#(a</span> <span class="pre">+</span> <span class="pre">1)</span></code> while the <code class="docutils literal notranslate"><span class="pre">v</span></code> field
+is in <code class="docutils literal notranslate"><span class="pre">u#a</span></code>. So, <code class="docutils literal notranslate"><span class="pre">top</span></code> itself is in <code class="docutils literal notranslate"><span class="pre">u#(max</span> <span class="pre">(a</span> <span class="pre">+</span> <span class="pre">1)</span> <span class="pre">a)</span></code>,
+which simplifies to <code class="docutils literal notranslate"><span class="pre">u#(a</span> <span class="pre">+</span> <span class="pre">1)</span></code>.</p></li>
+</ul>
+<p>One intuition for why this is so is that from a value of type <code class="docutils literal notranslate"><span class="pre">t</span> <span class="pre">:</span>
+<span class="pre">top</span></code> one can write a function that computes a value of type <code class="docutils literal notranslate"><span class="pre">Type</span>
+<span class="pre">u#a</span></code>, i.e., <code class="docutils literal notranslate"><span class="pre">Top?.a</span> <span class="pre">t</span></code>. So, if instead we have <code class="docutils literal notranslate"><span class="pre">top:</span> <span class="pre">Type</span> <span class="pre">u#a</span></code>
+and <code class="docutils literal notranslate"><span class="pre">t:top</span></code>, then <code class="docutils literal notranslate"><span class="pre">Top?.a</span> <span class="pre">:</span> <span class="pre">top</span> <span class="pre">-&gt;</span> <span class="pre">Type</span> <span class="pre">u#a</span></code>, which would break
+the stratification of universes, since from a value <code class="docutils literal notranslate"><span class="pre">top</span></code> in
+universe <code class="docutils literal notranslate"><span class="pre">u#a</span></code>, we would be able to project out a value in
+<code class="docutils literal notranslate"><span class="pre">Type</span> <span class="pre">u#(a</span> <span class="pre">+</span> <span class="pre">1)</span></code>, which leads to a paradox, as we’ll see next.</p>
+<p>What follows is quite technical and you only need to know that the
+universe system exists to avoid paradoxes, not how such paradoxes are
+constructed.</p>
+</section>
+</section>
+</section>
+<section id="russell-s-paradox">
+<h2>Russell’s Paradox<a class="headerlink" href="#russell-s-paradox" title="Link to this heading"></a></h2>
+<p>Type theory has its roots in Bertrand Russell’s <a class="reference external" href="https://en.wikipedia.org/wiki/The_Principles_of_Mathematics">The Principles
+of Mathematics</a>, which
+explores the logical foundations of mathematics and set theory. In
+this work, Russell proposed the paradoxical set <span class="math notranslate nohighlight">\(\Delta\)</span> whose
+elements are exactly all the sets that don’t contain themselves and
+considered whether or not <span class="math notranslate nohighlight">\(\Delta\)</span> contained itself. This
+self-referential construction is paradoxical since:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>If <span class="math notranslate nohighlight">\(\Delta \in \Delta\)</span>, then since the only sets in
+<span class="math notranslate nohighlight">\(\Delta\)</span> are the sets that don’t contain themselves, we can
+conclude that <span class="math notranslate nohighlight">\(\Delta \not\in \Delta\)</span>.</p></li>
+<li><p>On the other hand, if <span class="math notranslate nohighlight">\(\Delta \not\in \Delta\)</span>, then since
+<span class="math notranslate nohighlight">\(\Delta\)</span> contains all sets that don’t contain themselves, we
+can conclude that <span class="math notranslate nohighlight">\(\Delta \in \Delta\)</span>.</p></li>
+</ul>
+</div></blockquote>
+<p>To avoid such paradoxes, Russell formulated a stratified system of
+types to prevent nonsensical constructions that rely on
+self-reference. The universe levels of modern type theories serve much
+the same purpose.</p>
+<p>In fact, as the construction below shows, if it were possible to break
+the stratification of universes in F*, then one can code up Russell’s
+<span class="math notranslate nohighlight">\(\Delta\)</span> set and prove <code class="docutils literal notranslate"><span class="pre">False</span></code>. This construction is derived
+from <a class="reference external" href="http://www.cs.nott.ac.uk/~psztxa/g53cfr/l20.html/l20.html">Thorsten Altenkirch’s Agda code</a>. Liam
+O’Connor also provides <a class="reference external" href="http://liamoc.net/posts/2015-09-10-girards-paradox.html">some useful context and comparison</a>. Whereas
+the Agda code uses a special compiler pragma to enable unsound
+impredicativity, in F* we show how a user-introduced axiom can
+simulate impredicativity and enable the same paradox.</p>
+<section id="breaking-the-universe-system">
+<h3>Breaking the Universe System<a class="headerlink" href="#breaking-the-universe-system" title="Link to this heading"></a></h3>
+<p>Consider the following axioms that intentionally break the
+stratification of F*’s universe system. We’ll need the following
+ingredients:</p>
+<ol class="arabic simple">
+<li><p>A strictly positive type constructor <code class="docutils literal notranslate"><span class="pre">lower</span></code> that takes a type in
+any universe <code class="docutils literal notranslate"><span class="pre">a:Type</span> <span class="pre">u#a</span></code>, and returns a type in <code class="docutils literal notranslate"><span class="pre">u#0</span></code>. Note,
+we covered <a class="reference internal" href="part2_inductive_type_families.html#part2-strictly-positive-annotations"><span class="std std-ref">strictly positive type functions, previously</span></a>.</p></li>
+</ol>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">assume</span>
+<span class="k">val</span> lower ([@@@strictly_positive] a:Type u#a) : Type u#0
+</pre></div>
+</div>
+<ol class="arabic simple" start="2">
+<li><p>Assume there is a function called <code class="docutils literal notranslate"><span class="pre">inject</span></code>, which takes value of
+type <code class="docutils literal notranslate"><span class="pre">x:a</span></code> and returns value of type <code class="docutils literal notranslate"><span class="pre">lower</span> <span class="pre">a</span></code>.</p></li>
+</ol>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">assume</span>
+<span class="k">val</span> inject (#a:Type u#a) (x:a) : lower a
+</pre></div>
+</div>
+<ol class="arabic simple" start="3">
+<li><p><code class="docutils literal notranslate"><span class="pre">lower</span></code> and <code class="docutils literal notranslate"><span class="pre">inject</span></code> on their own are benign (e.g., <code class="docutils literal notranslate"><span class="pre">let</span> <span class="pre">lower</span>
+<span class="pre">_</span> <span class="pre">=</span> <span class="pre">unit</span></code> and <code class="docutils literal notranslate"><span class="pre">let</span> <span class="pre">inject</span> <span class="pre">_</span> <span class="pre">=</span> <span class="pre">()</span></code>). But, now if we assume we
+have a function <code class="docutils literal notranslate"><span class="pre">project</span></code> that is the inverse of <code class="docutils literal notranslate"><span class="pre">inject</span></code>, then
+we’ve opened the door to paradoxes.</p></li>
+</ol>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">assume</span>
+<span class="k">val</span> project (#a:Type u#a) (x:lower a) : a
+
+<span class="k">assume</span>
+<span class="k">val</span> inj_proj (#a:Type u#a) (x:a)
+  : <span class="k">Lemma</span> (project (inject x) == x)
+</pre></div>
+</div>
+</section>
+<section id="encoding-russell-s-paradox">
+<h3>Encoding Russell’s Paradox<a class="headerlink" href="#encoding-russell-s-paradox" title="Link to this heading"></a></h3>
+<p>To show the paradox, we’ll define a notion of <code class="docutils literal notranslate"><span class="pre">set</span></code> in terms of a
+form of set comprehensions <code class="docutils literal notranslate"><span class="pre">f:</span> <span class="pre">x</span> <span class="pre">-&gt;</span> <span class="pre">set</span></code>, where <code class="docutils literal notranslate"><span class="pre">x:Type</span> <span class="pre">u#0</span></code> is
+the domain of the comprehension, supposedly bounding the cardinality
+of the set.  We’ll subvert the universe system by treating <code class="docutils literal notranslate"><span class="pre">set</span></code> as
+living in universe <code class="docutils literal notranslate"><span class="pre">u#0</span></code>, even though its constructor <code class="docutils literal notranslate"><span class="pre">Set</span></code> has a
+field <code class="docutils literal notranslate"><span class="pre">x:Type</span> <span class="pre">u#0</span></code> that has universe level <code class="docutils literal notranslate"><span class="pre">u#1</span></code></p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">noeq</span>
+<span class="k">type</span> _set : Type u#1 =
+  | Set : x:Type0 -&gt; f:(x -&gt; set) -&gt; _set
+<span class="k">and</span> set : Type0 = lower _set
+</pre></div>
+</div>
+<p>This construction allows us to define many useful sets. For example,
+the empty set <code class="docutils literal notranslate"><span class="pre">zero</span></code> uses the empty type <code class="docutils literal notranslate"><span class="pre">False</span></code> as the domain of
+its comprehension and so has no elements; or the singleton set <code class="docutils literal notranslate"><span class="pre">one</span></code>
+whose only element is the empty set; or the set <code class="docutils literal notranslate"><span class="pre">two</span></code> that contains
+the empty set <code class="docutils literal notranslate"><span class="pre">zero</span></code> and the singleton set <code class="docutils literal notranslate"><span class="pre">one</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> zero : set = inject (Set False (<span class="k">fun</span> <span class="k">_</span> -&gt; false_elim()))
+<span class="k">let</span> one : set = inject (Set True (<span class="k">fun</span> <span class="k">_</span> -&gt; zero))
+<span class="k">let</span> two : set = inject (Set bool (<span class="k">fun</span> b -&gt; <span class="k">if</span> b <span class="k">then</span> zero <span class="k">else</span> one))
+</pre></div>
+</div>
+<p>One can also define set membership: A set <code class="docutils literal notranslate"><span class="pre">a</span></code> is a member of a set
+<code class="docutils literal notranslate"><span class="pre">b</span></code>, if one can exhibit an element <code class="docutils literal notranslate"><span class="pre">v</span></code> of the domain type of
+<code class="docutils literal notranslate"><span class="pre">b</span></code> (i.e., <code class="docutils literal notranslate"><span class="pre">(project</span> <span class="pre">b).x</span></code>), such that <code class="docutils literal notranslate"><span class="pre">b</span></code>’s comprehension
+<code class="docutils literal notranslate"><span class="pre">(project</span> <span class="pre">b).f</span></code> applied to <code class="docutils literal notranslate"><span class="pre">v</span></code> is <code class="docutils literal notranslate"><span class="pre">a</span></code>.</p>
+<p>For example, one can prove <code class="docutils literal notranslate"><span class="pre">mem</span> <span class="pre">zero</span> <span class="pre">two</span></code> by picking <code class="docutils literal notranslate"><span class="pre">true</span></code> for
+<code class="docutils literal notranslate"><span class="pre">v</span></code> and <code class="docutils literal notranslate"><span class="pre">mem</span> <span class="pre">one</span> <span class="pre">two</span></code> by picking <code class="docutils literal notranslate"><span class="pre">false</span></code> for
+<code class="docutils literal notranslate"><span class="pre">v</span></code>. Non-membership is just the negation of membership.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> mem (a:set) (b:set) : Type0 =
+  (v:(project b).x &amp; (a == (project b).f v))
+
+<span class="k">let</span> not_mem (a:set) (b:set) : Type0 = mem a b -&gt; False
+</pre></div>
+</div>
+<p>Now, we are ready to define Russell’s paradoxical set
+<span class="math notranslate nohighlight">\(\Delta\)</span>. First, we define <code class="docutils literal notranslate"><span class="pre">delta_big</span></code> in a larger universe
+and then use <code class="docutils literal notranslate"><span class="pre">inject</span></code> to turn it into a <code class="docutils literal notranslate"><span class="pre">set</span> <span class="pre">:</span> <span class="pre">Type</span> <span class="pre">u#0</span></code>. The
+encoding of <code class="docutils literal notranslate"><span class="pre">delta_big</span></code> is fairly direct: Its domain type is the
+type of sets <code class="docutils literal notranslate"><span class="pre">s</span></code> paired with a proof that <code class="docutils literal notranslate"><span class="pre">s</span></code> does not contain
+itself; and its comprehension function just returns <code class="docutils literal notranslate"><span class="pre">s</span></code> itself.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> delta_big = Set (s:set &amp; not_mem s s) dfst
+<span class="k">let</span> delta : set = inject delta_big
+</pre></div>
+</div>
+<p>We can now prove both <code class="docutils literal notranslate"><span class="pre">delta</span> <span class="pre">`mem`</span> <span class="pre">delta</span></code> and <code class="docutils literal notranslate"><span class="pre">delta</span> <span class="pre">`not_mem`</span>
+<span class="pre">delta</span></code>, using the unsound <code class="docutils literal notranslate"><span class="pre">inj_proj</span></code> axiom that breaks the universe
+system, and derive <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> x_in_delta_x_not_in_delta (x:set) (mem_x_delta:mem x delta)
+  : not_mem x x 
+  = <span class="k">let</span> (| v, r |) = mem_x_delta <span class="k">in</span> <span class="c">// mem proofs are pairs</span>
+    <span class="k">let</span> v : (project delta).x = v <span class="k">in</span> <span class="c">// whose first component is an element of delta&#39;s comprehension domain</span>
+    <span class="k">let</span> r : (x == (project delta).f v) = r <span class="k">in</span> <span class="c">//and whose second component proves that x is equal to an element in delta</span>
+    inj_proj delta_big; <span class="c">// we use the unsound axiom to conclude that `v` is actually the domain of delta_big</span>
+    <span class="k">let</span> v : (s:set &amp; not_mem s s) = v <span class="k">in</span> <span class="c">//and now we can retype `v` this way</span>
+    <span class="k">let</span> (| s, pf |) = v <span class="k">in</span> <span class="c">//and unpack it into its components</span>
+    <span class="k">let</span> r : (x == s) = r <span class="k">in</span> <span class="c">//and the axiom also allows us to retype `r` this way</span>
+    <span class="k">let</span> pf : not_mem x x = pf <span class="k">in</span> <span class="c">//which lets us convert pf from `not_mem s s` to the goal</span>
+    pf <span class="c">//not_mem x x</span>
+
+<span class="k">let</span> delta_not_in_delta
+  : not_mem delta delta
+  = <span class="k">fun</span> (mem_delta_delta:mem delta delta) -&gt;
+      x_in_delta_x_not_in_delta 
+          delta
+          mem_delta_delta
+          mem_delta_delta
+
+<span class="k">let</span> x_not_mem_x_x_mem_delta (x:set) (x_not_mem_x:x `not_mem` x)
+  : x `mem` delta
+  = <span class="k">let</span> v : (s:set &amp; not_mem s s) = (| x, x_not_mem_x |) <span class="k">in</span> <span class="c">//an element of the domain set of delta_big</span>
+    inj_proj delta_big; <span class="c">// the unsound axiom now lets us relate it to delta</span>
+    <span class="k">let</span> s : (x == (project delta).f v) =
+        ()
+    <span class="k">in</span>
+    (| v,  s |)
+
+<span class="k">let</span> delta_in_delta
+  : mem delta delta
+  = x_not_mem_x_x_mem_delta delta delta_not_in_delta
+  
+<span class="k">let</span> ff : False = delta_not_in_delta delta_in_delta
+</pre></div>
+</div>
+<p>The proofs are more detailed than they need to be, and if you’re
+curious, maybe you can follow along by reading the comments.</p>
+<p>The upshot, however, is that without the stratification of universes,
+F* would be unsound.</p>
+</section>
+</section>
+<section id="refinement-types-squash-prop-and-impredicativity">
+<h2>Refinement types, <code class="docutils literal notranslate"><span class="pre">squash</span></code>, <code class="docutils literal notranslate"><span class="pre">prop</span></code>, and Impredicativity<a class="headerlink" href="#refinement-types-squash-prop-and-impredicativity" title="Link to this heading"></a></h2>
+<p>We’ve seen how universe levels are computed for arrow types and
+inductive type definitions. The other way in which types can be formed
+in F* is with refinement types: <code class="docutils literal notranslate"><span class="pre">x:t{p}</span></code>. As we’ve seen previously,
+a value <code class="docutils literal notranslate"><span class="pre">v</span></code> of type <code class="docutils literal notranslate"><span class="pre">x:t{p}</span></code> is just a <code class="docutils literal notranslate"><span class="pre">v:t</span></code> where <code class="docutils literal notranslate"><span class="pre">p[v/x]</span></code> is
+derivable in the current scope in F*’s SMT-assisted classical
+logic.  The refinement formula <code class="docutils literal notranslate"><span class="pre">p</span></code> must have type <code class="docutils literal notranslate"><span class="pre">prop</span></code>.</p>
+<p><strong>Universe of a refinement type</strong>: The universe of a refinement type <code class="docutils literal notranslate"><span class="pre">x:t{p}</span></code> is the universe of <code class="docutils literal notranslate"><span class="pre">t</span></code>.</p>
+<p>We can define the following type (defined in <code class="docutils literal notranslate"><span class="pre">Prims</span></code>):</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> squash (p:prop) : Type u#0 = <span class="k">_</span>:unit { p }
+</pre></div>
+</div>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">squash</span></code> takes a <code class="docutils literal notranslate"><span class="pre">prop</span></code> (not an arbitrary <code class="docutils literal notranslate"><span class="pre">Type</span></code>) and
+produces a <code class="docutils literal notranslate"><span class="pre">Type</span> <span class="pre">u#0</span></code>. Given a proof <code class="docutils literal notranslate"><span class="pre">x</span></code> of some <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">:</span> <span class="pre">prop</span></code>, one
+can introduce a <code class="docutils literal notranslate"><span class="pre">squash</span> <span class="pre">p</span></code> simply by returning unit:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> return_squash (#p:prop) (x:p) : squash p = ()
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">squash</span> <span class="pre">p</span></code> is proof irrelevant, meaning that all proofs of
+<code class="docutils literal notranslate"><span class="pre">squash</span> <span class="pre">p</span></code> are equal:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> proof_irrelevance (p: prop) (x y: squash p) : squash (x == y)
+</pre></div>
+</div>
+<p>The F* type <code class="docutils literal notranslate"><span class="pre">prop</span></code> (which we saw first <a class="reference internal" href="../part1/part1_prop_assertions.html#part1-prop"><span class="std std-ref">here</span></a>) is
+an opaque <code class="docutils literal notranslate"><span class="pre">Type</span> <span class="pre">u#0</span></code> representing the type of all propositions.
+The type <code class="docutils literal notranslate"><span class="pre">prop</span></code> has exactly two elements (<code class="docutils literal notranslate"><span class="pre">True</span></code> and <code class="docutils literal notranslate"><span class="pre">False</span></code>),
+and we can put it into bijection with <code class="docutils literal notranslate"><span class="pre">bool</span></code> using the
+<code class="docutils literal notranslate"><span class="pre">t2b:</span> <span class="pre">prop</span> <span class="pre">-&gt;</span> <span class="pre">GTot</span> <span class="pre">bool</span></code> and <code class="docutils literal notranslate"><span class="pre">b2t:</span> <span class="pre">bool</span> <span class="pre">-&gt;</span> <span class="pre">prop</span></code> functions.
+The type <code class="docutils literal notranslate"><span class="pre">squash</span> <span class="pre">p</span></code> is a subtype of <code class="docutils literal notranslate"><span class="pre">unit</span></code>, which means that any two
+elements <code class="docutils literal notranslate"><span class="pre">h</span> <span class="pre">g:</span> <span class="pre">squash</span> <span class="pre">p</span></code> are equal (a form of proof irrelevance).
+Being an opaque <code class="docutils literal notranslate"><span class="pre">Type</span> <span class="pre">u#0</span></code>,
+<code class="docutils literal notranslate"><span class="pre">prop</span></code> offers a strong form of impredicativity:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">_</span> : Type u#0 = prop
+</pre></div>
+</div>
+<p>You can quantify over all <code class="docutils literal notranslate"><span class="pre">prop</span></code> while remaining in <code class="docutils literal notranslate"><span class="pre">prop</span></code>:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">_</span> : Type u#0 = a:prop -&gt; a
+<span class="k">let</span> <span class="k">_</span> : prop = <span class="k">forall</span> (a:prop). a
+<span class="k">let</span> <span class="k">_</span> : prop = <span class="k">forall</span> (t: Type u#999). t == t
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>The first line above shows that an arrow from <code class="docutils literal notranslate"><span class="pre">prop</span></code> to <code class="docutils literal notranslate"><span class="pre">squash</span> <span class="pre">p</span></code> is in
+<code class="docutils literal notranslate"><span class="pre">Type</span> <span class="pre">u#0</span></code> (note that the <code class="docutils literal notranslate"><span class="pre">squash</span></code> is automatically inserted as a
+coercion).</p></li>
+<li><p>The second line shows that quantification over propositions is still a proposition.
+(In systems with predicative proofs-as-types, this would already raise the universe level.)</p></li>
+<li><p>The third line shows that <code class="docutils literal notranslate"><span class="pre">prop</span></code> is closed even under quantification over
+very large types, such as <code class="docutils literal notranslate"><span class="pre">Type</span> <span class="pre">u#999</span></code> in this case.</p></li>
+</ul>
+</section>
+<section id="raising-universes-and-the-lack-of-cumulativity">
+<span id="part2-universes-raising"></span><h2>Raising universes and the lack of cumulativity<a class="headerlink" href="#raising-universes-and-the-lack-of-cumulativity" title="Link to this heading"></a></h2>
+<p>In some type theories, notably in Coq, the universe system is
+<em>cumulative</em>, meaning that <code class="docutils literal notranslate"><span class="pre">Type</span> <span class="pre">u#i</span> <span class="pre">:</span> <span class="pre">Type</span> <span class="pre">u#(max</span> <span class="pre">(i</span> <span class="pre">+</span> <span class="pre">1)</span> <span class="pre">j)</span></code>;
+or, that <code class="docutils literal notranslate"><span class="pre">Type</span> <span class="pre">u#i</span></code> inhabits all universes greater than
+<code class="docutils literal notranslate"><span class="pre">i</span></code>. In contrast, in F*, as in Agda and Lean, <code class="docutils literal notranslate"><span class="pre">Type</span> <span class="pre">u#i</span> <span class="pre">:</span> <span class="pre">Type</span>
+<span class="pre">u#(i</span> <span class="pre">+</span> <span class="pre">1)</span></code>, i.e., a type resides only in the universe immediately
+above it.</p>
+<p>Cumulativity is a form of subtyping on universe levels, and it can be
+quite useful, enabling definitions at higher universes to be re-used
+for all lower universes. However, systems that mix universe
+polymorphism with cumulativity are quite tricky, and indeed, it was
+only recently that Coq offered both universe polymorphism and
+cumulativity.</p>
+<p>Lacking cumulativity, F* provides a library <code class="docutils literal notranslate"><span class="pre">FStar.Universe</span></code> that
+enables lifting a term from one universe to a higher one. We summarize
+it here:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> raise_t ([@@@ strictly_positive] t : Type u#a) : Type u#(max a b)
+
+<span class="k">val</span> raise_val (#a:Type u#a) (x:a) : raise_t u#a u#b a
+
+<span class="k">val</span> downgrade_val (#a:Type u#a) (x:raise_t u#a u#b a) : a
+
+<span class="k">val</span> downgrade_val_raise_val (#a: Type u#a) (x: a)
+  : <span class="k">Lemma</span> (downgrade_val u#a u#b (raise_val x) == x)
+
+<span class="k">val</span> raise_val_downgrade_val (#a: Type u#a) (x: raise_t u#a u#b a)
+  : <span class="k">Lemma</span> (raise_val (downgrade_val x) == x)
+</pre></div>
+</div>
+<p>The type <code class="docutils literal notranslate"><span class="pre">raise_t</span> <span class="pre">t</span></code> is strictly positive in <code class="docutils literal notranslate"><span class="pre">t</span></code> and raises <code class="docutils literal notranslate"><span class="pre">t</span></code>
+from <code class="docutils literal notranslate"><span class="pre">u#a</span></code> to <code class="docutils literal notranslate"><span class="pre">u#(max</span> <span class="pre">a</span> <span class="pre">b)</span></code>. <code class="docutils literal notranslate"><span class="pre">raise_val</span></code> and
+<code class="docutils literal notranslate"><span class="pre">downgrade_val</span></code> are mutually inverse functions between <code class="docutils literal notranslate"><span class="pre">t</span></code> and
+<code class="docutils literal notranslate"><span class="pre">raise_t</span> <span class="pre">t</span></code>.</p>
+<p>This signature is similar in structure to the unsound signature for
+<code class="docutils literal notranslate"><span class="pre">lower,</span> <span class="pre">inject,</span> <span class="pre">project</span></code> that we use to exhibit Russell’s
+paradox. However, crucially, the universe levels in <code class="docutils literal notranslate"><span class="pre">raise_t</span></code> ensure
+that the universe levels <em>increase</em>, preventing any violation of
+universe stratification.</p>
+<p>In fact, this signature is readily implemented in F*, as shown below,
+where the universe annotation on <code class="docutils literal notranslate"><span class="pre">raise_t</span></code> explicitly defines the
+type in a higher universe <code class="docutils literal notranslate"><span class="pre">u#(max</span> <span class="pre">a</span> <span class="pre">b)</span></code> rather than in its minimum
+universe <code class="docutils literal notranslate"><span class="pre">u#a</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">noeq</span>
+<span class="k">type</span> raise_t (a : Type u#a) : Type u#(max a b) =
+  | Ret : a -&gt; raise_t a
+
+<span class="k">let</span> raise_val #a x = Ret x
+<span class="k">let</span> downgrade_val #a x = <span class="k">match</span> x <span class="k">with</span> Ret x0 -&gt; x0
+<span class="k">let</span> downgrade_val_raise_val #a x = ()
+<span class="k">let</span> raise_val_downgrade_val #a x = ()
+</pre></div>
+</div>
+</section>
+<section id="tips-for-working-with-universes">
+<span id="part2-tips-for-universes"></span><h2>Tips for working with universes<a class="headerlink" href="#tips-for-working-with-universes" title="Link to this heading"></a></h2>
+<p>Whenever you write <code class="docutils literal notranslate"><span class="pre">Type</span></code> in F*, you are implicitly writing <code class="docutils literal notranslate"><span class="pre">Type</span>
+<span class="pre">u#?x</span></code>, where <code class="docutils literal notranslate"><span class="pre">?x</span></code> is a universe <em>metavariable</em> left for F* to infer. When
+left implicit, this means that F* may sometimes infer universes for
+your definition that are not what you expect—they may be too general
+or not general enough. We conclude this section with a few tips to
+detect and fix such problems.</p>
+<ul>
+<li><p>If you see puzzling error messages, enable the following pragma:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span>#push-options &quot;--print_implicits --print_universes&quot;
+</pre></div>
+</div>
+<p>This will cause F* to print larger terms in error messages, which
+you usually do not want, except when you are confronted with error
+messages of the form “expected type t; got type t”.</p>
+</li>
+<li><p>Aside from the built-in constants <code class="docutils literal notranslate"><span class="pre">Type</span> <span class="pre">u#a</span></code>, the <code class="docutils literal notranslate"><span class="pre">-&gt;</span></code> type
+constructor, and the refinement type former, the only universe
+polymorphic F* terms are top-level definitions. That is, while you
+can define <code class="docutils literal notranslate"><span class="pre">i</span></code> at the top-level and use it polymorphically:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> i (#a:Type) (x:a) = x
+<span class="k">let</span> <span class="k">_</span> = i u#0 0, i u#1 nat, i u#2 (Type u#0)
+</pre></div>
+</div>
+<p>You cannot do the same in a non-top-level scope:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> no_universe_poly_locally () = 
+  <span class="k">let</span> i (#a:Type) (x:a) = x <span class="k">in</span>
+  <span class="k">let</span> <span class="k">_</span> = i u#0 0, i u#1 nat, i u#2 (Type u#0) <span class="k">in</span>
+  ()
+</pre></div>
+</div>
+<p>Of course, non-universe-polymorphic definitions work at all scopes,
+e.g., here, the <code class="docutils literal notranslate"><span class="pre">i</span></code> is polymorphic in all types at universe
+<code class="docutils literal notranslate"><span class="pre">u#0</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> type_poly_locally () = 
+  <span class="k">let</span> i (#a:Type) (x:a) = x <span class="k">in</span>
+  <span class="k">let</span> <span class="k">_</span> = i #unit (), i #bool <span class="k">true</span>, i #nat 0 <span class="k">in</span>
+  ()
+</pre></div>
+</div>
+</li>
+<li><p>If you write a <code class="docutils literal notranslate"><span class="pre">val</span> <span class="pre">f</span> <span class="pre">:</span> <span class="pre">t</span></code> declaration for <code class="docutils literal notranslate"><span class="pre">f</span></code>, F* will compute
+the most general universe for the type <code class="docutils literal notranslate"><span class="pre">t</span></code> independently of the
+<code class="docutils literal notranslate"><span class="pre">let</span> <span class="pre">f</span> <span class="pre">=</span> <span class="pre">e</span></code> or <code class="docutils literal notranslate"><span class="pre">type</span> <span class="pre">f</span> <span class="pre">=</span></code> definition.</p>
+<p>A simple example of this behavior is the following. Say, you declare
+<code class="docutils literal notranslate"><span class="pre">tup2</span></code> as below.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> tup2 (a:Type) (b:Type) : Type
+</pre></div>
+</div>
+<p>Seeing this declaration F* infers <code class="docutils literal notranslate"><span class="pre">val</span> <span class="pre">tup2</span> <span class="pre">(a:Type</span> <span class="pre">u#a)</span> <span class="pre">(b:Type</span> <span class="pre">u#b)</span>
+<span class="pre">:</span> <span class="pre">Type</span> <span class="pre">u#c</span></code>, computing the most general type for <code class="docutils literal notranslate"><span class="pre">tup2</span></code>.</p>
+<p>If you now try to define <code class="docutils literal notranslate"><span class="pre">tup2</span></code>,</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> tup2 a b = a &amp; b
+</pre></div>
+</div>
+<p>F* complains with the following error (with <code class="docutils literal notranslate"><span class="pre">--print_universes</span></code> on):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Type</span> <span class="n">u</span><span class="c1">#(max uu___43588 uu___43589) is not a subtype of the expected type Type u#uu___43590</span>
+</pre></div>
+</div>
+<p>Meaning that the inferred type for the definition of <code class="docutils literal notranslate"><span class="pre">tup2</span> <span class="pre">a</span> <span class="pre">b</span></code> is
+<code class="docutils literal notranslate"><span class="pre">Type</span> <span class="pre">u#(max</span> <span class="pre">a</span> <span class="pre">b)</span></code>, which is of course not the same as <code class="docutils literal notranslate"><span class="pre">Type</span>
+<span class="pre">u#c</span></code>, and, sadly, the auto-generated fresh names in the error
+message don’t make your life any easier.</p>
+<p>The reason for this is that one can write a <code class="docutils literal notranslate"><span class="pre">val</span> <span class="pre">f</span> <span class="pre">:</span> <span class="pre">t</span></code> in a
+context where a definition for <code class="docutils literal notranslate"><span class="pre">f</span></code> may never appear, in which case
+F* has to compute some universes for <code class="docutils literal notranslate"><span class="pre">t</span></code>—it chooses the most
+general universe, though if you do try to implement <code class="docutils literal notranslate"><span class="pre">f</span></code> you may
+find that the most general universe is too general.</p>
+<p>A good rule of thumb is the following:</p>
+<ul>
+<li><p>Do not write a <code class="docutils literal notranslate"><span class="pre">val</span></code> declaration for a term, unless you are
+writing an <a class="reference internal" href="../part3/part3_interfaces.html#part3-interfaces"><span class="std std-ref">interface</span></a>. Instead, directly
+write a <code class="docutils literal notranslate"><span class="pre">let</span></code> or <code class="docutils literal notranslate"><span class="pre">type</span></code> definition and annotate it with the
+type you expect it to have—this will lead to fewer
+surprises. For example, instead of separating the <code class="docutils literal notranslate"><span class="pre">val</span> <span class="pre">tup2</span></code>
+from <code class="docutils literal notranslate"><span class="pre">let</span> <span class="pre">tup2</span></code> just write them together, as shown below, and F*
+infers the correct universes.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> tuple2 (a:Type) (b:Type) : Type = a &amp; b
+</pre></div>
+</div>
+</li>
+<li><p>If you must write a <code class="docutils literal notranslate"><span class="pre">val</span> <span class="pre">f</span> <span class="pre">:</span> <span class="pre">t</span></code>, because, say, the type <code class="docutils literal notranslate"><span class="pre">t</span></code> is
+huge, or because you are writing an interface, it’s a good idea to
+be explicit about universes, so that when defining <code class="docutils literal notranslate"><span class="pre">f</span></code>, you know
+exactly how general you have to be in terms of universes; and,
+conversely, users of <code class="docutils literal notranslate"><span class="pre">f</span></code> know exactly how much universe
+polymorphism they are getting. For example:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> tup2_again (a:Type u#a) (b:Type u#b) : Type u#(max a b)
+<span class="k">let</span> tup2_again a b = a &amp; b
+</pre></div>
+</div>
+</li>
+</ul>
+</li>
+<li><p>When defining an inductive type, prefer using parameters over
+indexes, since usually type parameters lead to types in lower
+universes. For example, one might think to define lists this way:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">noeq</span>
+<span class="k">type</span> list_alt : Type u#a -&gt; Type u#(a + 1) = 
+  | NilAlt: a:Type -&gt; list_alt a
+  | ConsAlt: a:Type -&gt; hd:a -&gt; tl:list_alt a -&gt; list_alt a
+</pre></div>
+</div>
+<p>Although semantically equivalent to the standard list</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> list (a:Type u#a) : Type u#a  =
+ | Nil : list a
+ | Cons : hd:a -&gt; tl:list a -&gt; list a
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">list_alt</span></code> produces a type in <code class="docutils literal notranslate"><span class="pre">u#(a</span> <span class="pre">+</span> <span class="pre">1)</span></code>, since both <code class="docutils literal notranslate"><span class="pre">NilAlt</span></code>
+and <code class="docutils literal notranslate"><span class="pre">ConsAlt</span></code> have fields of type <code class="docutils literal notranslate"><span class="pre">a:Type</span> <span class="pre">u#a</span></code>. So, unless the
+index of your type varies among the constructors, use a parameter
+instead of an index.</p>
+<p>That said, recall that it’s the fields of the constructors of the
+inductive type that count. You can index your type by a type in any
+universe and it doesn’t influence the result type. Here’s an
+artificial example.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> t : Type u#100 -&gt; Type u#0 = 
+  | T : unit -&gt; t (FStar.Universe.raise_t unit)
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="part2_par.html" class="btn btn-neutral float-left" title="A First Model of Computational Effects" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../part3/part3.html" class="btn btn-neutral float-right" title="Modularity With Interfaces and Typeclasses" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

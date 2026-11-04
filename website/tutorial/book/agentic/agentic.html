@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Agentic Proof-Oriented Programming &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Getting Started" href="agentic_getting_started.html" />
+    <link rel="prev" title="Extraction" href="../pulse/pulse_extraction.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pulse/pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Agentic Proof-Oriented Programming</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="agentic_getting_started.html">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agentic_rubrics_templates_audits.html">Rubrics, Templates, and Audits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agentic_sorting_algorithms.html">On Abstraction &amp; Rubrics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agentic_rubrics_as_templates.html">Rubrics as Templates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agentic_state_machines.html">Stateful Services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agentic_tls.html">A Verified TLS-1.3 Client and Server</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Agentic Proof-Oriented Programming</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="agentic-proof-oriented-programming">
+<span id="partagentic"></span><h1>Agentic Proof-Oriented Programming<a class="headerlink" href="#agentic-proof-oriented-programming" title="Link to this heading"></a></h1>
+<p>AI-based automation of formal proofs has received a lot of attention
+in the past few years, with lots of promise but few real successes. However,
+starting in late 2025, with the availability of models such as Claude Opus 4.5 and GPT-5.2 (and beyond),
+and especially their integration within agentic coding environments such as Claude Code,
+OpenAI Codex, and GitHub Copilot CLI, the promise of AI automation for proofs has largely
+become a reality. It is now possible to have agents author hundreds of thousands
+of lines of programs and proofs, including in F* and Pulse, but also in other
+proof assistants including Lean, Coq, Verus, Dafny, and others.</p>
+<p>For example, in a series of <a class="reference external" href="https://risemsr.github.io/blog">blog posts</a> we have reported on
+our ability to use AI agents to automatically formalize the classic “CLRS”
+<a class="reference external" href="https://en.wikipedia.org/wiki/Introduction_to_Algorithms">Introduction to Algorithms</a>
+textbook in F* and Pulse, in just a few weeks of agentic coding.
+Beyond just textbook algorithms, we have also been able to use agents to build a
+formally <a class="reference external" href="https://github.com/FStarLang/pulse-verified-gc">verified generational garbage collector for OCaml</a>
+with proofs of correctness comprising more than 100,000 lines of F* and Pulse, authored
+entirely by agents. The resulting verified, executable C code can be used as a
+drop-in replacement for the OCaml 4.14.0 garbage collector, and has been tested to work with
+the OCaml 4.14.0 compiler and runtime system.
+Going further, we have also been able to use agents to build a verified implementation of
+the <a class="reference external" href="https://github.com/project-everest/mitls-fstar/tree/agentic">TLS-1.3 protocol</a>,
+with implementation and proofs again exceeding 100,000 lines of F* and Pulse.
+The resulting C code interoperates with OpenSSL to negotiate TLS connections and
+send application traffic.
+Others have reported similar successes, using agents to formalize proofs of <a class="reference external" href="https://proofsandintuitions.net/2026/03/18/move-borrow-checker-lean/">programming
+language metatheory</a>,
+parts of <a class="reference external" href="https://zoep.github.io/blog/2026/04/17/machine-generated-code-machine-checked-proofs/">verified compilers</a>,
+or porting <a class="reference external" href="https://github.com/kim-em/lean-zip">C code into Lean with proofs of correctness</a>.</p>
+<p>That said, agentic proof-oriented programming is an extremely new paradigm, the agents are evolving
+rapidly and there are many open questions about how best to structure interactions between humans
+and agents to achieve the best results. What is clear is that agents can produce software artifacts
+at a scale which, if not structured correctly, can far exceed the ability of humans to review and validate
+the results. The promise of proof-oriented programming in this context is that proof checkers like F*
+can be used to ensures that the software matches a formal specification, but one still has to be able
+to carefully check  that what is proven matches what is intended.</p>
+<p>In this part of the book, we offer a few principles and techniques for agentic
+proof-oriented programming. Thankfully, a lot of what we’ve come to know as good
+proof-engineering practice is still very much relevant in this new setting. Our
+main message is that humans need to think carefully about the right abstractions
+for designing a system so that agents are effective at producing proof-oriented
+software, and, perhaps more importanly, that humans are able to understand the
+results.</p>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="agentic_getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agentic_rubrics_templates_audits.html">Rubrics, Templates, and Audits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agentic_sorting_algorithms.html">On Abstraction &amp; Rubrics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agentic_rubrics_as_templates.html">Rubrics as Templates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agentic_state_machines.html">Stateful Services</a></li>
+<li class="toctree-l1"><a class="reference internal" href="agentic_tls.html">A Verified TLS-1.3 Client and Server</a></li>
+</ul>
+</div>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../pulse/pulse_extraction.html" class="btn btn-neutral float-left" title="Extraction" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="agentic_getting_started.html" class="btn btn-neutral float-right" title="Getting Started" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

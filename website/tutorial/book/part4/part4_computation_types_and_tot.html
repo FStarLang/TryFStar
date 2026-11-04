@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Effect of Total Computations &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Erasure and the Ghost Effect" href="part4_ghost.html" />
+    <link rel="prev" title="Computation Types to Track Dependences" href="part4_background.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="part4.html">Computational Effects</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="part4_background.html">Computation Types to Track Dependences</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">The Effect of Total Computations</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#evaluation-order">Evaluation order</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="part4_ghost.html">Erasure and the Ghost Effect</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part4_div.html">Divergence, or Non-Termination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part4_pure.html">Primitive Effect Refinements</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pulse/pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="part4.html">Computational Effects</a></li>
+      <li class="breadcrumb-item active">The Effect of Total Computations</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="the-effect-of-total-computations">
+<span id="part4-computation-types-and-tot"></span><h1>The Effect of Total Computations<a class="headerlink" href="#the-effect-of-total-computations" title="Link to this heading"></a></h1>
+<p>At the very bottom of the effect label hierarchy is <code class="docutils literal notranslate"><span class="pre">Tot</span></code>, used to
+describe pure, total functions. Since they are at the bottom of the
+hierarchy, <code class="docutils literal notranslate"><span class="pre">Tot</span></code> computations can only depend on other <code class="docutils literal notranslate"><span class="pre">Tot</span></code>
+computations, ensuring that F*’s logical core remains total.</p>
+<p>Every term in F* is typechecked to have a computation type. This
+includes the total terms we have been working with. Such terms are
+classified in the default effect called <code class="docutils literal notranslate"><span class="pre">Tot</span></code>, the effect of total
+computations that do not have any observable effect, aside from the
+value they return. Any meaning or intuition that we have ascribed to
+typing <code class="docutils literal notranslate"><span class="pre">e:t</span></code> extends to <code class="docutils literal notranslate"><span class="pre">e:Tot</span> <span class="pre">t</span></code>. For example, if <code class="docutils literal notranslate"><span class="pre">e:Tot</span> <span class="pre">t</span></code>,
+then at runtime, <code class="docutils literal notranslate"><span class="pre">e</span></code> terminates and produces a value of type
+<code class="docutils literal notranslate"><span class="pre">t</span></code>. In addition, since its effect label is <code class="docutils literal notranslate"><span class="pre">Tot</span></code>, it has no
+side-effect.</p>
+<p>In fact, as we have already <a class="reference internal" href="../part1/part1_getting_off_the_ground.html#part1-ch1-arrow-notations"><span class="std std-ref">seen</span></a>,
+notationally <code class="docutils literal notranslate"><span class="pre">x:t0</span> <span class="pre">-&gt;</span> <span class="pre">t1</span></code> is a shorthand for <code class="docutils literal notranslate"><span class="pre">x:t0</span> <span class="pre">-&gt;</span> <span class="pre">Tot</span> <span class="pre">t1</span></code>
+(where <code class="docutils literal notranslate"><span class="pre">t1</span></code> could itself be an arrow type). More generally, arrow
+types in F* take the form <code class="docutils literal notranslate"><span class="pre">x:t</span> <span class="pre">-&gt;</span> <span class="pre">C</span></code>, representing a function with
+argument type <code class="docutils literal notranslate"><span class="pre">t0</span></code> and body computation type <code class="docutils literal notranslate"><span class="pre">C</span></code> (which may depend
+on <code class="docutils literal notranslate"><span class="pre">x</span></code>).</p>
+<p>Similarly, the return type annotation that we have seen in the <code class="docutils literal notranslate"><span class="pre">let</span></code>
+definitions is also a shorthand, e.g., the <a class="reference internal" href="../part1/part1_polymorphism.html#part1-polymorphism-and-inference"><span class="std std-ref">id function</span></a></p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> id (a:Type) (x:a) : a = x
+</pre></div>
+</div>
+<p>is a shorthand for</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> id (a:Type) (x:a) : <span class="k">Tot</span> a = x  <span class="c">//the return type annotation is a computation type</span>
+</pre></div>
+</div>
+<p>and the type of <code class="docutils literal notranslate"><span class="pre">id</span></code> is <code class="docutils literal notranslate"><span class="pre">a:Type</span> <span class="pre">-&gt;</span> <span class="pre">a</span> <span class="pre">-&gt;</span> <span class="pre">Tot</span> <span class="pre">a</span></code>. More generally,
+the return type annotations on <code class="docutils literal notranslate"><span class="pre">let</span></code> definitions are computation
+types <code class="docutils literal notranslate"><span class="pre">C</span></code>.</p>
+<p>The <a class="reference internal" href="../part1/part1_getting_off_the_ground.html#part1-ch1-named-function"><span class="std std-ref">explicit annotation syntax</span></a> <code class="docutils literal notranslate"><span class="pre">e</span>
+<span class="pre">&lt;:</span> <span class="pre">t</span></code> behaves a little differently. F* allows writing <code class="docutils literal notranslate"><span class="pre">e</span> <span class="pre">&lt;:</span> <span class="pre">C</span></code>, and
+checks that <code class="docutils literal notranslate"><span class="pre">e</span></code> indeed has computation type <code class="docutils literal notranslate"><span class="pre">C</span></code>. But when the
+effect label is omitted, <code class="docutils literal notranslate"><span class="pre">e</span> <span class="pre">&lt;:</span> <span class="pre">t</span></code>, it is interpreted as <code class="docutils literal notranslate"><span class="pre">e</span> <span class="pre">&lt;:</span> <span class="pre">_</span>
+<span class="pre">t</span></code>, where the omitted effect label is inferred by F* and does not
+default to <code class="docutils literal notranslate"><span class="pre">Tot</span></code>.</p>
+<section id="evaluation-order">
+<span id="part4-evaluation-order"></span><h2>Evaluation order<a class="headerlink" href="#evaluation-order" title="Link to this heading"></a></h2>
+<p>For pure functions, the evaluation order is irrelevant. <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> F*
+provides abstract machines to interpret pure terms using either a lazy
+evaluation strategy or a call-by-value strategy (see a
+<a class="reference internal" href="../under_the_hood/under_the_hood.html#under-the-hood"><span class="std std-ref">forthcoming chapter on F*’s normalizers</span></a>). Further, compiling pure programs to OCaml, F*
+inherits OCaml’s call-by-value semantics for pure terms.</p>
+<p>When evaluating function calls with effectful arguments, the arguments
+are reduced to values first, exhibiting their effects, if any, prior
+to the function call. That is, where <code class="docutils literal notranslate"><span class="pre">e1</span></code> and <code class="docutils literal notranslate"><span class="pre">e2</span></code> may be
+effectful, the application <code class="docutils literal notranslate"><span class="pre">e1</span> <span class="pre">e2</span></code> is analogous to <code class="docutils literal notranslate"><span class="pre">bind</span> <span class="pre">f</span> <span class="pre">=</span> <span class="pre">e1</span> <span class="pre">in</span>
+<span class="pre">bind</span> <span class="pre">x</span> <span class="pre">=</span> <span class="pre">e2</span> <span class="pre">in</span> <span class="pre">f</span> <span class="pre">x</span></code>: in fact, internally this is what F* elaborates
+<code class="docutils literal notranslate"><span class="pre">e1</span> <span class="pre">e2</span></code> to, when either of them may have non-trivial effects.  As
+such, for effectful terms, F* enforces a left-to-right, <a class="reference external" href="https://en.wikipedia.org/wiki/Evaluation_strategy/">call-by-value</a> semantics for
+effectful terms.</p>
+<p>Since only the value returned by a computation is passed as an
+argument to a function, function argument types in F* are always value
+types. That is, they always have the form <code class="docutils literal notranslate"><span class="pre">t</span> <span class="pre">-&gt;</span> <span class="pre">C</span></code>. To pass a
+computation as an argument to another function, you must encapsulate
+the computation in a function, e.g., in place of <code class="docutils literal notranslate"><span class="pre">C</span> <span class="pre">-&gt;</span> <span class="pre">C</span></code>, one can
+write <code class="docutils literal notranslate"><span class="pre">(unit</span> <span class="pre">-&gt;</span> <span class="pre">C)</span> <span class="pre">-&gt;</span> <span class="pre">C'</span></code>. Since functions are first-class values in
+F*, including functions whose body may have non-trivial effects, one
+can always do this.</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id2" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>Since F* is an extensional type theory, pure F* terms are only
+<em>weakly</em> normalizing. That is, some evaluation strategies
+(e.g., repeatedly reducing a recursive function deep in an
+infeasible code path) need not terminate. However, for every
+closed, pure term, there is a reduction strategy that will
+reduce it fully. As such, the evaluation order for pure
+functions is irrelevant, except that some choices of evaluation
+order may lead to non-termination.</p>
+</aside>
+</aside>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="part4_background.html" class="btn btn-neutral float-left" title="Computation Types to Track Dependences" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="part4_ghost.html" class="btn btn-neutral float-right" title="Erasure and the Ghost Effect" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

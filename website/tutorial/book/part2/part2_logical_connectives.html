@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Constructive &amp; Classical Connectives &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Simply Typed Lambda Calculus" href="part2_stlc.html" />
+    <link rel="prev" title="Equality Types" href="part2_equality.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="part2.html">Representing Data, Proofs, and Computations with Inductive Types</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="part2_inductive_type_families.html">Inductive type definitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_vectors.html">Length-indexed Lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_merkle.html">Merkle Trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_equality.html">Equality Types</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Constructive &amp; Classical Connectives</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#falsehood">Falsehood</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#introduction">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#elimination">Elimination</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#truth">Truth</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id1">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id2">Elimination</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#conjunction">Conjunction</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id3">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id4">Elimination</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#disjunction">Disjunction</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id5">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id6">Elimination</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#implication">Implication</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id7">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id8">Elimination</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#negation">Negation</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#introduction-exercise">Introduction (Exercise)</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#elimination-exercise">Elimination (Exercise)</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#universal-quantification">Universal Quantification</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id9">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id10">Elimination</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#existential-quantification">Existential Quantification</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#id11">Introduction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id12">Elimination</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#exercise">Exercise</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="part2_stlc.html">Simply Typed Lambda Calculus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_phoas.html">Higher-order Abstract Syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_well_founded.html">Well-founded Relations and Termination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_par.html">A First Model of Computational Effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_universes.html">Universes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pulse/pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+      <li class="breadcrumb-item active">Constructive &amp; Classical Connectives</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="constructive-classical-connectives">
+<span id="part2-connectives"></span><h1>Constructive &amp; Classical Connectives<a class="headerlink" href="#constructive-classical-connectives" title="Link to this heading"></a></h1>
+<p>In <a class="reference internal" href="../part1/part1_prop_assertions.html#part1-prop-connectives"><span class="std std-ref">an earlier chapter</span></a>, we learned
+about the propositional connectives <span class="math notranslate nohighlight">\(\forall, \exists,
+\Rightarrow, \iff, \wedge, \vee, \neg\)</span>, etc. Whereas in other logical
+frameworks these connectives are primitive, in a type theory like F*
+these connectives are defined notions, built from inductive type
+definitions and function types. In this section, we take a closer look
+at these logical connectives, show their definitions, and present some
+utilities to manipulate them in proofs.</p>
+<p>Every logical connective comes in two flavors. First, in its most
+primitive form, it is defined as an inductive or arrow type, giving a
+constructive interpretation to the connective. Second, and more
+commonly used in F*, is a propositional variant of
+the same connective—the propositional variant is classical rather than
+constructive and its proofs are typically derived by writing partial
+proof terms with the SMT filling in the missing parts.</p>
+<p>Each connective has an <em>introduction</em> principle (which describes how
+to build proofs of that connective) and an <em>elimination</em> principle
+(which describes how to use a proof of that connective to build other
+proofs). Example uses of introduction and elimination principles for
+all the connectives can be found in <a class="reference external" href="https://github.com/FStarLang/FStar/blob/master/tests/micro-benchmarks/ClassicalSugar.fst">ClassicalSugar.fst</a></p>
+<p>All these types are defined in <code class="docutils literal notranslate"><span class="pre">Prims</span></code>, the very first module in all
+F* programs.</p>
+<section id="falsehood">
+<h2>Falsehood<a class="headerlink" href="#falsehood" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">empty</span></code> inductive type is the proposition that has no
+proofs. The logical consistency of F* depends on there being no closed
+terms whose type is <code class="docutils literal notranslate"><span class="pre">empty</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> empty =
+</pre></div>
+</div>
+<p>This definition might look odd at first: it defines an inductive type
+with <em>zero</em> constructors. This is perfectly legal in F*, unlike in
+languages like OCaml or F#.</p>
+<p>The propositional variant of <code class="docutils literal notranslate"><span class="pre">empty</span></code> is called <code class="docutils literal notranslate"><span class="pre">False</span></code> and is defined
+as shown below:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">assume</span> <span class="k">val</span> l_False : prop
+</pre></div>
+</div>
+<p>(The connective is indeed just assumed without any definition!  Its entire
+meaning is determined by the SMT encoding, which translates this connective to
+SMT’s false.)</p>
+<section id="introduction">
+<h3>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">False</span></code> proposition has no introduction form, since it has no proofs.</p>
+</section>
+<section id="elimination">
+<h3>Elimination<a class="headerlink" href="#elimination" title="Link to this heading"></a></h3>
+<p>From a (hypothetical) proof of <code class="docutils literal notranslate"><span class="pre">False</span></code>, one can build a proof of any
+other type.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> empty_elim (#a:Type) (x:empty) : a = <span class="k">match</span> x <span class="k">with</span>
+</pre></div>
+</div>
+<p>This body of <code class="docutils literal notranslate"><span class="pre">elim_false</span></code> is a <code class="docutils literal notranslate"><span class="pre">match</span></code> expression with no branches,
+which suffices to match all the zero cases of the <code class="docutils literal notranslate"><span class="pre">empty</span></code> type.</p>
+<p><code class="docutils literal notranslate"><span class="pre">FStar.Pervasives.false_elim</span></code> provides an analogous elimination rule
+for <code class="docutils literal notranslate"><span class="pre">False</span></code>, as shown below, where the termination check for the
+recursive call succeeds trivially in a context with <code class="docutils literal notranslate"><span class="pre">x:False</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> false_elim (#a:Type) (x:False) : a = false_elim x
+</pre></div>
+</div>
+</section>
+</section>
+<section id="truth">
+<h2>Truth<a class="headerlink" href="#truth" title="Link to this heading"></a></h2>
+<p>The <code class="docutils literal notranslate"><span class="pre">trivial</span></code> inductive type has just a single proof, <code class="docutils literal notranslate"><span class="pre">T</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">type</span> <span class="n">trivial</span> <span class="o">=</span> <span class="n">T</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although isomorphic to the <code class="docutils literal notranslate"><span class="pre">unit</span></code> type with its single element
+<code class="docutils literal notranslate"><span class="pre">()</span></code>, for historic reasons, F* uses the <code class="docutils literal notranslate"><span class="pre">trivial</span></code> type to
+represent trivial proofs. In the future, it is likely that
+<code class="docutils literal notranslate"><span class="pre">trivial</span></code> will just be replaced by <code class="docutils literal notranslate"><span class="pre">unit</span></code>.</p>
+</div>
+<p>The propositional form of <code class="docutils literal notranslate"><span class="pre">trivial</span></code> is written <code class="docutils literal notranslate"><span class="pre">True</span></code> and is defined as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">assume</span> <span class="n">val</span> <span class="n">l_True</span> <span class="p">:</span> <span class="n">prop</span>
+</pre></div>
+</div>
+<section id="id1">
+<h3>Introduction<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p>The introduction forms for both the constructive and propositional variants
+are trivial.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">let</span> <span class="n">_</span> <span class="p">:</span> <span class="n">trivial</span> <span class="o">=</span> <span class="n">T</span>
+<span class="n">let</span> <span class="n">_</span> <span class="p">:</span> <span class="kc">True</span> <span class="o">=</span> <span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="id2">
+<h3>Elimination<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<p>There is no elimination form, since proofs of <code class="docutils literal notranslate"><span class="pre">trivial</span></code> are vacuous
+and cannot be used to derive any other proofs.</p>
+</section>
+</section>
+<section id="conjunction">
+<h2>Conjunction<a class="headerlink" href="#conjunction" title="Link to this heading"></a></h2>
+<p>A constructive proof of <code class="docutils literal notranslate"><span class="pre">p</span></code> and <code class="docutils literal notranslate"><span class="pre">q</span></code> is just a pair containing
+proofs of <code class="docutils literal notranslate"><span class="pre">p</span></code> and <code class="docutils literal notranslate"><span class="pre">q</span></code>, respectively.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">type</span> <span class="n">pair</span> <span class="p">(</span><span class="n">p</span> <span class="n">q</span><span class="p">:</span><span class="n">Type</span><span class="p">)</span> <span class="o">=</span> <span class="o">|</span> <span class="n">Pair</span> <span class="p">:</span> <span class="n">_1</span><span class="p">:</span><span class="n">p</span> <span class="o">-&gt;</span> <span class="n">_2</span><span class="p">:</span><span class="n">q</span> <span class="o">-&gt;</span> <span class="n">pair</span> <span class="n">p</span> <span class="n">q</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This type is isomorphic to the tuple type <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">&amp;</span> <span class="pre">q</span></code> that we
+encountered previously <a class="reference internal" href="../part1/part1_inductives.html#part1-tuples"><span class="std std-ref">here</span></a>. F* currently
+uses a separate type for pairs used in proofs and those used to
+pair data, though there is no fundamental reason for this. In the
+future, it is likely that <code class="docutils literal notranslate"><span class="pre">pair</span></code> will just be replaced by the
+regular tuple type.</p>
+</div>
+<p>The propositional form of conjunction is written <code class="docutils literal notranslate"><span class="pre">/\</span></code> and is defined as
+follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">assume</span> <span class="n">val</span> <span class="p">(</span> <span class="o">/</span>\ <span class="p">)</span> <span class="p">(</span><span class="n">p</span> <span class="n">q</span><span class="p">:</span><span class="n">prop</span><span class="p">)</span> <span class="p">:</span> <span class="n">prop</span>
+</pre></div>
+</div>
+<section id="id3">
+<h3>Introduction<a class="headerlink" href="#id3" title="Link to this heading"></a></h3>
+<p>Introducing a conjunction simply involves constructing a pair.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> and_intro #p #q (pf_p:p) (pf_q:q)
+  : pair p q
+  = Pair pf_p pf_q
+</pre></div>
+</div>
+<p>To introduce the propositional version, there are two options. One can
+either rely entirely on the SMT solver to discover a proof of <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">/\</span>
+<span class="pre">q</span></code> from proofs of <code class="docutils literal notranslate"><span class="pre">p</span></code> and <code class="docutils literal notranslate"><span class="pre">q</span></code>, which it is usually very capable
+of doing.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> conj_intro #p #q (pf_p:squash p) (pf_q: squash q)
+  : <span class="k">Lemma</span> (p /\ q)
+  = ()
+</pre></div>
+</div>
+<p>Or, if one needs finer control, F* offers specialized syntax
+(defined in <code class="docutils literal notranslate"><span class="pre">FStar.Classical.Sugar</span></code>) to manipulate each of the
+non-trivial logical connectives, as shown below.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> conj_intro_sugar #p #q (pf_p:squash p) (pf_q: squash q)
+  : squash (p /\ q)
+  = <span class="k">introduce</span> p /\ q
+    <span class="k">with</span> pf_p
+    <span class="k">and</span>  pf_q
+</pre></div>
+</div>
+<p>The sugared introduction form for conjunction is, in general, as
+follows:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">introduce</span> p /\ q <span class="c">//Term whose top-level connective is /\</span>
+<span class="k">with</span> proof_of_p  <span class="c">//proof_of_p : squash p</span>
+<span class="k">and</span>  proof_of_q  <span class="c">//proof_of_q : squash q</span>
+</pre></div>
+</div>
+<p>(In most cases you can just write <cite>()</cite> instead of the above!)</p>
+</section>
+<section id="id4">
+<h3>Elimination<a class="headerlink" href="#id4" title="Link to this heading"></a></h3>
+<p>Eliminating a conjunction comes in two forms, corresponding to
+projecting each component of the pair.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> and_elim_1 #p #q (pf_pq:p &amp; q)
+  : p
+  = pf_pq._1
+
+<span class="k">let</span> and_elim_2 #p #q (pf_pq:p &amp; q)
+  : q
+  = pf_pq._2
+</pre></div>
+</div>
+<p>For the propositional version, we again have two styles, the first relying
+on the SMT solver.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> conj_elim_1 #p #q (pf_pq:squash (p /\ q))
+  : squash p
+  = ()
+
+<span class="k">let</span> conj_elim_2 #p #q (pf_pq:squash (p /\ q))
+  : squash q
+  = ()
+</pre></div>
+</div>
+<p>And a style using syntactic sugar:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> conj_elim_sugar_1 #p #q (pf_pq:squash (p /\ q))
+  : squash p
+  = <span class="k">eliminate</span> p /\ q
+    <span class="k">returns</span> p
+    <span class="k">with</span> pf_p pf_q. pf_p
+
+<span class="k">let</span> conj_elim_sugar_2 #p #q (pf_pq:squash (p /\ q))
+  : squash p
+  = <span class="k">eliminate</span> p /\ q
+    <span class="k">returns</span> q
+    <span class="k">with</span> pf_p pf_q. pf_q
+</pre></div>
+</div>
+</section>
+</section>
+<section id="disjunction">
+<h2>Disjunction<a class="headerlink" href="#disjunction" title="Link to this heading"></a></h2>
+<p>A constructive proof of <code class="docutils literal notranslate"><span class="pre">p</span></code> or <code class="docutils literal notranslate"><span class="pre">q</span></code> is represented by the following
+inductive type:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> sum (p q:Type) =
+  | Left : p -&gt; sum p q
+  | Right : q -&gt; sum p q
+</pre></div>
+</div>
+<p>The constructors <code class="docutils literal notranslate"><span class="pre">Left</span></code> and <code class="docutils literal notranslate"><span class="pre">Right</span></code> inject proofs of <code class="docutils literal notranslate"><span class="pre">p</span></code> or
+<code class="docutils literal notranslate"><span class="pre">q</span></code> into a proof of <code class="docutils literal notranslate"><span class="pre">sum</span> <span class="pre">p</span> <span class="pre">q</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Just like before, this type is isomorphic to the type <code class="docutils literal notranslate"><span class="pre">either</span> <span class="pre">p</span> <span class="pre">q</span></code>
+from <code class="docutils literal notranslate"><span class="pre">FStar.Pervasives</span></code>.</p>
+</div>
+<p>The classical connective <code class="docutils literal notranslate"><span class="pre">\/</span></code> described previously is declared as follows:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">assume</span> <span class="k">val</span> ( \/ ) (p q: prop) : prop
+</pre></div>
+</div>
+<section id="id5">
+<h3>Introduction<a class="headerlink" href="#id5" title="Link to this heading"></a></h3>
+<p>As with the other connectives, introducing a constructive disjunction
+is just a matter of using the <code class="docutils literal notranslate"><span class="pre">Left</span></code> or <code class="docutils literal notranslate"><span class="pre">Right</span></code> constructor.</p>
+<p>To introduce the propositional version <code class="docutils literal notranslate"><span class="pre">\/</span></code>, one can either rely on the
+SMT solver, as shown below.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> or_intro_left #p #q (pf_p:squash p)
+  : squash (p \/ q)
+  = ()
+
+<span class="k">let</span> or_intro_right #p #q (pf_q:squash q)
+  : squash (p \/ q)
+  = ()
+</pre></div>
+</div>
+<p>Or, using the following syntactic sugar, one can specifically provide
+a proof for either the <code class="docutils literal notranslate"><span class="pre">Left</span></code> or <code class="docutils literal notranslate"><span class="pre">Right</span></code> disjunct.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> or_intro_sugar_left #p #q (pf_p:squash p)
+  : squash (p \/ q)
+  = <span class="k">introduce</span> p \/ q
+    <span class="k">with</span> Left pf_p
+
+<span class="k">let</span> or_intro_sugar_right #p #q (pf_q:squash q)
+  : squash (p \/ q)
+  = <span class="k">introduce</span> p \/ q
+    <span class="k">with</span> Right pf_q
+</pre></div>
+</div>
+</section>
+<section id="id6">
+<h3>Elimination<a class="headerlink" href="#id6" title="Link to this heading"></a></h3>
+<p>Eliminating a disjunction requires a <em>motive</em>, a goal proposition to
+be derived from a proof of <code class="docutils literal notranslate"><span class="pre">sum</span> <span class="pre">p</span> <span class="pre">q</span></code> or <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">\/</span> <span class="pre">q</span></code>.</p>
+<p>In constructive style, eliminating <code class="docutils literal notranslate"><span class="pre">sum</span> <span class="pre">p</span> <span class="pre">q</span></code> amounts to just
+pattern matching on the cases and constructing a proof of the goal
+by applying a suitable goal-producing hypothesis.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> sum_elim #p #q #r (p_or_q: sum p q)
+                         (pr: p -&gt; r)
+                         (qr: q -&gt; r)
+  : r
+  = <span class="k">match</span> p_or_q <span class="k">with</span>
+    | Left p -&gt; pr p
+    | Right q -&gt; qr q
+</pre></div>
+</div>
+<p>The propositional version is similar, except the case analysis can either
+be automated by SMT or explicitly handled using the syntactic
+sugar.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> or_elim #p #q #r (pf_p:squash (p \/ q))
+                     (pf_pr:squash (p ==&gt; r))
+                     (pf_qr:squash (q ==&gt; r))
+  : squash r
+  = ()
+</pre></div>
+</div>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> or_elim_sugar #p #q #r
+                  (pf_p:squash (p \/ q))
+                  (pf_pr:unit -&gt; <span class="k">Lemma</span> (<span class="k">requires</span> p) (<span class="k">ensures</span> r))
+                  (pf_qr:unit -&gt; <span class="k">Lemma</span> (<span class="k">requires</span> q) (<span class="k">ensures</span> r))
+  : squash r
+  = <span class="k">eliminate</span> p \/ q
+    <span class="k">returns</span> r
+    <span class="k">with</span> pf_p. pf_pr () <span class="c">//pf_p : squash p</span>
+    <span class="k">and</span>  pf_q. pf_qr () <span class="c">//pf_q : squash q</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="implication">
+<h2>Implication<a class="headerlink" href="#implication" title="Link to this heading"></a></h2>
+<p>One of the elimination principles for disjunction used the implication
+connective <code class="docutils literal notranslate"><span class="pre">==&gt;</span></code>. Its definition is shown below:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">assume</span> <span class="k">val</span> (==&gt;) (p q : prop) : prop
+</pre></div>
+</div>
+<section id="id7">
+<h3>Introduction<a class="headerlink" href="#id7" title="Link to this heading"></a></h3>
+<p>Introducing a constructive arrow <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">-&gt;</span> <span class="pre">q</span></code> just involves constructing
+a <span class="math notranslate nohighlight">\(\lambda\)</span>-literal of the appropriate type.</p>
+<p>One can turn several kinds of arrows into implications, as shown below.</p>
+<p>One option is to directly use a function from the <code class="docutils literal notranslate"><span class="pre">FStar.Classical</span></code>
+library, as shown below:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> impl_intro_tot (#p #q: prop) (f: (p -&gt; q)) : (p ==&gt; q)
+</pre></div>
+</div>
+<p>We can also use the <cite>introduce</cite> syntax:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> implies_intro_1 #p #q (pq: squash p -&gt; squash q)
+  : squash (p ==&gt; q)
+  = <span class="k">introduce</span> p ==&gt; q
+    <span class="k">with</span> pf_p. pq pf_p
+
+<span class="k">let</span> implies_intro_2 #p #q (pq: unit -&gt; <span class="k">Lemma</span> (<span class="k">requires</span> p) (<span class="k">ensures</span> q))
+  : squash (p ==&gt; q)
+  = <span class="k">introduce</span> p ==&gt; q
+    <span class="k">with</span> pf_p. pq pf_p
+
+<span class="k">let</span> implies_intro_3 #p #q (pq: unit -&gt; <span class="k">Lemma</span> (<span class="k">requires</span> p) (<span class="k">ensures</span> q))
+  : <span class="k">Lemma</span> (p ==&gt; q)
+  = <span class="k">introduce</span> p ==&gt; q
+    <span class="k">with</span> pf_p. pq pf_p
+</pre></div>
+</div>
+<p>Unlike the other connectives, there is no fully automated SMT-enabled
+way to turn an arrow type into an implication. Of course, the form
+shown above remains just sugar: it may be instructive to look at its
+desugaring, shown below.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> implies_intro_1 (#p #q:prop) (pq: (squash p -&gt; squash q))
+  : squash (p ==&gt; q)
+  = FStar.Classical.Sugar.implies_intro
+           p
+           (<span class="k">fun</span> (<span class="k">_</span>: squash p) -&gt; q)
+           (<span class="k">fun</span> (pf_p: squash p) -&gt; pq pf_p)
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">FStar.Classical</span></code> provides the basic building
+blocks and the sugar packages it into a more convenient form for use.</p>
+</section>
+<section id="id8">
+<h3>Elimination<a class="headerlink" href="#id8" title="Link to this heading"></a></h3>
+<p>Of course, the elimination form for a constructive implication, i.e.,
+<code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">-&gt;</span> <span class="pre">q</span></code> is just function application.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> arrow_elim #p #q (f:p -&gt; q) (x:p) : q = f x
+</pre></div>
+</div>
+<p>The elimination rule for the propositional form is the classical logical
+rule <em>modus ponens</em>, which is usually very well automated by SMT, as
+shown in <code class="docutils literal notranslate"><span class="pre">implies_elim</span></code> below. We also provide syntactic sugar for
+it, for completeness, though it is seldom used in practice.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> implies_elim #p #q (pq:squash (p ==&gt; q)) (pf_p: squash p)
+  : squash q
+  = ()
+
+<span class="k">let</span> implies_elim_sugar #p #q (pq:squash (p ==&gt; q)) (pf_p: squash p)
+  : squash q
+  = <span class="k">eliminate</span> p ==&gt; q
+    <span class="k">with</span> pf_p
+</pre></div>
+</div>
+</section>
+</section>
+<section id="negation">
+<h2>Negation<a class="headerlink" href="#negation" title="Link to this heading"></a></h2>
+<p>Negation is just a special case of implication.</p>
+<p>In its constructive form, it corresponds to <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">-&gt;</span> <span class="pre">empty</span></code>.</p>
+<p>In <code class="docutils literal notranslate"><span class="pre">Prims</span></code>, we define <code class="docutils literal notranslate"><span class="pre">~p</span></code> as <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">==&gt;</span> <span class="pre">False</span></code>.</p>
+<p>Being just an abbreviation for an implication to <code class="docutils literal notranslate"><span class="pre">False</span></code>, negation
+has no particular introduction or elimination forms of its
+own. However, the following forms are easily derivable.</p>
+<section id="introduction-exercise">
+<h3>Introduction (Exercise)<a class="headerlink" href="#introduction-exercise" title="Link to this heading"></a></h3>
+<p>Prove the following introduction rule for negation:</p>
+<p><a class="reference external" href="../code/exercises/Part2.Connectives.Negation.fst">Exercise file</a></p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> neg_intro #p (f:squash p -&gt; squash False)
+  : squash (~p)
+</pre></div>
+</div>
+<div class="toggle docutils container">
+<div class="header docutils container">
+<p><strong>Answer</strong></p>
+</div>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> neg_intro #p (f:squash p -&gt; squash False)
+  : squash (~p)
+  = <span class="k">introduce</span> p ==&gt; False
+    <span class="k">with</span> pf_p. f pf_p
+</pre></div>
+</div>
+</div>
+</section>
+<hr class="docutils" />
+<section id="elimination-exercise">
+<h3>Elimination (Exercise)<a class="headerlink" href="#elimination-exercise" title="Link to this heading"></a></h3>
+<p>Prove the following elimination rule for negation using the sugar
+rather than just SMT only.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> neg_elim #p #q (f:squash (~p)) (x:unit -&gt; <span class="k">Lemma</span> p)
+  : squash (~q)
+</pre></div>
+</div>
+<p><a class="reference external" href="../code/exercises/Part2.Connectives.Negation.fst">Exercise file</a></p>
+<div class="toggle docutils container">
+<div class="header docutils container">
+<p><strong>Answer</strong></p>
+</div>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> neg_elim #p #q (f:squash (~p)) (lem:unit -&gt; <span class="k">Lemma</span> p)
+  : squash q
+  = <span class="k">eliminate</span> p ==&gt; False
+    <span class="k">with</span> lem()
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="universal-quantification">
+<h2>Universal Quantification<a class="headerlink" href="#universal-quantification" title="Link to this heading"></a></h2>
+<p>Whereas implication corresponds to the non-dependent arrow <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">-&gt;</span>
+<span class="pre">q</span></code>, universal quantification corresponds to the dependent arrow <code class="docutils literal notranslate"><span class="pre">x:t</span>
+<span class="pre">-&gt;</span> <span class="pre">q</span> <span class="pre">x</span></code>. Its propositional form is <code class="docutils literal notranslate"><span class="pre">forall</span> <span class="pre">(x:t).</span> <span class="pre">q</span> <span class="pre">x</span></code>, and is defined
+as shown below:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">assume</span> <span class="k">val</span> ( <span class="k">forall</span> ) #t (q:t -&gt; prop) : prop
+</pre></div>
+</div>
+<section id="id9">
+<h3>Introduction<a class="headerlink" href="#id9" title="Link to this heading"></a></h3>
+<p>Introducing a dependent function type <code class="docutils literal notranslate"><span class="pre">x:t</span> <span class="pre">-&gt;</span> <span class="pre">p</span> <span class="pre">x</span></code> is just like
+introducing a non-dependent one: use a lambda literal.</p>
+<p>For the propositional form, F* provides sugar for use with several styles,
+where names corresponding to each of the <code class="docutils literal notranslate"><span class="pre">forall</span></code>-bound variables on
+the <code class="docutils literal notranslate"><span class="pre">introduce</span></code> line are in scope for the proof term on the <code class="docutils literal notranslate"><span class="pre">with</span></code>
+line.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> forall_intro_1 (#t:Type)
+                   (#q:t -&gt; prop)
+                   (f : (x:t -&gt; squash (q x)))
+  : squash (<span class="k">forall</span> (x:t). q x)
+  = <span class="k">introduce</span> <span class="k">forall</span> (x:t). q x
+    <span class="k">with</span> f x
+
+<span class="k">let</span> forall_intro_2 (#t:Type)
+                   (#q:t -&gt; prop)
+                   (f : (x:t -&gt; <span class="k">Lemma</span> (q x)))
+  : squash (<span class="k">forall</span> (x:t). q x)
+  = <span class="k">introduce</span> <span class="k">forall</span> (x:t). q x
+    <span class="k">with</span> f x
+
+<span class="k">let</span> forall_intro_3 (#t0:Type)
+                   (#t1:t0 -&gt; Type)
+                   (#q: (x0:t0 -&gt; x1:t1 x0 -&gt; prop))
+                   (f : (x0:t0 -&gt; x1:t1 x0 -&gt;  <span class="k">Lemma</span> (q x0 x1)))
+  : squash (<span class="k">forall</span> (x0:t0) (x1:t1 x0). q x0 x1)
+  = <span class="k">introduce</span> <span class="k">forall</span> (x0:t0) (x1:t1 x0). q x0 x1
+    <span class="k">with</span> f x0 x1
+</pre></div>
+</div>
+<p>Note, as <code class="docutils literal notranslate"><span class="pre">forall_intro_3</span></code> shows, the sugar also works for <code class="docutils literal notranslate"><span class="pre">forall</span></code>
+quantifiers of arities greater than 1.</p>
+</section>
+<section id="id10">
+<h3>Elimination<a class="headerlink" href="#id10" title="Link to this heading"></a></h3>
+<p>Eliminating a dependent function corresponds to dependent function
+application.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> dep_arrow_elim #t #q (f:(x:t -&gt; q x)) (x:t) : q x = f x
+</pre></div>
+</div>
+<p>For the propositional version, eliminating a <code class="docutils literal notranslate"><span class="pre">forall</span></code> quantifier amounts
+to instantiating the quantifier for a given term. Automating proofs
+that require quantifier instantiation is a large topic in its own
+right, as we’ll cover in a later section—this <a class="reference external" href="https://github.com/FStarLang/FStar/wiki/Quantifiers-and-patterns">wiki page</a>
+provides some hints.</p>
+<p>Often, eliminating a universal quantifier is automated by the SMT
+solver, as shown below, where the SMT solver easily instantiates the
+quantified hypothesis <code class="docutils literal notranslate"><span class="pre">f</span></code> with <code class="docutils literal notranslate"><span class="pre">a</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> forall_elim_1 (#t:Type)
+                  (#q:t -&gt; prop)
+                  (f : squash (<span class="k">forall</span> (x:t). q x))
+                  (a:t)
+  : squash (q a)
+  = ()
+</pre></div>
+</div>
+<p>But, F* also provides syntactic sugar to explicitly trigger quantifier
+instantiation (as shown below), where the terms provided on the
+<code class="docutils literal notranslate"><span class="pre">with</span></code> line are instantiations for each of the binders on the
+<code class="docutils literal notranslate"><span class="pre">eliminate</span></code> line.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> forall_elim_2 (#t0:Type)
+                  (#t1:t0 -&gt; Type)
+                  (#q: (x0:t0 -&gt; x1:t1 x0 -&gt; prop))
+                  (f : squash (<span class="k">forall</span> x0 x1. q x0 x1))
+                  (v0: t0)
+                  (v1: t1 v0)
+  : squash (q v0 v1)
+  = <span class="k">eliminate</span> <span class="k">forall</span> x0 x1. q x0 x1
+    <span class="k">with</span> v0 v1
+</pre></div>
+</div>
+<p>Its desugaring may be illuminating:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span>   FStar.Classical.Sugar.forall_elim
+           #(t1 v0)
+           #(<span class="k">fun</span> x1 -&gt; q v0 x1)
+           v1
+           (FStar.Classical.Sugar.forall_elim
+              #t0
+              #(<span class="k">fun</span> x0 -&gt; <span class="k">forall</span> (x1: t1 x0). q x0 x1)
+              v0
+              ())
+</pre></div>
+</div>
+</section>
+</section>
+<section id="existential-quantification">
+<span id="part2-connectives-exists"></span><h2>Existential Quantification<a class="headerlink" href="#existential-quantification" title="Link to this heading"></a></h2>
+<p>Finally, we come to existential quantification. Its constructive form
+is a dependent pair, a dependent version of the pair used to represent
+conjunctions. The following inductive type is defined in <code class="docutils literal notranslate"><span class="pre">Prims</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> dtuple2 (a:Type) (b: a -&gt; Type) =
+   | Mkdtuple2 : x:a -&gt; y:b x -&gt; dtuple2 a b
+</pre></div>
+</div>
+<p>As with <code class="docutils literal notranslate"><span class="pre">tuple2</span></code>, F* offers specialized syntax for <code class="docutils literal notranslate"><span class="pre">dtuple2</span></code>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Instead of <code class="docutils literal notranslate"><span class="pre">dtuple2</span> <span class="pre">a</span> <span class="pre">(fun</span> <span class="pre">(x:a)</span> <span class="pre">-&gt;</span> <span class="pre">b</span> <span class="pre">x)</span></code>, one writes <code class="docutils literal notranslate"><span class="pre">x:a</span> <span class="pre">&amp;</span> <span class="pre">b</span> <span class="pre">x</span></code>.</p></li>
+<li><p>Instead of writing <code class="docutils literal notranslate"><span class="pre">Mkdtuple2</span> <span class="pre">x</span> <span class="pre">y</span></code>, one writes <code class="docutils literal notranslate"><span class="pre">(|</span> <span class="pre">x,</span> <span class="pre">y</span> <span class="pre">|)</span></code>.</p></li>
+</ul>
+</div></blockquote>
+<p>The existential quantifier <code class="docutils literal notranslate"><span class="pre">exists</span> <span class="pre">(x:t).</span> <span class="pre">p</span> <span class="pre">x</span></code> is a propositional version
+of the dependent pair:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">assume</span> <span class="k">val</span> ( <span class="k">exists</span> ) (#a:Type) (#b:a -&gt; prop) : prop
+</pre></div>
+</div>
+<section id="id11">
+<h3>Introduction<a class="headerlink" href="#id11" title="Link to this heading"></a></h3>
+<p>Introducing a constructive proof of <code class="docutils literal notranslate"><span class="pre">x:a</span> <span class="pre">&amp;</span> <span class="pre">b</span> <span class="pre">x</span></code> is just a question
+of using the constructor—we show a concrete instance below.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> dtuple2_intro (x:int) (y:int { y &gt; x })
+  : (a:int &amp; b:int{b &gt; a})
+  = (| x, y |)
+</pre></div>
+</div>
+<p>For the propositional version, introducing an <code class="docutils literal notranslate"><span class="pre">exists</span> <span class="pre">(x:t).</span> <span class="pre">p</span> <span class="pre">x</span></code>
+automatically using the SMT solver requires finding an instance <code class="docutils literal notranslate"><span class="pre">a</span></code>
+for the quantifier such that <code class="docutils literal notranslate"><span class="pre">p</span> <span class="pre">a</span></code> is derivable—this is the dual
+problem of quantifier instantiation mentioned with universal</p>
+<p>In the first example below, the SMT solver finds the instantiation and
+proof automatically, while in the latter two, the user picks which
+instantiation and proof to provide.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> exists_intro_1 (#t:Type)
+                   (#q:t -&gt; prop)
+                   (a:t) (b:t)
+                   (f : squash (q a /\ q b))
+  : squash (<span class="k">exists</span> x. q x)
+  = () <span class="c">//instantiation found by SMT, it chose a or b, unclear/irrelevant which</span>
+
+<span class="k">let</span> exists_intro_2 (#t:Type)
+                   (#q:t -&gt; prop)
+                   (a:t) (b:t)
+                   (f : squash (q a))
+                   (g : squash (q b))
+  : squash (<span class="k">exists</span> x. q x)
+  = <span class="k">introduce</span> <span class="k">exists</span> x. q x
+    <span class="k">with</span> a <span class="c">//witness</span>
+    <span class="k">and</span> f  <span class="c">//proof term of q applied to witness</span>
+
+<span class="k">let</span> exists_intro_3 (#t:Type)
+                   (#q:t -&gt; prop)
+                   (a:t) (b:t)
+                   (f : squash (q a /\ q b))
+  : squash (<span class="k">exists</span> x. q x)
+  = <span class="k">introduce</span> <span class="k">exists</span> x. q x
+    <span class="k">with</span> a
+    <span class="k">and</span> f <span class="c">// f: squash (q a /\ q b) implicitly eliminated to squash (q a) by SMT</span>
+</pre></div>
+</div>
+</section>
+<section id="id12">
+<h3>Elimination<a class="headerlink" href="#id12" title="Link to this heading"></a></h3>
+<p>Just as with disjunction and conjunction, eliminating <code class="docutils literal notranslate"><span class="pre">dtuple2</span></code> or
+<code class="docutils literal notranslate"><span class="pre">exists</span></code> requires a motive, a goal proposition that <em>does not
+mention</em> the bound variable of the quantifier.</p>
+<p>For constructive proofs, this is just a pattern match:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> dtuple2_elim (#t:Type) (#p:t -&gt; prop) (#q:Type)
+                 (pf: (x:t &amp; p x))
+                 (k : (x:t -&gt; p x -&gt; q))
+  : q
+  = <span class="k">let</span> (| x, pf_p |) = pf <span class="k">in</span>
+    k x pf_p
+</pre></div>
+</div>
+<p>For the <code class="docutils literal notranslate"><span class="pre">exists</span></code>, the following sugar provides an elimination
+principle:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> exists_elim (#t:Type) (#p:t -&gt; prop) (#q:prop)
+                 (pf: squash (<span class="k">exists</span> (x:t). p x))
+                 (k : (x:t -&gt; squash (p x) -&gt; squash q))
+  : squash q
+  = <span class="k">eliminate</span> <span class="k">exists</span> (x:t). p x
+    <span class="k">returns</span> q
+    <span class="k">with</span> pf_p. k x pf_p
+
+<span class="k">let</span> exists_elim_alt (#t:Type) (#p:t -&gt; prop) (#q:prop)
+                    (pf: squash (<span class="k">exists</span> (x:t). p x))
+                    (k : (x:t -&gt; <span class="k">Lemma</span> (<span class="k">requires</span> p x)
+                                      (<span class="k">ensures</span> q)))
+  : <span class="k">Lemma</span> q
+  = <span class="k">eliminate</span> <span class="k">exists</span> (x:t). p x
+    <span class="k">returns</span> q
+    <span class="k">with</span> pf_p. k x
+</pre></div>
+</div>
+<p>Names corresponding to the binders on the <code class="docutils literal notranslate"><span class="pre">eliminate</span></code> line are in
+scope in the <code class="docutils literal notranslate"><span class="pre">with</span></code> line, which additionally binds a name for a
+proof term corresponding to the body of the existential formula. That
+is, in the examples above, <code class="docutils literal notranslate"><span class="pre">x:t</span></code> is implicitly in scope for the proof
+term, while <code class="docutils literal notranslate"><span class="pre">pf_p:</span> <span class="pre">squash</span> <span class="pre">p</span></code>.</p>
+</section>
+<section id="exercise">
+<h3>Exercise<a class="headerlink" href="#exercise" title="Link to this heading"></a></h3>
+<p>In a <a class="reference internal" href="part2_merkle.html#part2-merkle-insert"><span class="std std-ref">previous exercise</span></a>, we defined a
+function to insert an element in a Merkle tree and had it return a new
+root hash and an updated Merkle tree. Our solution had the following
+signature:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> mtree&#39; (n:nat) =
+  | MTree : h:hash_t -&gt; mtree n h -&gt; mtree&#39; n
+
+<span class="k">val</span> update_mtree&#39;  (#h:hash_t)
+                   (rid:resource_id)
+                   (res:resource) 
+                   (tree:mtree (L.length rid) h)
+   : mtree&#39; (L.length rid)
+</pre></div>
+</div>
+<p>Revise the solution so that it instead returns a dependent
+pair. <code class="docutils literal notranslate"><span class="pre">dtuple2</span></code> is already defined in <code class="docutils literal notranslate"><span class="pre">Prims</span></code>, so you don’t have
+to define it again.</p>
+<p><a class="reference external" href="../code/exercises/Part2.MerkleTreeUpdate.fst">Exercise file</a></p>
+<div class="toggle docutils container">
+<div class="header docutils container">
+<p><strong>Answer</strong></p>
+</div>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> update #h 
+               (rid:resource_id)
+               (res:resource) 
+               (tree:mtree (L.length rid) h)
+   : <span class="k">Tot</span> (h&#39;:<span class="k">_</span> &amp; mtree (L.length rid) h&#39;)
+         (<span class="k">decreases</span> rid)
+   = <span class="k">match</span> rid <span class="k">with</span>
+     | [] -&gt; (| <span class="k">_</span>, L res |)
+     | hd :: rid&#39; -&gt; 
+       <span class="k">if</span> hd
+       <span class="k">then</span> (
+         <span class="k">let</span> (| <span class="k">_</span>, t |) = update rid&#39; res (N?.left tree) <span class="k">in</span>
+         (| <span class="k">_</span>, N t (N?.right tree) |)
+       )
+       <span class="k">else</span> (
+         <span class="k">let</span> (| <span class="k">_</span>, t |) = update rid&#39; res (N?.right tree) <span class="k">in</span>
+         (| <span class="k">_</span>, N (N?.left tree) t|)
+       )
+</pre></div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="part2_equality.html" class="btn btn-neutral float-left" title="Equality Types" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="part2_stlc.html" class="btn btn-neutral float-right" title="Simply Typed Lambda Calculus" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

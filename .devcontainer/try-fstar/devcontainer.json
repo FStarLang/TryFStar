@@ -1,0 +1,40 @@
+{
+  "name": "Try F*: Pulse, PAL, and PAL-CSharp",
+  "build": {
+    "dockerfile": "Dockerfile",
+    "context": "../../website"
+  },
+  "remoteUser": "vscode",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}/website/playground",
+  "hostRequirements": {
+    "cpus": 4,
+    "memory": "8gb",
+    "storage": "32gb"
+  },
+  "postCreateCommand": "sudo chown -R $(id -u):$(id -g) /opt/opam /opt/nuget && python3 /opt/playground/setup.py \"${containerWorkspaceFolder}\" && make check",
+  "waitFor": "postCreateCommand",
+  "forwardPorts": [8000],
+  "portsAttributes": {
+    "8000": {
+      "label": "F* website and tutorial",
+      "onAutoForward": "notify"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "FStarLang.fstar-vscode-assistant",
+        "ms-vscode.cpptools",
+        "ms-dotnettools.csharp",
+        "Ionide.Ionide-fsharp"
+      ],
+      "settings": {
+        "fstarVSCodeAssistant.verifyOnSave": true,
+        "files.watcherExclude": {
+          "**/_build/**": true
+        },
+        "terminal.integrated.defaultProfile.linux": "bash"
+      }
+    }
+  }
+}

@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Atomic Operations and Invariants &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Spin Locks" href="pulse_spin_lock.html" />
+    <link rel="prev" title="Linked Lists" href="pulse_linked_list.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pulse_getting_started.html">Getting up and running with Codespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ch1.html">Pulse Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ch2.html">Mutable References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_existentials.html">Existential Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_user_defined_predicates.html">User-defined Predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_conditionals.html">Conditionals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_loops.html">Loops &amp; Recursion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_arrays.html">Mutable Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ghost.html">Ghost Computations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_higher_order.html">Higher Order Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_implication_and_forall.html">Implication and Universal Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_linked_list.html">Linked Lists</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Atomic Operations and Invariants</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#atomic-operations">Atomic Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#invariants">Invariants</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#creating-an-invariant">Creating an invariant</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#impredicativity-and-the-later-modality">Impredicativity and the <code class="docutils literal notranslate"><span class="pre">later</span></code> modality</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opening-invariants">Opening Invariants</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-later-modality-and-later-credits">The later modality and later credits</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#double-opening-is-unsound">Double opening is unsound</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#subsuming-atomic-computations">Subsuming atomic computations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_spin_lock.html">Spin Locks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_parallel_increment.html">Parallel Increment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_extraction.html">Extraction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+      <li class="breadcrumb-item active">Atomic Operations and Invariants</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="atomic-operations-and-invariants">
+<span id="pulse-atomics-and-invariants"></span><h1>Atomic Operations and Invariants<a class="headerlink" href="#atomic-operations-and-invariants" title="Link to this heading"></a></h1>
+<p>In this section, we finally come to some concurrency related
+constructs.</p>
+<p>Concurrency in Pulse is built around two concepts:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><strong>Atomic operations</strong>: operations that are guaranteed to be
+executed in a single-step of computation without interruption by
+other threads.</p></li>
+<li><p><strong>Invariants</strong>: named predicates that are enforced to be true at
+all times.  Atomic operations can make use of invariants, assuming
+they are true in the current state, and enforced to be true again
+once the atomic step concludes.</p></li>
+</ul>
+</div></blockquote>
+<p>Based on this, and in conjunction with all the other separation logic
+constructs that we’ve learned about so far, notably the use of ghost
+state, Pulse enables proofs of concurrent programs.</p>
+<section id="atomic-operations">
+<h2>Atomic Operations<a class="headerlink" href="#atomic-operations" title="Link to this heading"></a></h2>
+<p>We’ve learned so far about <a class="reference internal" href="pulse_higher_order.html#pulse-higher-order"><span class="std std-ref">two kinds of Pulse computations</span></a>:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>General purpose, partially correct computations, with the <code class="docutils literal notranslate"><span class="pre">stt</span></code>
+computation type</p></li>
+<li><p>Ghost computations, proven totally correct, and enforced to be
+computationally irrelevant with the <code class="docutils literal notranslate"><span class="pre">stt_ghost</span></code> computation
+type.</p></li>
+</ul>
+</div></blockquote>
+<p>Pulse offers a third kind of computation, <em>atomic</em> computations, with
+the <code class="docutils literal notranslate"><span class="pre">stt_atomic</span></code> computation type. Here is the signature of
+<code class="docutils literal notranslate"><span class="pre">read_atomic</span></code> and <code class="docutils literal notranslate"><span class="pre">write_atomic</span></code> from <code class="docutils literal notranslate"><span class="pre">Pulse.Lib.Reference</span></code>:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">atomic</span>
+<span class="k">fn</span> read_atomic (r:ref U32.t) (#n:erased U32.t) (#p:perm)
+<span class="k">requires</span> pts_to r #p n
+<span class="k">returns</span> x:U32.t
+<span class="k">ensures</span> pts_to r #p n ** pure (reveal n == x)
+</pre></div>
+</div>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">atomic</span>
+<span class="k">fn</span> write_atomic (r:ref U32.t) (x:U32.t) (#n:erased U32.t)
+<span class="k">requires</span> pts_to r n
+<span class="k">ensures</span> pts_to r x
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">atomic</span></code> annotation on these functions claims that reading and
+writing 32-bit integers can be done in a single atomic step of
+computation.</p>
+<p>This is an assumption about the target architecture on which a Pulse
+program is executed. It may be that on some machines, 32-bit values
+cannot be read or written atomically. So, when using atomic
+operations, you should be careful to check that it is safe to assume
+that these operations truly are atomic.</p>
+<p>Pulse also provides a way for you to declare that other operations are
+atomic, e.g., maybe your machine supports 64-bit or 128-bit atomic
+operations—you can program the semantics of these operations in F*
+and add them to Pulse, marking them as atomic.</p>
+<p>Sometimes, particularly at higher order, you will see atomic
+computations described by the computation type below:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> stt_atomic (t:Type) (i:inames) (pre:slprop) (post:t -&gt; slprop)
+  : Type u#4
+</pre></div>
+</div>
+<p>Like <code class="docutils literal notranslate"><span class="pre">stt_ghost</span></code>, atomic computations are total and live in universe
+<code class="docutils literal notranslate"><span class="pre">u#4</span></code>. As such, you cannot store an atomic function in the state,
+i.e., <code class="docutils literal notranslate"><span class="pre">ref</span> <span class="pre">(unit</span> <span class="pre">-&gt;</span> <span class="pre">stt_atomic</span> <span class="pre">t</span> <span class="pre">i</span> <span class="pre">p</span> <span class="pre">q)</span></code> is not a well-formed type.</p>
+<p>Atomic computations and ghost computations are also indexed by
+<code class="docutils literal notranslate"><span class="pre">i:inames</span></code>, where <code class="docutils literal notranslate"><span class="pre">inames</span></code> is a set of invariant names. We’ll
+learn about these next.</p>
+</section>
+<section id="invariants">
+<h2>Invariants<a class="headerlink" href="#invariants" title="Link to this heading"></a></h2>
+<p>In <code class="docutils literal notranslate"><span class="pre">Pulse.Lib.Core</span></code>, we have the following types:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span>[@@erasable]
+<span class="k">val</span> iref : Type0
+<span class="k">val</span> inv (i:iref) (p:slprop) : slprop
+</pre></div>
+</div>
+<p>Think of <code class="docutils literal notranslate"><span class="pre">inv</span> <span class="pre">i</span> <span class="pre">p</span></code> as a predicate asserting that <code class="docutils literal notranslate"><span class="pre">p</span></code> is true in
+the current state and all future states of the program. Every
+invariant has a name, <code class="docutils literal notranslate"><span class="pre">i:iref</span></code>, though, the name is only relevant in
+specifications, i.e., it is erasable.</p>
+<p>A closely related type is <code class="docutils literal notranslate"><span class="pre">iname</span></code>:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> iname : eqtype
+<span class="k">let</span> inames = erased (FStar.Set.set iname)
+</pre></div>
+</div>
+<p>Every <code class="docutils literal notranslate"><span class="pre">iref</span></code> can be turned into an <code class="docutils literal notranslate"><span class="pre">iname</span></code>, with the function
+<code class="docutils literal notranslate"><span class="pre">iname_of</span> <span class="pre">(i:iref):</span> <span class="pre">GTot</span> <span class="pre">iname</span></code>.</p>
+<p>Invariants are duplicable, i.e., from <code class="docutils literal notranslate"><span class="pre">inv</span> <span class="pre">i</span> <span class="pre">p</span></code> one can prove <code class="docutils literal notranslate"><span class="pre">inv</span>
+<span class="pre">i</span> <span class="pre">p</span> <span class="pre">**</span> <span class="pre">inv</span> <span class="pre">i</span> <span class="pre">p</span></code>, as shown by the type of <code class="docutils literal notranslate"><span class="pre">Pulse.Lib.Core.dup_inv</span></code>
+below:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span> <span class="k">fn</span> dup_inv (i:iref) (p:slprop)
+<span class="k">requires</span> inv i p
+<span class="k">ensures</span> inv i p ** inv i p
+</pre></div>
+</div>
+<section id="creating-an-invariant">
+<h3>Creating an invariant<a class="headerlink" href="#creating-an-invariant" title="Link to this heading"></a></h3>
+<p>Let’s start by looking at how to create an invariant.</p>
+<p>First, let’s define a predicate <code class="docutils literal notranslate"><span class="pre">owns</span> <span class="pre">x</span></code>, to mean that we hold
+full-permission on <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> owns (x:ref U32.t) : timeless_slprop = <span class="k">exists</span>* v. pts_to x v
+</pre></div>
+</div>
+<p>Now, if we can currently prove <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">r</span> <span class="pre">x</span></code> then we can turn it into
+an invariant <code class="docutils literal notranslate"><span class="pre">inv</span> <span class="pre">i</span> <span class="pre">(owns</span> <span class="pre">r)</span></code>, as shown below.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span>
+<span class="k">fn</span> create_invariant (r:ref U32.t) (v:erased U32.t)
+<span class="k">requires</span> pts_to r v
+<span class="k">returns</span> i:iname
+<span class="k">ensures</span> inv i (owns r)
+{
+    <span class="k">fold</span> owns;
+    new_invariant (owns r)
+}
+</pre></div>
+</div>
+<p>Importantly, when we turn <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">r</span> <span class="pre">x</span></code> into <code class="docutils literal notranslate"><span class="pre">inv</span> <span class="pre">i</span> <span class="pre">(owns</span> <span class="pre">r)</span></code>, <strong>we
+lose</strong> ownership of <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">r</span> <span class="pre">x</span></code>. Remember, once we have <code class="docutils literal notranslate"><span class="pre">inv</span> <span class="pre">i</span>
+<span class="pre">(owns</span> <span class="pre">r)</span></code>, Pulse’s logic aims to prove that <code class="docutils literal notranslate"><span class="pre">owns</span> <span class="pre">r</span></code> remains true
+always. If we were allowed to retain <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">r</span> <span class="pre">x</span></code>, while also
+creating an <code class="docutils literal notranslate"><span class="pre">inv</span> <span class="pre">i</span> <span class="pre">(owns</span> <span class="pre">r)</span></code>, we can clearly break the invariant,
+e.g., by freeing <code class="docutils literal notranslate"><span class="pre">r</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A tip: When using an <code class="docutils literal notranslate"><span class="pre">inv</span> <span class="pre">i</span> <span class="pre">p</span></code>, it’s a good idea to make sure
+that <code class="docutils literal notranslate"><span class="pre">p</span></code> is a user-defined predicate. For example, one might
+think to just write <code class="docutils literal notranslate"><span class="pre">inv</span> <span class="pre">i</span> <span class="pre">(exists*</span> <span class="pre">v.</span> <span class="pre">pts_to</span> <span class="pre">x</span> <span class="pre">v)</span></code> instead of
+defining an auxiliary predicate for <code class="docutils literal notranslate"><span class="pre">inv</span> <span class="pre">i</span> <span class="pre">(owns</span> <span class="pre">r)</span></code>. However, the
+some of the proof obligations produced by the Pulse checker are
+harder for the SMT solver to prove if you don’t use the auxiliary
+predicate and you may start to see odd failures. This is something
+we’re working to improve. In the meantime, use an auxiliary
+predicate.</p>
+</div>
+</section>
+<section id="impredicativity-and-the-later-modality">
+<h3>Impredicativity and the <code class="docutils literal notranslate"><span class="pre">later</span></code> modality<a class="headerlink" href="#impredicativity-and-the-later-modality" title="Link to this heading"></a></h3>
+<p>Pulse allows <em>any</em> predicate <code class="docutils literal notranslate"><span class="pre">p:slprop</span></code> to be turned into an invariant <code class="docutils literal notranslate"><span class="pre">inv</span> <span class="pre">i</span>
+<span class="pre">p</span> <span class="pre">:</span> <span class="pre">slprop</span></code>. Importantly, <code class="docutils literal notranslate"><span class="pre">inv</span> <span class="pre">i</span> <span class="pre">p</span></code> is itself an <code class="docutils literal notranslate"><span class="pre">slprop</span></code>, so one can even
+turn an invariant into another invariant, <code class="docutils literal notranslate"><span class="pre">inv</span> <span class="pre">i</span> <span class="pre">(inv</span> <span class="pre">j</span> <span class="pre">p)</span></code>, etc. This ability
+to turn any predicate into an invariant, including invariants themselves, makes
+Pulse an <em>impredicative</em> separation logic.</p>
+<p>Impredicativity turns out to be useful for a number of reasons, e.g., one could
+create a lock to protect access to a data structure that may itself contain
+further locks. However, soundly implementing impredicativity in a separation
+logic is challenging, since it involves resolving a kind of circularity in the
+definitions of heaps and heap predicates. PulseCore resolves this circularity
+using something called <em>indirection theory</em>, using it to provide a foundational
+model for impredicative invariants, together with all the constructs of Pulse.
+The details of this construction is out of scope here, but one doesn’t really
+need to know how the construction of the model works to use the resulting logic.</p>
+<p>We provide a bit of intuition about the model below, but for now, just keep in
+mind that Pulse includes the following abstract predicates:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> later (p:slprop) : slprop
+<span class="k">val</span> later_credit (i:nat) : slprop
+</pre></div>
+</div>
+<p>with the following forms to introduce and eliminate them:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span> <span class="k">fn</span> later_intro (p: slprop)
+<span class="k">requires</span> p
+<span class="k">ensures</span> later p
+
+<span class="k">ghost</span> <span class="k">fn</span> later_elim (p: slprop)
+<span class="k">requires</span> later p ** later_credit 1
+<span class="k">ensures</span> p
+
+<span class="k">fn</span> later_credit_buy (amt:nat)
+<span class="k">requires</span> emp
+<span class="k">ensures</span> later_credit n
+</pre></div>
+</div>
+</section>
+<section id="opening-invariants">
+<h3>Opening Invariants<a class="headerlink" href="#opening-invariants" title="Link to this heading"></a></h3>
+<p>Once we’ve allocated an invariant, <code class="docutils literal notranslate"><span class="pre">inv</span> <span class="pre">i</span> <span class="pre">(owns</span> <span class="pre">r)</span></code>, what can we do with it?
+As we said earlier, one can make use of the <code class="docutils literal notranslate"><span class="pre">owns</span> <span class="pre">r</span></code> in an atomic computation,
+so long as we restore it at the end of the atomic step.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">with_invariants</span></code> construct gives us access to the invariant
+within the scope of at most one atomic step, preceded or succeeded by
+as many ghost or unobservable steps as needed.</p>
+<p>The general form of <code class="docutils literal notranslate"><span class="pre">with_invariants</span></code> is as follows, to “open”
+invariants <code class="docutils literal notranslate"><span class="pre">i_1</span></code> to <code class="docutils literal notranslate"><span class="pre">i_k</span></code> in the scope of <code class="docutils literal notranslate"><span class="pre">e</span></code>.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">with_invariants</span> i_1 ... i_k
+<span class="k">returns</span> x:t
+<span class="k">ensures</span> post
+{ e }
+</pre></div>
+</div>
+<p>In many cases, the <code class="docutils literal notranslate"><span class="pre">returns</span></code> and <code class="docutils literal notranslate"><span class="pre">ensures</span></code> annotations are
+omitted, since it can be inferred.</p>
+<p>This is syntactic sugar for the following nest:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">with_invariants</span> i_1 {
+ ...
+  <span class="k">with_invariants</span> i_k
+  <span class="k">returns</span> x:t
+  <span class="k">ensures</span> post
+  { e }
+ ...
+}
+</pre></div>
+</div>
+<p>Here’s the rule for opening a single invariant <code class="docutils literal notranslate"><span class="pre">inv</span> <span class="pre">i</span> <span class="pre">p</span></code> using
+<code class="docutils literal notranslate"><span class="pre">with_invariant</span> <span class="pre">i</span> <span class="pre">{</span> <span class="pre">e</span> <span class="pre">}</span></code> is as follows:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">i</span></code> must have type <code class="docutils literal notranslate"><span class="pre">iref</span></code> and <code class="docutils literal notranslate"><span class="pre">inv</span> <span class="pre">i</span> <span class="pre">p</span></code> must be provable in
+the current context, for some <code class="docutils literal notranslate"><span class="pre">p:slprop</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">e</span></code> must have the type <code class="docutils literal notranslate"><span class="pre">stt_atomic</span> <span class="pre">t</span> <span class="pre">j</span> <span class="pre">(later</span> <span class="pre">p</span> <span class="pre">**</span> <span class="pre">r)</span> <span class="pre">(fun</span> <span class="pre">x</span> <span class="pre">-&gt;</span> <span class="pre">later</span> <span class="pre">p</span> <span class="pre">**</span>
+<span class="pre">s</span> <span class="pre">x)</span></code>. <a class="footnote-reference brackets" href="#id2" id="id1" role="doc-noteref"><span class="fn-bracket">[</span>1<span class="fn-bracket">]</span></a> That is, <code class="docutils literal notranslate"><span class="pre">e</span></code> requires and restores <code class="docutils literal notranslate"><span class="pre">later</span> <span class="pre">p</span></code>, while also
+transforming <code class="docutils literal notranslate"><span class="pre">r</span></code> to <code class="docutils literal notranslate"><span class="pre">s</span> <span class="pre">x</span></code>, all in at most one atomic step. Further, the
+<code class="docutils literal notranslate"><span class="pre">name_of_inv</span> <span class="pre">i</span></code> must not be in the set <code class="docutils literal notranslate"><span class="pre">j</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">with_invariants</span> <span class="pre">i</span> <span class="pre">{</span> <span class="pre">e</span> <span class="pre">}</span></code> has type <code class="docutils literal notranslate"><span class="pre">stt_atomic</span> <span class="pre">t</span> <span class="pre">(add_inv</span> <span class="pre">i</span> <span class="pre">j)</span>
+<span class="pre">(inv</span> <span class="pre">i</span> <span class="pre">p</span> <span class="pre">**</span> <span class="pre">r)</span> <span class="pre">(fun</span> <span class="pre">x</span> <span class="pre">-&gt;</span> <span class="pre">inv</span> <span class="pre">i</span> <span class="pre">p</span> <span class="pre">**</span> <span class="pre">s</span> <span class="pre">x)</span></code>. That is, <code class="docutils literal notranslate"><span class="pre">e</span></code> gets to
+use <code class="docutils literal notranslate"><span class="pre">p</span></code> for a step, and from the caller’s perspective, the context
+was transformed from <code class="docutils literal notranslate"><span class="pre">r</span></code> to <code class="docutils literal notranslate"><span class="pre">s</span></code>, while the use of <code class="docutils literal notranslate"><span class="pre">p</span></code> is
+hidden.</p></li>
+<li><p>Pay attention to the <code class="docutils literal notranslate"><span class="pre">add_inv</span> <span class="pre">i</span> <span class="pre">j</span></code> index on <code class="docutils literal notranslate"><span class="pre">with_invariants</span></code>:
+<code class="docutils literal notranslate"><span class="pre">stt_atomic</span></code> (or <code class="docutils literal notranslate"><span class="pre">stt_ghost</span></code>) computation is indexed by
+the names of all the invariants that it may open.</p></li>
+</ul>
+<p>Let’s look at a few examples to see how <code class="docutils literal notranslate"><span class="pre">with_invariants</span></code> works.</p>
+<aside class="footnote-list brackets">
+<aside class="footnote brackets" id="id2" role="doc-footnote">
+<span class="label"><span class="fn-bracket">[</span><a role="doc-backlink" href="#id1">1</a><span class="fn-bracket">]</span></span>
+<p>Alternatively <code class="docutils literal notranslate"><span class="pre">e</span></code> may have type <code class="docutils literal notranslate"><span class="pre">stt_ghost</span> <span class="pre">t</span> <span class="pre">j</span> <span class="pre">(later</span> <span class="pre">p</span> <span class="pre">**</span> <span class="pre">r)</span> <span class="pre">(fun</span> <span class="pre">x</span> <span class="pre">-&gt;</span>
+<span class="pre">later</span> <span class="pre">p</span> <span class="pre">**</span> <span class="pre">s</span> <span class="pre">x)</span></code>, in which case the entire <code class="docutils literal notranslate"><span class="pre">with_invariants</span> <span class="pre">i</span> <span class="pre">{</span> <span class="pre">e</span> <span class="pre">}</span></code>
+block has type <code class="docutils literal notranslate"><span class="pre">stt_ghost</span> <span class="pre">t</span> <span class="pre">(add_inv</span> <span class="pre">i</span> <span class="pre">j)</span> <span class="pre">(inv</span> <span class="pre">i</span> <span class="pre">p</span> <span class="pre">**</span> <span class="pre">r)</span> <span class="pre">(fun</span> <span class="pre">x</span> <span class="pre">-&gt;</span> <span class="pre">inv</span> <span class="pre">i</span> <span class="pre">p</span>
+<span class="pre">**</span> <span class="pre">s</span> <span class="pre">x)</span></code>, i.e., one can open an invariant and use it in either an atomic or
+ghost context.</p>
+</aside>
+</aside>
+<section id="updating-a-reference">
+<h4>Updating a reference<a class="headerlink" href="#updating-a-reference" title="Link to this heading"></a></h4>
+<p>Let’s try do update a reference, given <code class="docutils literal notranslate"><span class="pre">inv</span> <span class="pre">i</span> <span class="pre">(owns</span> <span class="pre">r)</span></code>. Our first attempt is
+shown below:</p>
+<p>We use <code class="docutils literal notranslate"><span class="pre">with_invariants</span> <span class="pre">i</span> <span class="pre">{</span> <span class="pre">...</span> <span class="pre">}</span></code> to open the invariant, and in the scope of
+the block, we have <code class="docutils literal notranslate"><span class="pre">later</span> <span class="pre">(owns</span> <span class="pre">r)</span></code>.  Now, we’re stuck: we need <code class="docutils literal notranslate"><span class="pre">later</span> <span class="pre">(owns</span>
+<span class="pre">r)</span></code>, but we only have <code class="docutils literal notranslate"><span class="pre">later</span> <span class="pre">(owns</span> <span class="pre">r)</span></code>. In order to eliminate the later, we
+can use the <code class="docutils literal notranslate"><span class="pre">later_elim</span></code> combinator shown earlier, but to call it, we need to
+also have a <code class="docutils literal notranslate"><span class="pre">later_credit</span> <span class="pre">1</span></code>.</p>
+<p>So, let’s try again:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">atomic</span>
+<span class="k">fn</span> update_ref_atomic (r:ref U32.t) (i:iname) (v:U32.t)
+preserves inv i (owns r)
+<span class="k">requires</span> later_credit 1
+<span class="k">opens</span> [i]
+{
+  with_invariants_a unit emp_inames i (owns r) emp (<span class="k">fun</span> <span class="k">_</span> -&gt; emp)
+  <span class="k">fn</span> <span class="k">_</span> { <span class="c">// owns r</span>
+     <span class="k">unfold</span> owns;        <span class="c">//ghost step;  exists* u. pts_to r u</span>
+     write_atomic r v;   <span class="c">//atomic step; pts_to r v</span>
+     <span class="k">fold</span> owns;          <span class="c">//ghost step;  owns r</span>
+  } <span class="c">// inv i (owns r)</span>
+}
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>The precondition of the function also includes a <code class="docutils literal notranslate"><span class="pre">later_credit</span> <span class="pre">1</span></code>.</p></li>
+<li><p>At the start of the <code class="docutils literal notranslate"><span class="pre">with_invariants</span></code> scope, we have <code class="docutils literal notranslate"><span class="pre">later</span> <span class="pre">(owns</span> <span class="pre">r)</span></code> in
+the context.</p></li>
+<li><p>The ghost step <code class="docutils literal notranslate"><span class="pre">later_elim</span> <span class="pre">_</span></code> uses up the later credit and eliminates
+<code class="docutils literal notranslate"><span class="pre">later</span> <span class="pre">(owns</span> <span class="pre">r)</span></code> into <code class="docutils literal notranslate"><span class="pre">owns</span> <span class="pre">r</span></code>.</p></li>
+<li><p>The ghost step <code class="docutils literal notranslate"><span class="pre">unfold</span> <span class="pre">owns</span></code> unfolds it to its definition.</p></li>
+<li><p>Then, we do a single atomic action, <code class="docutils literal notranslate"><span class="pre">write_atomic</span></code>.</p></li>
+<li><p>And follow it up with a <code class="docutils literal notranslate"><span class="pre">fold</span> <span class="pre">owns</span></code>, another ghost step.</p></li>
+<li><p>To finish the block, we need to restore <code class="docutils literal notranslate"><span class="pre">later</span> <span class="pre">(owns</span> <span class="pre">r)</span></code>, but we have <code class="docutils literal notranslate"><span class="pre">owns</span>
+<span class="pre">r</span></code>, so the ghost step <code class="docutils literal notranslate"><span class="pre">later_intro</span></code> does the job.</p></li>
+<li><p>The block within <code class="docutils literal notranslate"><span class="pre">with_invariants</span> <span class="pre">i</span></code> has type <code class="docutils literal notranslate"><span class="pre">stt_atomic</span> <span class="pre">unit</span>
+<span class="pre">emp_inames</span> <span class="pre">(later</span> <span class="pre">(owns</span> <span class="pre">r)</span> <span class="pre">**</span> <span class="pre">later_credit</span> <span class="pre">1)</span> <span class="pre">(fun</span> <span class="pre">_</span> <span class="pre">-&gt;</span> <span class="pre">later</span> <span class="pre">(owns</span> <span class="pre">r)</span> <span class="pre">**</span> <span class="pre">emp)</span></code></p></li>
+<li><p>Since we opened the invariant <code class="docutils literal notranslate"><span class="pre">i</span></code>, the type of <code class="docutils literal notranslate"><span class="pre">update_ref_atomic</span></code> records
+this in the <code class="docutils literal notranslate"><span class="pre">opens</span> <span class="pre">(singleton</span> <span class="pre">i)</span></code> annotation; equivalently, the type is
+<code class="docutils literal notranslate"><span class="pre">stt_atomic</span> <span class="pre">unit</span> <span class="pre">(singleton</span> <span class="pre">i)</span> <span class="pre">(inv</span> <span class="pre">i</span> <span class="pre">(owns</span> <span class="pre">r)</span> <span class="pre">**</span> <span class="pre">later_credit</span> <span class="pre">1)</span> <span class="pre">(fun</span> <span class="pre">_</span> <span class="pre">-&gt;</span>
+<span class="pre">inv</span> <span class="pre">i</span> <span class="pre">(owns</span> <span class="pre">r))</span></code>. When the <code class="docutils literal notranslate"><span class="pre">opens</span></code> annotation is omitted, it defaults to
+<code class="docutils literal notranslate"><span class="pre">emp_inames</span></code>, the empty set of invariant names.</p></li>
+</ul>
+<p>Finally, to call <code class="docutils literal notranslate"><span class="pre">update_ref_atomic</span></code>, we need to buy a later credit first.
+This is easily done before we call the atomic computation, as shown below:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> update_ref (r:ref U32.t) (i:iname) (v:U32.t)
+preserves inv i (owns r)
+{                    
+  later_credit_buy 1;
+  update_ref_atomic r i v;
+}
+</pre></div>
+</div>
+</section>
+</section>
+<section id="the-later-modality-and-later-credits">
+<h3>The later modality and later credits<a class="headerlink" href="#the-later-modality-and-later-credits" title="Link to this heading"></a></h3>
+<p>Having seen an example with later modality at work, we provide a bit of
+intuition for the underlying model.</p>
+<p>The semantics of PulseCore is defined with respect to memory with an abstract
+notion of a “ticker”, a natural number counter, initialized at the start of a
+program’s execution. In other logics, this is sometimes called a “step index”,
+but in PulseCore, the ticker is unrelated to the number of actual steps a
+computation takes. Instead, at specific points in the program, the programmer
+can issue a specific <em>ghost</em> instruction to “tick” the ticker, decreasing its
+value by one unit. The decreasing counter provides a way to define an
+approximate fixed point between the otherwise-circular heaps and heap
+predicates. The logic is defined in such a way that it is always possible to
+pick a high enough initial value for the ticker so that any finite number of
+programs steps can be executed before the ticker is exhausted.</p>
+<p>Now, rather than explicitly working with the ticker, PulseCore encapsulates all
+reasoning about the ticker using two logical constructs: the <em>later</em> modality
+and <em>later credits</em>, features found in Iris and other separation logics that
+feature impredicativity.</p>
+<section id="id3">
+<h4>The Later Modality and Later Credits<a class="headerlink" href="#id3" title="Link to this heading"></a></h4>
+<p>The predicate <code class="docutils literal notranslate"><span class="pre">later</span> <span class="pre">p</span></code> states that the <code class="docutils literal notranslate"><span class="pre">p:slprop</span></code> is true after one tick.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> later (p: slprop) : slprop
+</pre></div>
+</div>
+<p>All predicates <code class="docutils literal notranslate"><span class="pre">p:slprop</span></code> are “hereditary”, meaning that if they are true in a
+given memory, then they are also true after that memory is ticked. The ghost
+function <code class="docutils literal notranslate"><span class="pre">later_intro</span></code> embodies this principle: from <code class="docutils literal notranslate"><span class="pre">p</span></code> one can prove
+<code class="docutils literal notranslate"><span class="pre">later</span> <span class="pre">p</span></code>.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span> <span class="k">fn</span> later_intro (p: slprop)
+<span class="k">requires</span> p
+<span class="k">ensures</span> later p
+</pre></div>
+</div>
+<p>Given a <code class="docutils literal notranslate"><span class="pre">later</span> <span class="pre">p</span></code>, one can prove <code class="docutils literal notranslate"><span class="pre">p</span></code> by using <code class="docutils literal notranslate"><span class="pre">later_elim</span></code>. This ghost
+function effectively “ticks” the memory (since <code class="docutils literal notranslate"><span class="pre">later</span> <span class="pre">p</span></code> says that <code class="docutils literal notranslate"><span class="pre">p</span></code> is
+true after a tick), but in order to do so, it needs a precondition that the
+ticker has not already reached zero: <code class="docutils literal notranslate"><span class="pre">later_credit</span> <span class="pre">1</span></code> says just that, i.e.,
+that the memory can be ticked at least once.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span> <span class="k">fn</span> later_elim (p: slprop)
+<span class="k">requires</span> later p ** later_credit 1
+<span class="k">ensures</span> p
+</pre></div>
+</div>
+<p>The only way to get a <code class="docutils literal notranslate"><span class="pre">later_credit</span> <span class="pre">1</span></code> is to <em>buy</em> a credit with the operation
+below—this is a concrete operation that ensures that the memory can be ticked
+at least <code class="docutils literal notranslate"><span class="pre">n</span></code> times.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> later_credit_buy (amt:nat)
+<span class="k">requires</span> emp
+<span class="k">ensures</span> later_credit n
+</pre></div>
+</div>
+<p>At an abstract level, if the ticker cannot be ticked further, the program loops
+indefinitely—programs that use later credits (and more generally in step
+indexed logics) are inherently proven only partially correct and are allowed to
+loop infinitely. At a meta-level, we show that one can always set the initial
+ticker value high enough that <code class="docutils literal notranslate"><span class="pre">later_credit_buy</span></code> will never actually loop
+indefinitely. In fact, when compiling a program, Pulse extracts
+<code class="docutils literal notranslate"><span class="pre">later_credit_buy</span> <span class="pre">n</span></code> to a noop <code class="docutils literal notranslate"><span class="pre">()</span></code>.</p>
+<p>Note, later credits can also be split and combined additively:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> later_credit_zero ()
+: <span class="k">Lemma</span> (later_credit 0 == emp)
+
+<span class="k">val</span> later_credit_add (a b: nat)
+: <span class="k">Lemma</span> (later_credit (a + b) == later_credit a ** later_credit b)
+</pre></div>
+</div>
+</section>
+<section id="timeless-predicates">
+<h4>Timeless Predicates<a class="headerlink" href="#timeless-predicates" title="Link to this heading"></a></h4>
+<p>All predicates <code class="docutils literal notranslate"><span class="pre">p:slprop</span></code> are hereditary, meaning that <code class="docutils literal notranslate"><span class="pre">p</span></code> implies <code class="docutils literal notranslate"><span class="pre">later</span>
+<span class="pre">p</span></code>. Some predicates, including many common predicates like <code class="docutils literal notranslate"><span class="pre">pts_to</span></code> are also
+<strong>timeless</strong>, meaning that <code class="docutils literal notranslate"><span class="pre">later</span> <span class="pre">p</span></code> implies <code class="docutils literal notranslate"><span class="pre">p</span></code>. Combining timeless
+predicates with <code class="docutils literal notranslate"><span class="pre">**</span></code> or existentially quantifying over timeless predicates
+yields a timeless predicate.</p>
+<p>All of the following are available in Pulse.Lib.Core:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> timeless (p: slprop) : prop
+<span class="k">let</span> timeless_slprop = v:slprop { timeless v }
+<span class="k">val</span> timeless_emp : squash (timeless emp)
+<span class="k">val</span> timeless_pure  (p:prop) : <span class="k">Lemma</span> (timeless (pure p))
+<span class="k">val</span> timeless_star (p q : slprop) : <span class="k">Lemma</span>
+   (<span class="k">requires</span> timeless p /\ timeless q)
+   (<span class="k">ensures</span> timeless (p ** q))
+<span class="k">val</span> timeless_exists (#a:Type u#a) (p: a -&gt; slprop) : <span class="k">Lemma</span>
+ (<span class="k">requires</span> <span class="k">forall</span> x. timeless (p x))
+ (<span class="k">ensures</span> timeless (op_exists_Star p))
+</pre></div>
+</div>
+<p>And in Pulse.Lib.Reference, we have:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> pts_to_timeless (#a:Type) (r:ref a) (p:perm) (x:a)
+: <span class="k">Lemma</span> (timeless (pts_to r #p x))
+        [<span class="k">SMTPat</span> (timeless (pts_to r #p x))]
+</pre></div>
+</div>
+<p>For timeless predicates, the <code class="docutils literal notranslate"><span class="pre">later</span></code> modality can be eliminated trivially
+without requiring a credit.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span> <span class="k">fn</span> later_elim_timeless (p: timeless_slprop)
+<span class="k">requires</span> later p
+<span class="k">ensures</span> p
+</pre></div>
+</div>
+</section>
+<section id="updating-a-reference-with-timeless-predicates">
+<h4>Updating a reference, with timeless predicates<a class="headerlink" href="#updating-a-reference-with-timeless-predicates" title="Link to this heading"></a></h4>
+<p>Since <code class="docutils literal notranslate"><span class="pre">pts_to</span></code> is timeless, we can actually eliminate <code class="docutils literal notranslate"><span class="pre">later</span> <span class="pre">(owns</span> <span class="pre">r)</span></code>
+without a later credit, as shown below.</p>
+<p>First, we prove that <code class="docutils literal notranslate"><span class="pre">owns</span></code> is timeless:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> owns_timeless (x:ref U32.t)
+: squash (timeless (owns x))
+= ()
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It’s usually easier to prove a predicate timeless by just annotating its
+definition, rather than writing an explicit lemma. For example,
+this would have worked:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> owns (x:ref U32.t) : timeless_slprop = <span class="k">exists</span>* v. pts_to x v
+</pre></div>
+</div>
+</div>
+<p>Next, we can revise <code class="docutils literal notranslate"><span class="pre">update_ref_atomic</span></code> to use <code class="docutils literal notranslate"><span class="pre">later_elim_timeless</span></code>, rather
+than requiring a later credit.</p>
+</section>
+</section>
+<section id="double-opening-is-unsound">
+<h3>Double opening is unsound<a class="headerlink" href="#double-opening-is-unsound" title="Link to this heading"></a></h3>
+<p>To see why we have to track the names of the opened invariants,
+consider the example below. If we opened the same invariant twice
+within the same scope, then it’s easy to prove <code class="docutils literal notranslate"><span class="pre">False</span></code>:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span>[@@expect_failure [19]]
+<span class="k">fn</span> double_open_bad (r:ref U32.t) (i:iname)
+<span class="k">requires</span> inv i (owns r)
+<span class="k">ensures</span> pure False
+{
+  later_credit_buy 1;
+  <span class="k">with_invariants</span> unit emp_inames i (owns r) (inv i (owns r) ** later_credit 1) (<span class="k">fun</span> <span class="k">_</span> -&gt; pure False) <span class="k">fn</span> <span class="k">_</span> {
+    with_invariants_a unit emp_inames i (owns r) (owns r) (<span class="k">fun</span> <span class="k">_</span> -&gt; pure False) <span class="k">fn</span> <span class="k">_</span> {
+      <span class="k">unfold</span> owns; <span class="k">with</span> v. <span class="k">_</span>;
+      <span class="k">unfold</span> owns; <span class="k">with</span> u. <span class="k">_</span>;
+      pts_to_dup_impossible r;
+      drop_ (r |-&gt; u);
+      <span class="k">fold</span> owns r;
+    };
+    <span class="k">rewrite</span> inv i (owns r) as owns r;
+  };
+}
+</pre></div>
+</div>
+<p>Here, we open the invariants <code class="docutils literal notranslate"><span class="pre">i</span></code> twice and get <code class="docutils literal notranslate"><span class="pre">owns</span> <span class="pre">r</span> <span class="pre">**</span> <span class="pre">owns</span> <span class="pre">r</span></code>,
+or more than full permission to <code class="docutils literal notranslate"><span class="pre">r</span></code>—from this, it is easy to build
+a contradiction.</p>
+</section>
+<section id="subsuming-atomic-computations">
+<h3>Subsuming atomic computations<a class="headerlink" href="#subsuming-atomic-computations" title="Link to this heading"></a></h3>
+<p>Atomic computations can be silently converted to regular, <code class="docutils literal notranslate"><span class="pre">stt</span></code>
+computations, while forgetting which invariants they opened. For
+example, <code class="docutils literal notranslate"><span class="pre">update_ref</span></code> below is not marked atomic, so its type
+doesn’t record which invariants were opened internally.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> update_ref (r:ref U32.t) (i:iname) (v:U32.t)
+preserves inv i (owns r)
+{                    
+  later_credit_buy 1;
+  update_ref_atomic r i v;
+}
+</pre></div>
+</div>
+<p>This is okay, since a non-atomic computation can never appear within a
+<code class="docutils literal notranslate"><span class="pre">with_invariants</span></code> block—so, there’s no fear of an <code class="docutils literal notranslate"><span class="pre">stt</span></code>
+computation causing an unsound double opening. Attempting to use a
+non-atomic computation in a <code class="docutils literal notranslate"><span class="pre">with_invariants</span></code> block produces an
+error, as shown below.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span>[@@expect_failure [228]]
+<span class="k">fn</span> update_ref_fail (r:ref U32.t) (i:iname) (v:U32.t)
+preserves inv i (owns r)
+{
+  <span class="k">with_invariants</span> unit emp_inames i (owns r) emp (<span class="k">fun</span> <span class="k">_</span> -&gt; emp) <span class="k">fn</span> <span class="k">_</span> {
+    <span class="k">unfold</span> owns;
+    r := v; <span class="c">//not atomic</span>
+    <span class="k">fold</span> owns;
+  }
+}
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>- This computation is not atomic nor ghost. `with_invariants`
+  blocks can only contain atomic computations.
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pulse_linked_list.html" class="btn btn-neutral float-left" title="Linked Lists" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pulse_spin_lock.html" class="btn btn-neutral float-right" title="Spin Locks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interfaces &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Typeclasses" href="part3_typeclasses.html" />
+    <link rel="prev" title="Modularity With Interfaces and Typeclasses" href="part3.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="part3.html">Modularity With Interfaces and Typeclasses</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Interfaces</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#bounded-integers">Bounded Integers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#interface-uint32-fsti">Interface: UInt32.fsti</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#implementation-uint32-fst">Implementation: UInt32.fst</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#interleaving-a-quirk">Interleaving: A Quirk</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#comparison-with-machine-integers-in-the-f-library">Comparison with machine integers in the F* library</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="part3_typeclasses.html">Typeclasses</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part3_alacarte.html">Fun with Typeclasses: Datatypes a la Carte</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pulse/pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="part3.html">Modularity With Interfaces and Typeclasses</a></li>
+      <li class="breadcrumb-item active">Interfaces</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="interfaces">
+<span id="part3-interfaces"></span><h1>Interfaces<a class="headerlink" href="#interfaces" title="Link to this heading"></a></h1>
+<p>Look through the F* standard library (in the <code class="docutils literal notranslate"><span class="pre">ulib</span></code> folder) and
+you’ll find many files with <code class="docutils literal notranslate"><span class="pre">.fsti</span></code> extensions. Each of these is an
+interface file that pairs with a module implementation in a
+corresponding <code class="docutils literal notranslate"><span class="pre">.fst</span></code> file.</p>
+<p>An interface (<code class="docutils literal notranslate"><span class="pre">.fsti</span></code>) is very similar to a module implementation
+(<code class="docutils literal notranslate"><span class="pre">.fst</span></code>): it can contain all the elements that a module can,
+including inductive <code class="docutils literal notranslate"><span class="pre">type</span></code> definitions; <code class="docutils literal notranslate"><span class="pre">let</span></code> and <code class="docutils literal notranslate"><span class="pre">let</span> <span class="pre">rec</span></code>
+definitions; <code class="docutils literal notranslate"><span class="pre">val</span></code> declarations; etc. However, unlike module
+implementations, an interface is allowed to declare a symbol <code class="docutils literal notranslate"><span class="pre">val</span> <span class="pre">f</span> <span class="pre">:</span>
+<span class="pre">t</span></code> without any corresponding definition of <code class="docutils literal notranslate"><span class="pre">f</span></code>. This makes <code class="docutils literal notranslate"><span class="pre">f</span></code>
+abstract to the rest of the interface and all client modules, i.e.,
+<code class="docutils literal notranslate"><span class="pre">f</span></code> is simply assumed to have type <code class="docutils literal notranslate"><span class="pre">t</span></code> without any definition. The
+definition of <code class="docutils literal notranslate"><span class="pre">f</span></code> is provided in the <code class="docutils literal notranslate"><span class="pre">.fst</span></code> file and checked to
+have type <code class="docutils literal notranslate"><span class="pre">t</span></code>, ensuring that a client module’s assumption of <code class="docutils literal notranslate"><span class="pre">f:t</span></code>
+is backed by a suitable definition.</p>
+<p>To see how interfaces work, we’ll look at the design of the <strong>bounded
+integer</strong> modules <code class="docutils literal notranslate"><span class="pre">FStar.UInt32</span></code>, <code class="docutils literal notranslate"><span class="pre">FStar.UInt64</span></code>, and the like,
+building our own simplified versions by way of illustration.</p>
+<section id="bounded-integers">
+<span id="machine-integers"></span><h2>Bounded Integers<a class="headerlink" href="#bounded-integers" title="Link to this heading"></a></h2>
+<p>The F* primitive type <code class="docutils literal notranslate"><span class="pre">int</span></code> is an unbounded mathematical
+integer. When compiling a program to, say, OCaml, <code class="docutils literal notranslate"><span class="pre">int</span></code> is compiled
+to a “big integer”, implemented by OCaml’s <a class="reference external" href="https://opam.ocaml.org/packages/zarith/">ZArith package</a>. However, the <code class="docutils literal notranslate"><span class="pre">int</span></code> type
+can be inefficient and in some scenarios (e.g., when compiling F*
+to C) one may want to work with bounded integers that can always be
+represented in a machine word. <code class="docutils literal notranslate"><span class="pre">FStar.UInt32.t</span></code> and <code class="docutils literal notranslate"><span class="pre">FStar.UInt64.t</span></code>
+are types from the standard library whose values can always be
+represented as 32- and 64-bit unsigned integers, respectively.</p>
+<p>Arithmetic operations on 32-bit unsigned integers (like addition) are
+interpreted modulo <code class="docutils literal notranslate"><span class="pre">2^32</span></code>. However, for many applications, one wants
+to program in a discipline that ensures that there is no unintentional
+arithmetic overflow, i.e., we’d like to use bounded integers for
+efficiency, and by proving that their operations don’t overflow we can
+reason about bounded integer terms without using modular arithmetic.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although we don’t discuss them here, F*’s libraries also provide
+signed integer types that can be compiled to the corresponding
+signed integers in C. Avoiding overflow on signed integer
+arithmetic is not just a matter of ease of reasoning, since signed
+integer overflow is undefined behavior in C.</p>
+</div>
+<section id="interface-uint32-fsti">
+<h3>Interface: UInt32.fsti<a class="headerlink" href="#interface-uint32-fsti" title="Link to this heading"></a></h3>
+<p>The interface <code class="docutils literal notranslate"><span class="pre">UInt32</span></code> begins like any module with the
+module’s name. Although this could be inferred from the name of the file
+(<code class="docutils literal notranslate"><span class="pre">UInt32.fsti</span></code>, in this case), F* requires the name to be explicit.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">module</span> UInt32
+
+<span class="k">val</span> t : eqtype
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">UInt32</span></code> provides one abstract type <code class="docutils literal notranslate"><span class="pre">val</span> <span class="pre">t</span> <span class="pre">:</span> <span class="pre">eqtype</span></code>, the type of
+our bounded integer. Its type says that it supports decidable
+equality, but no definition of <code class="docutils literal notranslate"><span class="pre">t</span></code> is revealed in the interface.</p>
+<p>The operations on <code class="docutils literal notranslate"><span class="pre">t</span></code> are specified in terms of a logical model that
+relates <code class="docutils literal notranslate"><span class="pre">t</span></code> to bounded mathematical integers, in particular
+<code class="docutils literal notranslate"><span class="pre">u32_nat</span></code>, a natural number less than <code class="docutils literal notranslate"><span class="pre">pow2</span> <span class="pre">32</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> n = 32
+<span class="k">let</span> min : nat = 0
+<span class="k">let</span> max : nat = pow2 n - 1
+<span class="k">let</span> u32_nat = n:nat{ n &lt;= max }
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Unlike interfaces in languages like OCaml, interfaces in F* <em>can</em>
+include <code class="docutils literal notranslate"><span class="pre">let</span></code> and <code class="docutils literal notranslate"><span class="pre">let</span> <span class="pre">rec</span></code> definitions. As we see in
+<code class="docutils literal notranslate"><span class="pre">UInt32</span></code>, these definitions are often useful for giving precise
+specifications to the other operations whose signatures appear in
+the interface.</p>
+</div>
+<p>To relate our abstract type <code class="docutils literal notranslate"><span class="pre">t</span></code> to <code class="docutils literal notranslate"><span class="pre">u32_nat</span></code>, the interface
+provides two coercions <code class="docutils literal notranslate"><span class="pre">v</span></code> and <code class="docutils literal notranslate"><span class="pre">u</span></code> that go back and forth between
+<code class="docutils literal notranslate"><span class="pre">t</span></code> and <code class="docutils literal notranslate"><span class="pre">u32_nat</span></code>. The lemma signatures <code class="docutils literal notranslate"><span class="pre">vu_inv</span></code> and
+<code class="docutils literal notranslate"><span class="pre">uv_inv</span></code> require <code class="docutils literal notranslate"><span class="pre">v</span></code> and <code class="docutils literal notranslate"><span class="pre">u</span></code> to be mutually inverse, meaning
+that <code class="docutils literal notranslate"><span class="pre">t</span></code> and <code class="docutils literal notranslate"><span class="pre">u32_nat</span></code> are in 1-1 correspondence.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> v (x:t) : u32_nat
+<span class="k">val</span> u (x:u32_nat) : t
+
+<span class="k">val</span> uv_inv (x : t) : <span class="k">Lemma</span> (u (v x) == x)
+<span class="k">val</span> vu_inv (x : u32_nat) : <span class="k">Lemma</span> (v (u x) == x)
+</pre></div>
+</div>
+<section id="modular-addition-and-subtraction">
+<h4>Modular addition and subtraction<a class="headerlink" href="#modular-addition-and-subtraction" title="Link to this heading"></a></h4>
+<p>Addition and subtraction on <code class="docutils literal notranslate"><span class="pre">t</span></code> values are defined modulo <code class="docutils literal notranslate"><span class="pre">pow2</span>
+<span class="pre">32</span></code>. This is specified by the signatures of <code class="docutils literal notranslate"><span class="pre">add_mod</span></code> and
+<code class="docutils literal notranslate"><span class="pre">sub_mod</span></code> below.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="c">(** Addition modulo [2^n]</span>
+
+<span class="c">    Unsigned machine integers can always be added, but the postcondition is now</span>
+<span class="c">    in terms of addition modulo [2^n] on mathematical integers *)</span>
+<span class="k">val</span> add_mod (a:t) (b:t) 
+  : y:t { v y = (v a + v b) % pow2 n } 
+</pre></div>
+</div>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="c">(** Subtraction modulo [2^n]</span>
+
+<span class="c">    Unsigned machine integers can always be subtracted, but the postcondition is now</span>
+<span class="c">    in terms of subtraction modulo [2^n] on mathematical integers *)</span>
+<span class="k">val</span> sub_mod (a:t) (b:t) 
+  : y:t { v y = (v a - v b) % pow2 n } 
+</pre></div>
+</div>
+</section>
+<section id="bounds-checked-addition-and-subtraction">
+<h4>Bounds-checked addition and subtraction<a class="headerlink" href="#bounds-checked-addition-and-subtraction" title="Link to this heading"></a></h4>
+<p>Although precise, the types of <code class="docutils literal notranslate"><span class="pre">add_mod</span></code> and <code class="docutils literal notranslate"><span class="pre">sub_mod</span></code> aren’t
+always easy to reason with. For example, proving that <code class="docutils literal notranslate"><span class="pre">add_mod</span> <span class="pre">(u</span> <span class="pre">2)</span>
+<span class="pre">(u</span> <span class="pre">3)</span> <span class="pre">==</span> <span class="pre">u</span> <span class="pre">5</span></code> requires reasoning about modular arithmetic—for
+constants like <code class="docutils literal notranslate"><span class="pre">2</span></code>, <code class="docutils literal notranslate"><span class="pre">3</span></code>, and <code class="docutils literal notranslate"><span class="pre">5</span></code> this is easy enough, but proofs
+about modular arithmetic over symbolic values will, in general, involve
+reasoning about non-linear arithmetic, which is difficult to automate
+even with an SMT solver. Besides, in many safety critical software
+systems, one often prefers to avoid integer overflow altogether.</p>
+<p>So, the <code class="docutils literal notranslate"><span class="pre">UInt32</span></code> interface also provides two additional operations,
+<code class="docutils literal notranslate"><span class="pre">add</span></code> and <code class="docutils literal notranslate"><span class="pre">sub</span></code>, whose specification enables two <code class="docutils literal notranslate"><span class="pre">t</span></code> values to be added
+(resp. subtracted) only if there is no overflow (or underflow).</p>
+<p>First, we define an auxiliary predicate <code class="docutils literal notranslate"><span class="pre">fits</span></code> to state when an
+operation does not overflow or underflow.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> fits (op: int -&gt; int -&gt; int)
+         (x y : t)
+  = min &lt;= op (v x) (v y) /\
+    op (v x) (v y) &lt;= max
+</pre></div>
+</div>
+<p>Then, we use <code class="docutils literal notranslate"><span class="pre">fits</span></code> to restrict the domain of <code class="docutils literal notranslate"><span class="pre">add</span></code> and <code class="docutils literal notranslate"><span class="pre">sub</span></code>
+and the type ensures that the result is the sum (resp. difference) of
+the arguments, without need for any modular arithmetic.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="c">(** Bounds-respecting addition</span>
+
+<span class="c">    The precondition enforces that the sum does not overflow,</span>
+<span class="c">    expressing the bound as an addition on mathematical integers *)</span>
+<span class="k">val</span> add (a:t) (b:t { fits (+) a b }) 
+  : y:t{ v y == v a + v b }
+</pre></div>
+</div>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="c">(** Bounds-respecting subtraction</span>
+
+<span class="c">    The precondition enforces that the difference does not underflow,</span>
+<span class="c">    expressing the bound as an subtraction on mathematical integers *)</span>
+<span class="k">val</span> sub (a:t) (b:t { fits (<span class="k">fun</span> x y -&gt; x - y) a b }) 
+  : y:t{ v y == v a - v b }
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the addition operator can be used as a first-class
+function with the notation <code class="docutils literal notranslate"><span class="pre">(+)</span></code>, the same does not work for
+subtraction, since <code class="docutils literal notranslate"><span class="pre">(-)</span></code> resolves to unary integer negation,
+rather than subtraction—so, we write <code class="docutils literal notranslate"><span class="pre">fun</span> <span class="pre">x</span> <span class="pre">y</span> <span class="pre">-&gt;</span> <span class="pre">x</span> <span class="pre">-</span> <span class="pre">y</span></code>.</p>
+</div>
+</section>
+<section id="comparison">
+<h4>Comparison<a class="headerlink" href="#comparison" title="Link to this heading"></a></h4>
+<p>Finally, the interface also provides a comparison operator <code class="docutils literal notranslate"><span class="pre">lt</span></code>, as
+specified below:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="c">(** Less than *)</span>
+<span class="k">val</span> lt (a:t) (b:t) 
+  : r:bool { r &lt;==&gt; v a &lt; v b }
+</pre></div>
+</div>
+</section>
+</section>
+<section id="implementation-uint32-fst">
+<h3>Implementation: UInt32.fst<a class="headerlink" href="#implementation-uint32-fst" title="Link to this heading"></a></h3>
+<p>An implementation of <code class="docutils literal notranslate"><span class="pre">UInt32</span></code> must provide definitions for
+all the <code class="docutils literal notranslate"><span class="pre">val</span></code> declarations in the <code class="docutils literal notranslate"><span class="pre">UInt32</span></code> interface, starting
+with a representation for the abstract type <code class="docutils literal notranslate"><span class="pre">t</span></code>.</p>
+<p>There are multiple possible representations for <code class="docutils literal notranslate"><span class="pre">t</span></code>, however the
+point of the interface is to isolate client modules from these
+implementation choices.</p>
+<p>Perhaps the easiest implementation is to represent <code class="docutils literal notranslate"><span class="pre">t</span></code> as a
+<code class="docutils literal notranslate"><span class="pre">u32_nat</span></code> itself. This makes proving the correspondence between
+<code class="docutils literal notranslate"><span class="pre">t</span></code> and its logical model almost trivial.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">module</span> UInt32
+
+<span class="k">let</span> t = n:nat { n &lt;= pow2 32 - 1}
+
+<span class="k">let</span> v (x:t) = x
+<span class="k">let</span> u (x:u32_nat) = x
+
+<span class="k">let</span> uv_inv x = ()
+<span class="k">let</span> vu_inv x = ()
+
+<span class="k">let</span> add_mod a b = (a + b) % pow2 32
+<span class="k">let</span> sub_mod a b = (a - b) % pow2 32
+
+<span class="k">let</span> add a b = a + b
+<span class="k">let</span> sub a b = a - b
+
+<span class="k">let</span> lt (a:t) (b:t) = v a &lt; v b
+</pre></div>
+</div>
+<p>Another choice may be to represent <code class="docutils literal notranslate"><span class="pre">t</span></code> as a 32-bit vector. This is a
+bit harder and proving that it is correct with respect to the
+interface requires handling some interactions between Z3’s theory of
+bit vectors and uninterpreted functions, which we handle with a
+tactic. This is quite advanced, and we have yet to cover F*’s support
+for tactics, but we show the code below for reference.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">open</span> FStar.BV
+<span class="k">open</span> FStar.Tactics
+
+<span class="k">let</span> t = bv_t 32
+<span class="k">let</span> v (x:t) = bv2int x
+<span class="k">let</span> u x = int2bv x
+
+<span class="k">let</span> sym (#a:Type) (x y:a)
+  : <span class="k">Lemma</span> (<span class="k">requires</span> x == y)
+          (<span class="k">ensures</span> y == x)
+  = ()
+
+<span class="k">let</span> dec_eq (#a:eqtype) (x y:a)
+  : <span class="k">Lemma</span> (<span class="k">requires</span> x = y)
+          (<span class="k">ensures</span> x == y)
+  = ()
+
+<span class="k">let</span> uv_inv (x:t)
+  = <span class="k">assert</span> (u (v x) == x)
+        <span class="k">by</span> (mapply (`sym);
+            mapply (`dec_eq);
+            mapply (`inverse_vec_lemma))
+
+<span class="k">let</span> ty (x y:u32_nat)
+  : <span class="k">Lemma</span> (<span class="k">requires</span> eq2 #(FStar.UInt.uint_t 32) x y)
+          (<span class="k">ensures</span> x == y)
+  = ()
+
+<span class="k">let</span> vu_inv (x:u32_nat)
+  = <span class="k">assert</span> (v (u x) == x)
+        <span class="k">by</span> (mapply (`ty);
+            mapply (`sym);
+            mapply (`dec_eq);
+            mapply (`inverse_num_lemma))
+
+<span class="k">let</span> add_mod a b =
+  <span class="k">let</span> <span class="k">unfold</span> y = bvadd #32 a b <span class="k">in</span>
+  <span class="k">assert</span> (y == u (FStar.UInt.add_mod #32 (v a) (v b)))
+     <span class="k">by</span>  (mapply (`sym);
+          mapply (`int2bv_add);
+          pointwise
+              (<span class="k">fun</span> <span class="k">_</span> -&gt; <span class="k">try</span> mapply (`uv_inv) <span class="k">with</span> | <span class="k">_</span> -&gt; trefl());
+          trefl());
+  vu_inv ((FStar.UInt.add_mod #32 (v a) (v b)));
+  y
+
+<span class="k">let</span> sub_mod a b =
+  <span class="k">let</span> <span class="k">unfold</span> y = bvsub #32 a b <span class="k">in</span>
+  <span class="k">assert</span> (y == u (FStar.UInt.sub_mod #32 (v a) (v b)))
+     <span class="k">by</span>
+         (mapply (`sym);
+          mapply (`int2bv_sub);
+          pointwise
+              (<span class="k">fun</span> <span class="k">_</span> -&gt; <span class="k">try</span> mapply (`uv_inv) <span class="k">with</span> | <span class="k">_</span> -&gt; trefl());
+          trefl());
+  vu_inv ((FStar.UInt.sub_mod #32 (v a) (v b)));
+  y
+
+<span class="k">let</span> add a b =
+  <span class="k">let</span> y = add_mod a b <span class="k">in</span>
+  FStar.Math.Lemmas.modulo_lemma (v a + v b) (pow2 32);
+  y
+
+<span class="k">let</span> sub a b =
+  <span class="k">let</span> y = sub_mod a b <span class="k">in</span>
+  FStar.Math.Lemmas.modulo_lemma (v a - v b) (pow2 32);
+  y
+
+<span class="k">let</span> lt (a:t) (b:t) = v a &lt; v b
+</pre></div>
+</div>
+<p>Although both implementations correctly satisfy the <code class="docutils literal notranslate"><span class="pre">UInt32</span></code>
+interface, F* requires the user to pick one. Unlike module systems in some
+other ML-like languages, where interfaces are first-class entities
+which many modules can implement, in F* an interface can have at most
+one implementation. For interfaces with multiple implementations, one
+must use typeclasses.</p>
+</section>
+<section id="interleaving-a-quirk">
+<h3>Interleaving: A Quirk<a class="headerlink" href="#interleaving-a-quirk" title="Link to this heading"></a></h3>
+<p>The current F* implementation views an interface and its
+implementation as two partially implemented halves of a module. When
+checking that an implementation is a correct implementation of an
+interface, F* attempts to combine the two halves into a complete
+module before typechecking it. It does this by trying to <em>interleave</em>
+the top-level elements of the interface and implementation, preserving
+their relative order.</p>
+<p>This implementation strategy is far from optimal in various ways and a
+relic from a time when F*’s implementation did not support separate
+compilation. This implementation strategy is likely to change in the
+future (see <a class="reference external" href="https://github.com/FStarLang/FStar/issues/1770">this issue</a> for
+details).</p>
+<p>Meanwhile, the main thing to keep in mind when implementing interfaces
+is the following:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The order of definitions in an implementation must match the order
+of <code class="docutils literal notranslate"><span class="pre">val</span></code> declarations in the interface. E.g., if the interface
+contains <code class="docutils literal notranslate"><span class="pre">val</span> <span class="pre">f</span> <span class="pre">:</span> <span class="pre">tf</span></code> followed by <code class="docutils literal notranslate"><span class="pre">val</span> <span class="pre">g</span> <span class="pre">:</span> <span class="pre">tg</span></code>, then the
+implementation of <code class="docutils literal notranslate"><span class="pre">f</span></code> must precede the implementation of <code class="docutils literal notranslate"><span class="pre">g</span></code>.</p></li>
+</ul>
+</div></blockquote>
+<p>Also, remember that if you are writing <code class="docutils literal notranslate"><span class="pre">val</span></code> declarations in an
+interface, it is a good idea to be explicit about universe levels. See
+<a class="reference internal" href="../part2/part2_universes.html#part2-tips-for-universes"><span class="std std-ref">here for more discussion</span></a>.</p>
+<p>Other issues with interleaving that may help in debugging compiler
+errors with interfaces:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/FStarLang/FStar/issues/2020">Issue 2020</a></p></li>
+<li><p><a class="reference external" href="https://github.com/FStarLang/FStar/issues/1770">Issue 1770</a></p></li>
+<li><p><a class="reference external" href="https://github.com/FStarLang/FStar/issues/959">Issue 959</a></p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="comparison-with-machine-integers-in-the-f-library">
+<h3>Comparison with machine integers in the F* library<a class="headerlink" href="#comparison-with-machine-integers-in-the-f-library" title="Link to this heading"></a></h3>
+<p>F*’s standard library includes <code class="docutils literal notranslate"><span class="pre">FStar.UInt32</span></code>, whose interface is
+similar, though more extensive than the <code class="docutils literal notranslate"><span class="pre">UInt32</span></code> shown in this
+chapter. For example, <code class="docutils literal notranslate"><span class="pre">FStar.UInt32</span></code> also includes multiplication,
+division, modulus, bitwise logical operations, etc.</p>
+<p>The implementation of <code class="docutils literal notranslate"><span class="pre">FStar.UInt32</span></code> chooses a representation for
+<code class="docutils literal notranslate"><span class="pre">FStar.UInt32.t</span></code> that is similar to <code class="docutils literal notranslate"><span class="pre">u32_nat</span></code>, though the F*
+compiler has special knowledge of this module and treats
+<code class="docutils literal notranslate"><span class="pre">FStar.UInt32.t</span></code> as a primitive type and compiles it and its
+operations in a platform-specific way to machine integers. The
+implementation of <code class="docutils literal notranslate"><span class="pre">FStar.UInt32</span></code> serves only to prove that its
+interface is logically consistent by providing a model in terms of
+bounded natural numbers.</p>
+<p>The library also provides several other unsigned machine integer types
+in addition to <code class="docutils literal notranslate"><span class="pre">FStar.UInt32</span></code>, including <code class="docutils literal notranslate"><span class="pre">FStar.UInt8</span></code>,
+<code class="docutils literal notranslate"><span class="pre">FStar.UInt16</span></code>, and <code class="docutils literal notranslate"><span class="pre">FStar.UInt64</span></code>.  F* also has several signed
+machine integer types.</p>
+<p>All of these modules are very similar, but not being first-class
+entities in the language, there is no way to define a general
+interface that is instantiated by all these modules. In fact, all
+these variants are generated by a script from a common template.</p>
+<p>Although interfaces are well-suited to simple patterns of information
+hiding and modular structure, as we’ll learn next, typeclasses are
+more powerful and enable more generic solutions, though sometimes
+requiring the use of higher-order code.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="part3.html" class="btn btn-neutral float-left" title="Modularity With Interfaces and Typeclasses" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="part3_typeclasses.html" class="btn btn-neutral float-right" title="Typeclasses" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

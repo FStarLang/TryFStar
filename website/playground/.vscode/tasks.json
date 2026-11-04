@@ -1,0 +1,41 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Check all examples",
+      "type": "process",
+      "command": "make",
+      "args": ["check"],
+      "group": { "kind": "build", "isDefault": true },
+      "problemMatcher": []
+    },
+    {
+      "label": "F*: verify, extract, and run",
+      "type": "process",
+      "command": "make",
+      "args": ["-C", "functional", "check"],
+      "problemMatcher": []
+    },
+    {
+      "label": "Pulse: verify, extract, and run",
+      "type": "process",
+      "command": "make",
+      "args": ["-C", "pulse", "check"],
+      "problemMatcher": []
+    },
+    {
+      "label": "PAL: verify and run C",
+      "type": "process",
+      "command": "make",
+      "args": ["-C", "pal", "check"],
+      "problemMatcher": []
+    },
+    {
+      "label": "PAL-CSharp: verify and run C#",
+      "type": "process",
+      "command": "make",
+      "args": ["-C", "pal-csharp", "check"],
+      "problemMatcher": []
+    }
+  ]
+}

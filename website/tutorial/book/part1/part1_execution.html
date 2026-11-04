@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Executing programs &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Wrapping up" href="part1_wrap.html" />
+    <link rel="prev" title="Case Study: Quicksort" href="part1_quicksort.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="part1.html">Programming and Proving with Total Functions</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="part1_getting_off_the_ground.html">Getting off the ground</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part1_polymorphism.html">Polymorphism and type inference</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part1_equality.html">Equality</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part1_prop_assertions.html">Interfacing with an SMT solver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part1_inductives.html">Inductive types and pattern matching</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part1_termination.html">Proofs of termination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part1_lemmas.html">Lemmas and proofs by induction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part1_quicksort.html">Case Study: Quicksort</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Executing programs</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#interpreting-f-programs">Interpreting F* programs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compiling-to-ocaml">Compiling to OCaml</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#producing-an-ocaml-library">Producing an OCaml library</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#compiling-an-ocaml-library">Compiling an OCaml library</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#adding-a-main">Adding a ‘main’</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#compiling-to-other-languages">Compiling to other languages</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="part1_wrap.html">Wrapping up</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pulse/pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="part1.html">Programming and Proving with Total Functions</a></li>
+      <li class="breadcrumb-item active">Executing programs</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="executing-programs">
+<span id="part1-execution"></span><h1>Executing programs<a class="headerlink" href="#executing-programs" title="Link to this heading"></a></h1>
+<p>We’ve been through several chapters already, having learned many core
+concepts of F*, but we have yet to see how to compile and execute a
+program, since our focus so far has been on F*’s logic and how to
+prove properties about programs.</p>
+<p>F* offers several choices for executing a program, which we cover
+briefly here, using <a class="reference external" href="../code/Part1.Quicksort.Generic.fst">Quicksort</a>
+as a running example.</p>
+<section id="interpreting-f-programs">
+<h2>Interpreting F* programs<a class="headerlink" href="#interpreting-f-programs" title="Link to this heading"></a></h2>
+<p>As mentioned in the <a class="reference internal" href="../intro.html#part1-symbolic-computation"><span class="std std-ref">capsule summary</span></a>, F* includes an engine (called the
+<em>normalizer</em>) that can symbolically reduce F* computations. We’ll see
+many more uses of F*’s normalizer as we go, but one basic usage of it
+is to use it to interpret programs.</p>
+<p>Invoking the interpreter is easy using <a class="reference internal" href="part1_getting_off_the_ground.html#part1-editors"><span class="std std-ref">fstar-mode.el</span></a> in emacs. In emacs, go to the F* menu, then to
+<em>Interactive queries</em>, then choose <em>Evaluate an expression</em> (or type
+C-c C-s C-e): this prompts you to enter an expression that you want to
+evaluate: type <code class="docutils literal notranslate"><span class="pre">sort</span> <span class="pre">(</span> <span class="pre">&lt;=</span> <span class="pre">)</span> <span class="pre">[4;3;2;1]</span></code> and then press “Enter”. You
+should see the following output: <code class="docutils literal notranslate"><span class="pre">sort</span> <span class="pre">(</span> <span class="pre">&lt;=</span> <span class="pre">)</span> <span class="pre">[4;3;2;1]</span></code>
+<span class="math notranslate nohighlight">\(\downarrow\beta\delta\iota\zeta\)</span> <code class="docutils literal notranslate"><span class="pre">[1;</span> <span class="pre">2;</span> <span class="pre">3;</span> <span class="pre">4]</span> <span class="pre">&lt;:</span> <span class="pre">Prims.Tot</span>
+<span class="pre">(list</span> <span class="pre">int)</span></code>, saying that the input term reduced to <code class="docutils literal notranslate"><span class="pre">[1;</span> <span class="pre">2;</span> <span class="pre">3;</span> <span class="pre">4]</span></code>
+of type <code class="docutils literal notranslate"><span class="pre">Tot</span> <span class="pre">(list</span> <span class="pre">int)</span></code>.</p>
+<p>The <span class="math notranslate nohighlight">\(\downarrow\beta\delta\iota\zeta\)</span> may seem a bit arcane, but
+it describes the reduction strategy that F* used to interpret the term:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><span class="math notranslate nohighlight">\(\beta\)</span> means that functions were applied</p></li>
+<li><p><span class="math notranslate nohighlight">\(\delta\)</span> means that definitions were unfolded</p></li>
+<li><p><span class="math notranslate nohighlight">\(\iota\)</span> means that patterns were matched</p></li>
+<li><p><span class="math notranslate nohighlight">\(\zeta\)</span> means that recursive functions were unrolled</p></li>
+</ul>
+</div></blockquote>
+<p>We’ll revisit what these reduction steps mean in a later chapter,
+including how to customize them for your needs.</p>
+</section>
+<section id="compiling-to-ocaml">
+<h2>Compiling to OCaml<a class="headerlink" href="#compiling-to-ocaml" title="Link to this heading"></a></h2>
+<p>The main way to execute F* programs is by compiling, or <em>extracting</em>,
+them to OCaml and then using OCaml’s build system and runtime to
+produce an executable and run it.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The method that we show here works for simple projects with just a few
+files. For larger projects, F* offers a dependence analysis that can
+produce dependences for use in a Makefile. F* also offers separate
+compilation which allows a project to be checked one file at a time,
+and for the results to be cached and reused. For documentation and
+examples of how to use these features and structure the build for
+larger projects see these resources:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/FStarLang/FStar/wiki/Dealing-with-F%E2%98%85-dependencies">Dealing with dependences</a></p></li>
+<li><p><a class="reference external" href="https://github.com/FStarLang/FStar/wiki/Caching-verified-modules">Caching verified modules</a></p></li>
+<li><p><a class="reference external" href="https://github.com/FStarLang/FStar/tree/master/examples/hello/multifile">A multifile project</a></p></li>
+</ul>
+</div></blockquote>
+</div>
+<section id="producing-an-ocaml-library">
+<h3>Producing an OCaml library<a class="headerlink" href="#producing-an-ocaml-library" title="Link to this heading"></a></h3>
+<p>To extract OCaml code from a F* program use the command-line options,
+as shown below:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fstar</span> <span class="o">--</span><span class="n">codegen</span> <span class="n">OCaml</span> <span class="o">--</span><span class="n">extract</span> <span class="n">Part1</span><span class="o">.</span><span class="n">Quicksort</span> <span class="o">--</span><span class="n">odir</span> <span class="n">out</span> <span class="n">Part1</span><span class="o">.</span><span class="n">Quicksort</span><span class="o">.</span><span class="n">Generic</span><span class="o">.</span><span class="n">fst</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">--codegen</span></code> option tells F* to produce OCaml code</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">--extract</span></code> option tells F* to only extract all modules in the given namespace, i.e., in this case, all modules in <code class="docutils literal notranslate"><span class="pre">Part1.Quicksort</span></code></p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">--odir</span></code> option tells F* to put all the generated files into the specified directory; in this case <code class="docutils literal notranslate"><span class="pre">out</span></code></p></li>
+<li><p>The last argument is the source file to be checked and extracted</p></li>
+</ul>
+<p>The resulting OCaml code is in the file
+<code class="docutils literal notranslate"><span class="pre">Part1_Quicksort_Generic.ml</span></code>, where the F* <code class="docutils literal notranslate"><span class="pre">dot</span></code>-separated name is
+transformed to OCaml’s naming convention for modules. The generated code is <a class="reference external" href="../code/out/Part1_Quicksort_Generic.ml">here</a></p>
+<p>Some points to note about the extracted code:</p>
+<ul>
+<li><p>F* extracts only those definitions that correspond to executable
+code. Lemmas and other proof-only aspects are erased. We’ll learn
+more about erasure in a later chapter.</p></li>
+<li><p>The F* types are translated to OCaml types. Since F* types are more
+precise than OCaml types, this translation process necessarily
+involves a loss in precision. For example, the type of total orders
+in <code class="docutils literal notranslate"><span class="pre">Part1.Quicksort.Generic.fst</span></code> is:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> total_order_t (a:Type) = f:(a -&gt; a -&gt; bool) { total_order f }
+</pre></div>
+</div>
+<p>Whereas in OCaml it becomes</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">type</span> <span class="s1">&#39;a total_order_t = &#39;</span><span class="n">a</span> <span class="o">-&gt;</span> <span class="s1">&#39;a -&gt; Prims.bool</span>
+</pre></div>
+</div>
+<p>This means that you need to be careful when calling your extracted
+F* program from unverified OCaml code, since the OCaml compiler will
+not complain if you pass in some function that is not a total order
+where the F* code expects a total order.</p>
+</li>
+</ul>
+</section>
+<section id="compiling-an-ocaml-library">
+<h3>Compiling an OCaml library<a class="headerlink" href="#compiling-an-ocaml-library" title="Link to this heading"></a></h3>
+<p>Our extracted code provides several top-level functions (e.g.,
+<code class="docutils literal notranslate"><span class="pre">sort</span></code>) but not <code class="docutils literal notranslate"><span class="pre">main</span></code>. So, we can only compile it as a library.</p>
+<p>For simple uses, one can compile the generated code into an OCaml
+native code library (a cmxa file) with <code class="docutils literal notranslate"><span class="pre">ocamlbuild</span></code>, as shown below</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>OCAMLPATH=$FSTAR_HOME/lib ocamlbuild -use-ocamlfind -pkg batteries -pkg fstar.lib Part1_Quicksort_Generic.cmxa
+</pre></div>
+</div>
+<p>Some points to note:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>You need to specify the variable <code class="docutils literal notranslate"><span class="pre">OCAMLPATH</span></code> which OCaml uses to
+find required libraries. For F* projects, the <code class="docutils literal notranslate"><span class="pre">OCAMLPATH</span></code> should
+include the <code class="docutils literal notranslate"><span class="pre">bin</span></code> directory of the FStar release bundle.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">-use-ocamlfind</span></code> option enables a utility to find OCaml libraries.</p></li>
+<li><p>Extracted F* programs rely on two libraries: <code class="docutils literal notranslate"><span class="pre">batteries</span></code> and
+<code class="docutils literal notranslate"><span class="pre">fstar.lib</span></code>, which is what the <code class="docutils literal notranslate"><span class="pre">-pkg</span></code> options say.</p></li>
+<li><p>Finally, <code class="docutils literal notranslate"><span class="pre">Part1_Quicksort_Generic.cmxa</span></code> references the name of
+the corresponding <code class="docutils literal notranslate"><span class="pre">.ml</span></code> file, but with the <code class="docutils literal notranslate"><span class="pre">.cmxa</span></code> extension
+to indicate that we want to compile it as a library.</p></li>
+</ul>
+</div></blockquote>
+<p>You can use the resulting .cmxa file in your other OCaml projects.</p>
+</section>
+<section id="adding-a-main">
+<h3>Adding a ‘main’<a class="headerlink" href="#adding-a-main" title="Link to this heading"></a></h3>
+<p>We have focused so far on programming and proving <em>total</em>
+functions. Total functions have no side effects, e.g., they cannot
+read or write state, they cannot print output etc. This makes total
+functions suitable for use in libraries, but to write a top-level
+driver program that can print some output (i.e., a <code class="docutils literal notranslate"><span class="pre">main</span></code>), we need
+to write functions that actually have some effects.</p>
+<p>We’ll learn a lot more about F*’s support for effectful programs in a
+later section, but for now we’ll just provide a glimpse of it by
+showing (below) a <code class="docutils literal notranslate"><span class="pre">main</span></code> program that calls into our Quicksort
+library.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">module</span> Part1.Quicksort.Main
+<span class="k">module</span> Q = Part1.Quicksort.Generic
+
+<span class="c">//Printing the elements of an integer list, using the FStar.Printf library</span>
+<span class="k">let</span> string_of_int_list l =
+  Printf.sprintf &quot;[%s]&quot;
+    (String.concat &quot;; &quot; (List.<span class="k">Tot</span>.map (Printf.sprintf &quot;%d&quot;) l))
+
+<span class="c">//A main program, which sorts a list and prints it before and after</span>
+<span class="k">let</span> main () =
+  <span class="k">let</span> orig = [42; 17; 256; 94] <span class="k">in</span>
+  <span class="k">let</span> sorted = Q.sort ( &lt;= ) orig <span class="k">in</span>
+  <span class="k">let</span> msg =
+    Printf.sprintf &quot;Original list = %s\nSorted list = %s\n&quot;
+      (string_of_int_list orig)
+      (string_of_int_list sorted)
+  <span class="k">in</span>
+  FStar.IO.print_string msg
+
+<span class="c">//Run ``main ()`` when the module loads</span>
+#push-options &quot;--warn_error -272&quot;
+<span class="k">let</span> <span class="k">_</span> = main ()
+#pop-options
+</pre></div>
+</div>
+<p>There are a few things to note here:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>This time, rather than calling <code class="docutils literal notranslate"><span class="pre">Q.sort</span></code> from unverified OCaml
+code, we are calling it from F*, which requires us to prove all
+its preconditions, e.g., that the comparison function <code class="docutils literal notranslate"><span class="pre">(</span> <span class="pre">&lt;=</span> <span class="pre">)</span></code>
+that we are passing in really is a total order—F* does that
+automatically.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">FStar.IO.print_string</span></code> is a library function that prints a
+string to <code class="docutils literal notranslate"><span class="pre">stdout</span></code>. Its type is <code class="docutils literal notranslate"><span class="pre">string</span> <span class="pre">-&gt;</span> <span class="pre">ML</span> <span class="pre">unit</span></code>, a type
+that we’ll look at in detail when we learn more about effects. For
+now, keep in mind that functions with the <code class="docutils literal notranslate"><span class="pre">ML</span></code> label in their
+type may have observable side effects, like IO, raising
+exceptions, etc.</p></li>
+<li><p>The end of the file contains <code class="docutils literal notranslate"><span class="pre">let</span> <span class="pre">_</span> <span class="pre">=</span> <span class="pre">main</span> <span class="pre">()</span></code>, a top-level term
+that has a side-effect (printing to <code class="docutils literal notranslate"><span class="pre">stdout</span></code>) when executed. In
+a scenario where we have multiple modules, the runtime behavior of
+a program with such top-level side-effects depends on the order in
+which modules are loaded. When F* detects this, it raises the
+warning <code class="docutils literal notranslate"><span class="pre">272</span></code>. In this case, we intend for this program to have
+a top-level effect, so we suppress the warning using the
+<code class="docutils literal notranslate"><span class="pre">--warn_error</span> <span class="pre">-272</span></code> option.</p></li>
+</ul>
+</div></blockquote>
+<p>To compile this code to OCaml, along with its dependence on
+<code class="docutils literal notranslate"><span class="pre">Part1.Quicksort.Generic</span></code>, one can invoke:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">fstar</span> <span class="o">--</span><span class="n">codegen</span> <span class="n">OCaml</span> <span class="o">--</span><span class="n">extract</span> <span class="n">Part1</span><span class="o">.</span><span class="n">Quicksort</span> <span class="o">--</span><span class="n">odir</span> <span class="n">out</span> <span class="n">Part1</span><span class="o">.</span><span class="n">Quicksort</span><span class="o">.</span><span class="n">Main</span><span class="o">.</span><span class="n">fst</span>
+</pre></div>
+</div>
+<p>This time, F* extracts both <code class="docutils literal notranslate"><span class="pre">Part1.Quicksort.Generic.fst</span></code> (as
+before) and <code class="docutils literal notranslate"><span class="pre">Part1.Quicksort.Main.fst</span></code> to OCaml, producing
+<a class="reference external" href="../code/out/Part1_Quicksort_Main.ml">Part1_Quicksort_Main.ml</a> to
+OCaml.</p>
+<p>You can compile this code in OCaml to a native executable by doing:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>OCAMLPATH=$FSTAR_HOME/lib ocamlbuild -use-ocamlfind -pkg batteries -pkg fstar.lib Part1_Quicksort_Main.native
+</pre></div>
+</div>
+<p>And, finally, you can execute Part1_Quicksort_Main.native to see the
+following output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ./Part1_Quicksort_Main.native
+Original list = [42; 17; 256; 94]
+Sorted list = [17; 42; 94; 256]
+</pre></div>
+</div>
+</section>
+</section>
+<section id="compiling-to-other-languages">
+<h2>Compiling to other languages<a class="headerlink" href="#compiling-to-other-languages" title="Link to this heading"></a></h2>
+<p>F* also supports compiling programs to F# and, for a subset of the
+language, supports compilation to C.</p>
+<p>For the F# extraction, use the <code class="docutils literal notranslate"><span class="pre">--codegen</span> <span class="pre">FSharp</span></code> option. However,
+it is more typical to structure an F* project for use with F# using
+Visual Studio project and solution files. Here are some examples:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><a class="reference external" href="https://github.com/FStarLang/FStar/tree/master/examples/hello">A simple example</a></p></li>
+<li><p><a class="reference external" href="https://github.com/FStarLang/FStar/tree/master/ulib/fs">A more advanced example mixing F* and F# code</a></p></li>
+</ul>
+</div></blockquote>
+<p>For extraction to C, please see the <a class="reference external" href="https://fstarlang.github.io/lowstar/html/">tutorial on Low*</a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="part1_quicksort.html" class="btn btn-neutral float-left" title="Case Study: Quicksort" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="part1_wrap.html" class="btn btn-neutral float-right" title="Wrapping up" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

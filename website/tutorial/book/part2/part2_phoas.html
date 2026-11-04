@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Higher-order Abstract Syntax &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Well-founded Relations and Termination" href="part2_well_founded.html" />
+    <link rel="prev" title="Simply Typed Lambda Calculus" href="part2_stlc.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="part2.html">Representing Data, Proofs, and Computations with Inductive Types</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="part2_inductive_type_families.html">Inductive type definitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_vectors.html">Length-indexed Lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_merkle.html">Merkle Trees</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_equality.html">Equality Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_logical_connectives.html">Constructive &amp; Classical Connectives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_stlc.html">Simply Typed Lambda Calculus</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Higher-order Abstract Syntax</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#roadmap">Roadmap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#denotation-of-types">Denotation of types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#term-representation">Term representation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#denotation-of-terms">Denotation of terms</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#termination">Termination</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#exercises">Exercises</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="part2_well_founded.html">Well-founded Relations and Termination</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_par.html">A First Model of Computational Effects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="part2_universes.html">Universes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pulse/pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+      <li class="breadcrumb-item active">Higher-order Abstract Syntax</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="higher-order-abstract-syntax">
+<span id="part2-phoas"></span><h1>Higher-order Abstract Syntax<a class="headerlink" href="#higher-order-abstract-syntax" title="Link to this heading"></a></h1>
+<p>In the previous chapter, we looked at a <em>deep embedding</em> of the simply
+typed lambda calculus (STLC). The encoding is “deep” in the sense that
+we used an inductive type to represent the <em>syntax</em> of the lambda
+calculus in F*, and then defined and proved some properties of its
+semantics represented mathematically in F*.</p>
+<p>Another way to embed a language like the STLC in F* is a <em>shallow
+embedding</em>. F* is itself a functional programming language, and it has
+a type system that is certainly powerful enough to represent simply
+typed terms, so why not use lambda terms in F* itself to represent
+STLC, rather than merely encoding STLC’s abstract syntax in F*. This
+kind of encoding is called a shallow embedding, where we use semantic
+constructs in the host (or meta) language (F*) to represent analogous
+features of the embedded (or object) language (STLC, in our example).</p>
+<p>In this chapter, we look at a particularly elegant technique for doing
+this called <em>higher-order abstract syntax</em> (or HOAS). For more
+background about this, a <a class="reference external" href="http://adam.chlipala.net/papers/PhoasICFP08/PhoasICFP08.pdf">2008 paper by Adam Chlipala</a> is a
+good resource, though it develops a more sophisticated parametric
+version.</p>
+<p>Our small case study in HOAS is meant to illustrate the use of
+inductive types with non-trivial indexes while also containing
+strictly positive functions as arguments, and also a bit of type-level
+computation.</p>
+<section id="roadmap">
+<h2>Roadmap<a class="headerlink" href="#roadmap" title="Link to this heading"></a></h2>
+<p>The type <code class="docutils literal notranslate"><span class="pre">typ</span></code> below represents the types we’ll use in our STLC
+object language, i.e., the base types <code class="docutils literal notranslate"><span class="pre">Bool</span></code> and <code class="docutils literal notranslate"><span class="pre">Int</span></code>, and
+function types <code class="docutils literal notranslate"><span class="pre">Arrow</span> <span class="pre">t1</span> <span class="pre">t2</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> typ =
+  | Bool
+  | Int
+  | Arrow : typ -&gt; typ -&gt; typ
+</pre></div>
+</div>
+<p>This is analogous to our representation of STLC types in the deep
+embedding of the previous chapter.</p>
+<p>Where things get interesting is in the representation of STLC terms
+and their semantics. To set the goal posts, we want to</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Give an interpretation of STLC types into F* types, by defining a
+function <code class="docutils literal notranslate"><span class="pre">denote_typ</span> <span class="pre">:</span> <span class="pre">typ</span> <span class="pre">-&gt;</span> <span class="pre">Type</span></code></p></li>
+<li><p>Define a type <code class="docutils literal notranslate"><span class="pre">term</span> <span class="pre">t</span></code>, to represent well-typed STLC
+terms whose type is <code class="docutils literal notranslate"><span class="pre">t:typ</span></code></p></li>
+<li><p>Give an interpretation of STLC terms into F* terms of the
+suitable type, i.e., define a function <code class="docutils literal notranslate"><span class="pre">denote_term</span> <span class="pre">(#t:typ)</span>
+<span class="pre">(e:term</span> <span class="pre">t)</span> <span class="pre">:</span> <span class="pre">denote_typ</span> <span class="pre">t</span></code>, proving that every well-typed STLC
+term at type <code class="docutils literal notranslate"><span class="pre">t</span></code> can be represented in F* as a function of type
+<code class="docutils literal notranslate"><span class="pre">denote_typ</span> <span class="pre">t</span></code>.</p></li>
+</ol>
+</div></blockquote>
+<p>Such a result would encompass the type soundness results we proved in
+the previous chapter (proving that well-typed programs can always make
+progress), but would go substantially further to show that the
+reduction of all such terms always terminates producing F* values that
+model their semantics.</p>
+</section>
+<section id="denotation-of-types">
+<span id="part2-phoas-denotation"></span><h2>Denotation of types<a class="headerlink" href="#denotation-of-types" title="Link to this heading"></a></h2>
+<p>Step 1 in our roadmap is to give an interpretation of STLC types
+<code class="docutils literal notranslate"><span class="pre">typ</span></code> into F* types. This is easily done, as shown below.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> denote_typ (t:typ)
+  : Type
+  = <span class="k">match</span> t <span class="k">with</span>
+    | Bool -&gt; bool
+    | Int -&gt; int
+    | Arrow t1 t2 -&gt; (denote_typ t1 -&gt; denote_typ t2)
+</pre></div>
+</div>
+<p>We have here a recursive function that computes a <em>Type</em> from its
+argument. This may seem odd at first, but it’s perfectly legal in a
+dependently typed language like F*.</p>
+<p>The function <code class="docutils literal notranslate"><span class="pre">denote_typ</span></code> The interpretation of <code class="docutils literal notranslate"><span class="pre">Bool</span></code> and <code class="docutils literal notranslate"><span class="pre">Int</span></code>
+are the F* type <code class="docutils literal notranslate"><span class="pre">bool</span></code> and <code class="docutils literal notranslate"><span class="pre">int</span></code>, while the interpretation of
+<code class="docutils literal notranslate"><span class="pre">Arrow</span></code> is an F* arrow. Note, the function terminates because the
+two recursive calls are on strict sub-terms of the argument.</p>
+</section>
+<section id="term-representation">
+<h2>Term representation<a class="headerlink" href="#term-representation" title="Link to this heading"></a></h2>
+<p>The main difficulty in representing a language like STLC (or any
+language with lambda-like variable-binding structure), is the question
+of how to represent variables and their binders.</p>
+<p>In the deep embedding of the previous chapter, our answer to this
+question was very syntactic—variables are de Bruijn indexes, where,
+at each occurrence, the index used for a variable counts the number of
+lambdas to traverse to reach the binder for that variable.</p>
+<p>The HOAS approach to answering these questions is very different. The
+idea is to use the binding constructs and variables already available
+in the host language (i.e., lambda terms in F*) to represent binders
+and variables in the object language (STLC).</p>
+<p>The main type in our representation of terms is the <code class="docutils literal notranslate"><span class="pre">term</span></code> defined
+below. There are several clever subtleties here, which we’ll try to
+explain briefly.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">noeq</span>
+<span class="k">type</span> term : typ -&gt; Type =
+  | Var : #t:typ -&gt; denote_typ t -&gt; term t
+  | TT  : term Bool
+  | FF  : term Bool
+  | I   : int -&gt; term Int
+  | App : #t1:typ -&gt; #t2:typ -&gt;
+          term (Arrow t1 t2) -&gt;
+          term t1 -&gt;
+          term t2
+  | Lam : #t1:typ -&gt; #t2:typ -&gt;
+          (denote_typ t1 -&gt; term t2) -&gt;
+          term (Arrow t1 t2)
+</pre></div>
+</div>
+<p>First, the <code class="docutils literal notranslate"><span class="pre">term</span></code> type represents both the abstract syntax of the
+STLC as well as its typing rules. We’ll see in detail how this works,
+but notice already that <code class="docutils literal notranslate"><span class="pre">term</span></code> is indexed by a <code class="docutils literal notranslate"><span class="pre">t:typ</span></code>, which
+describes the type of encoded STLC term. The indexing structure
+encodes the typing rules of STLC, ensuring that only well-typed STLC
+terms can be constructed.</p>
+<p>The second interesting part is the use of <code class="docutils literal notranslate"><span class="pre">denote_typ</span></code> within the
+syntax—variables and binders at a given STLC type <code class="docutils literal notranslate"><span class="pre">t</span></code> will be
+represented by F* variables and binders of the corresponding F* type
+<code class="docutils literal notranslate"><span class="pre">denote_typ</span> <span class="pre">t</span></code>.</p>
+<blockquote>
+<div><ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Var</span></code> : Variables are represented as <code class="docutils literal notranslate"><span class="pre">Var</span> <span class="pre">#t</span> <span class="pre">n</span> <span class="pre">:</span> <span class="pre">term</span> <span class="pre">t</span></code>,
+where <code class="docutils literal notranslate"><span class="pre">n</span></code> is a term of type <code class="docutils literal notranslate"><span class="pre">denote_typ</span> <span class="pre">t</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">TT</span></code> and <code class="docutils literal notranslate"><span class="pre">FF</span></code>: The two boolean constants are represented by
+these constructors, both of type <code class="docutils literal notranslate"><span class="pre">term</span>&#160; <span class="pre">Bool</span></code>, where the index
+indicates that they have type <code class="docutils literal notranslate"><span class="pre">Bool</span></code>.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">I</span></code>: STLC integers are represented by tagged F* integers.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">App</span></code>: To apply <code class="docutils literal notranslate"><span class="pre">e1</span></code> to <code class="docutils literal notranslate"><span class="pre">e2</span></code> in a well-typed way, we must
+prove that <code class="docutils literal notranslate"><span class="pre">e1</span></code> has an arrow type <code class="docutils literal notranslate"><span class="pre">TArrow</span> <span class="pre">t1</span> <span class="pre">t2</span></code>, while <code class="docutils literal notranslate"><span class="pre">e2</span></code>
+has type <code class="docutils literal notranslate"><span class="pre">t1</span></code>, and the resulting term <code class="docutils literal notranslate"><span class="pre">App</span> <span class="pre">e1</span> <span class="pre">e2</span></code> has type
+<code class="docutils literal notranslate"><span class="pre">t2</span></code>. Notice how the indexing structure of the <code class="docutils literal notranslate"><span class="pre">App</span></code>
+constructor precisely captures this typing rule.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Lam</span></code>: Finally, and crucially, we represent STLC lambda terms
+using F* functions, i.e., <code class="docutils literal notranslate"><span class="pre">Lam</span> <span class="pre">f</span></code> has type <code class="docutils literal notranslate"><span class="pre">Arrow</span> <span class="pre">t1</span> <span class="pre">t2</span></code>, when
+<code class="docutils literal notranslate"><span class="pre">f</span></code> is represented by an F* function from arguments of type
+<code class="docutils literal notranslate"><span class="pre">denote_typ</span> <span class="pre">t1</span></code>, to terms of type <code class="docutils literal notranslate"><span class="pre">term</span> <span class="pre">t</span></code>. The <code class="docutils literal notranslate"><span class="pre">Lam</span></code> case
+includes a function-typed field, but the type of that field,
+<code class="docutils literal notranslate"><span class="pre">denote_typ</span> <span class="pre">t1</span> <span class="pre">-&gt;</span> <span class="pre">term</span> <span class="pre">t2</span></code> is strictly positive—unlike the
+<code class="docutils literal notranslate"><span class="pre">dyn</span></code> type, <a class="reference internal" href="part2_inductive_type_families.html#part2-strict-positivity"><span class="std std-ref">shown earlier</span></a>.</p></li>
+</ul>
+</div></blockquote>
+</section>
+<section id="denotation-of-terms">
+<h2>Denotation of terms<a class="headerlink" href="#denotation-of-terms" title="Link to this heading"></a></h2>
+<p>Finally, we come to Step 3 (below), where we give an interpretation to
+<code class="docutils literal notranslate"><span class="pre">term</span> <span class="pre">t</span></code> as an F* term of type <code class="docutils literal notranslate"><span class="pre">denote_typ</span> <span class="pre">t</span></code>. The trickiest part
+of such a interpretation is to handle functions and variables, but
+this part is already done in the representation, since these are
+already represented by the appropriate F* terms.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> denote_term (#t:typ) (e:term t)
+  : <span class="k">Tot</span> (denote_typ t)
+        (<span class="k">decreases</span> e)
+  = <span class="k">match</span> e <span class="k">with</span>
+    | Var x -&gt; x
+    | TT -&gt; <span class="k">true</span>
+    | FF -&gt; <span class="k">false</span>
+    | I i -&gt; i
+    | App f a -&gt; (denote_term f) (denote_term a)
+    | Lam f -&gt; <span class="k">fun</span> x -&gt; denote_term (f x)
+</pre></div>
+</div>
+<p>Let’s look at each of the cases:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">Var</span></code> case is easy, since the variable <code class="docutils literal notranslate"><span class="pre">x</span></code> is already
+interpreted into an element of the appropriate F* type.</p></li>
+<li><p>The constants <code class="docutils literal notranslate"><span class="pre">TT</span></code>, <code class="docutils literal notranslate"><span class="pre">FF</span></code>, and <code class="docutils literal notranslate"><span class="pre">I</span></code> are easy too, since we can
+just interpret them as the suitable boolean or integer constants.</p></li>
+<li><p>For the <code class="docutils literal notranslate"><span class="pre">App</span> <span class="pre">#t1</span> <span class="pre">#t2</span> <span class="pre">f</span> <span class="pre">a</span></code> case, we recursively interpret <code class="docutils literal notranslate"><span class="pre">f</span></code>
+and <code class="docutils literal notranslate"><span class="pre">a</span></code>. The type indices tell us that <code class="docutils literal notranslate"><span class="pre">f</span></code> must be interpreted
+into an F* function of type <code class="docutils literal notranslate"><span class="pre">denote_typ</span> <span class="pre">t1</span> <span class="pre">-&gt;</span> <span class="pre">denote_typ</span> <span class="pre">t2</span></code> and
+that <code class="docutils literal notranslate"><span class="pre">denote_term</span> <span class="pre">a</span></code> has type <code class="docutils literal notranslate"><span class="pre">denote_typ</span> <span class="pre">t1</span></code>. So, we can
+simply apply the denotation of <code class="docutils literal notranslate"><span class="pre">f</span></code> to the denotation of <code class="docutils literal notranslate"><span class="pre">a</span></code> to
+get a term of type <code class="docutils literal notranslate"><span class="pre">denote_typ</span> <span class="pre">t2</span></code>. In other words, function
+application in STLC is represented semantically by function
+application in F*.</p></li>
+<li><p>Finally, in the <code class="docutils literal notranslate"><span class="pre">Lam</span> <span class="pre">#t1</span> <span class="pre">#t2</span> <span class="pre">f</span></code> case, we need to produce a term
+of type <code class="docutils literal notranslate"><span class="pre">denote_typ</span> <span class="pre">t1</span> <span class="pre">-&gt;</span> <span class="pre">denote_typ</span> <span class="pre">t2</span></code>. So, we build an F*
+lambda term (where the argument <code class="docutils literal notranslate"><span class="pre">x</span></code> has type <code class="docutils literal notranslate"><span class="pre">denote_typ</span> <span class="pre">t1</span></code>),
+and in the body we apply <code class="docutils literal notranslate"><span class="pre">f</span> <span class="pre">x</span></code> and recursively call
+<code class="docutils literal notranslate"><span class="pre">denote_term</span></code> on <code class="docutils literal notranslate"><span class="pre">f</span> <span class="pre">x</span></code>.</p></li>
+</ul>
+</div></blockquote>
+<p>If that felt a little bit magical, it’s because it almost is! We’ve
+defined the syntax, typing rules, and an interpreter that doubles as a
+denotational semantics for the STLC, and proved everything sound in
+around 30 lines of code and proof. By picking the right
+representation, everything just follows very smoothly.</p>
+<section id="termination">
+<h3>Termination<a class="headerlink" href="#termination" title="Link to this heading"></a></h3>
+<p>You may be wondering why F* accepts that <code class="docutils literal notranslate"><span class="pre">denote_term</span> <span class="pre">e</span></code>
+terminates. There are three recursive calls to consider</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The two calls in the <code class="docutils literal notranslate"><span class="pre">App</span></code> case are easy: The recursive calls
+are on strict sub-terms of <code class="docutils literal notranslate"><span class="pre">App</span> <span class="pre">f</span> <span class="pre">a</span></code>.</p></li>
+<li><p>In the <code class="docutils literal notranslate"><span class="pre">Lam</span> <span class="pre">f</span></code> case, we have one recursive call <code class="docutils literal notranslate"><span class="pre">denote_term</span>
+<span class="pre">(f</span> <span class="pre">x)</span></code>, and F* accepts that <code class="docutils literal notranslate"><span class="pre">f</span> <span class="pre">x</span></code> is strictly smaller than <code class="docutils literal notranslate"><span class="pre">Lam</span>
+<span class="pre">f</span></code>. This is an instance of the sub-term ordering on inductive
+types explained earlier, as part of F*’s <code class="docutils literal notranslate"><span class="pre">precedes</span></code> relation,
+<a class="reference internal" href="../part1/part1_termination.html#part1-precedes-relation"><span class="std std-ref">explained earlier</span></a>.</p></li>
+</ul>
+</div></blockquote>
+<p>For a bit of intuition, one way to understand the type <code class="docutils literal notranslate"><span class="pre">term</span></code> is by
+thinking of it as a tree of finite depth, but possibly infinite width:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The leaves of the tree are the <code class="docutils literal notranslate"><span class="pre">Var</span></code>, <code class="docutils literal notranslate"><span class="pre">TT</span></code>, and <code class="docutils literal notranslate"><span class="pre">FF</span></code> cases.</p></li>
+<li><p>The internal node <code class="docutils literal notranslate"><span class="pre">App</span> <span class="pre">e0</span> <span class="pre">e1</span></code> composes two sub-trees, <code class="docutils literal notranslate"><span class="pre">e0</span></code> and
+<code class="docutils literal notranslate"><span class="pre">e1</span></code>.</p></li>
+<li><p>The internal node <code class="docutils literal notranslate"><span class="pre">Lam</span> <span class="pre">#t1</span> <span class="pre">#t2</span> <span class="pre">f</span></code> composes a variable number of
+sub-trees, where the number of sub-trees depends on the parameter
+<code class="docutils literal notranslate"><span class="pre">t1</span></code>. For example:</p>
+<ul>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">t1</span> <span class="pre">=</span> <span class="pre">Unit</span></code>, then <code class="docutils literal notranslate"><span class="pre">f</span> <span class="pre">:</span> <span class="pre">unit</span> <span class="pre">-&gt;</span> <span class="pre">term</span> <span class="pre">v</span> <span class="pre">t</span></code>, i.e., there is
+only one child node, <code class="docutils literal notranslate"><span class="pre">f()</span></code>.</p></li>
+<li><p>If <code class="docutils literal notranslate"><span class="pre">t1</span> <span class="pre">=</span> <span class="pre">Bool</span></code>, then <code class="docutils literal notranslate"><span class="pre">f</span> <span class="pre">:</span> <span class="pre">bool</span> <span class="pre">-&gt;</span> <span class="pre">term</span> <span class="pre">v</span> <span class="pre">t</span></code>, i.e., there are
+two children, <code class="docutils literal notranslate"><span class="pre">f</span> <span class="pre">true</span></code> and <code class="docutils literal notranslate"><span class="pre">f</span> <span class="pre">false</span></code>.</p></li>
+<li><p>if <code class="docutils literal notranslate"><span class="pre">t1</span> <span class="pre">=</span> <span class="pre">Int</span></code>, then <code class="docutils literal notranslate"><span class="pre">f</span> <span class="pre">:</span> <span class="pre">int</span> <span class="pre">-&gt;</span> <span class="pre">term</span> <span class="pre">v</span> <span class="pre">t</span></code>, i.e., there are
+infinitely many children, <code class="docutils literal notranslate"><span class="pre">...,</span> <span class="pre">f</span> <span class="pre">-1,</span> <span class="pre">f</span> <span class="pre">0,</span> <span class="pre">f</span> <span class="pre">1,</span> <span class="pre">...</span></code>.</p></li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+<p>With this intuition, informally, it is safe to recursively call
+<code class="docutils literal notranslate"><span class="pre">denote_term</span> <span class="pre">e</span></code> on any of the children of <code class="docutils literal notranslate"><span class="pre">e</span></code>, since the depth of
+the tree will decrease on each recursive call. Hence the call
+<code class="docutils literal notranslate"><span class="pre">denote_term</span> <span class="pre">(f</span> <span class="pre">x)</span></code> terminates.</p>
+<p>We’ll revisit termination arguments for recursive functions more
+formally in a subsequent chapter on <a class="reference internal" href="part2_well_founded.html#part2-well-founded-recursion"><span class="std std-ref">well-founded recursion</span></a>.</p>
+</section>
+</section>
+<section id="exercises">
+<h2>Exercises<a class="headerlink" href="#exercises" title="Link to this heading"></a></h2>
+<p>Giving a semantics to STLC is just the tip of the iceberg. There’s a
+lot more one can do with HOAS and Chlipala’s paper gives lots of
+examples and sample code in Coq.</p>
+<p>For several more advanced exercises, based on the definitions shown
+below, try reconstructing other examples from Chlipala’s paper,
+including a proof of correctness of a compiler implementing a
+continuation-passing style (CPS) transformation of STLC.</p>
+<p><a class="reference external" href="../code/Part2.PHOAS.fst">Exercise file</a></p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="c">(* This example is transcribed from Adam Chlipala&#39;s</span>
+<span class="c">   Parametric Higher-order Abstract Syntax (ICFP 2008) paper.</span>
+
+<span class="c">   http://adam.chlipala.net/papers/PhoasICFP08/PhoasICFP08.pdf</span>
+<span class="c">*)</span>
+<span class="k">module</span> Part2.PHOAS
+
+<span class="k">type</span> typ =
+  | Bool
+  | Arrow : typ -&gt; typ -&gt; typ
+
+<span class="k">noeq</span>
+<span class="k">type</span> term0 (v: typ -&gt; Type) : typ -&gt; Type =
+  | Var : #t:typ -&gt; v t -&gt; term0 v t
+  | TT  : term0 v Bool
+  | FF  : term0 v Bool
+  | App : #t1:typ -&gt; #t2:typ -&gt;
+          term0 v (Arrow t1 t2) -&gt;
+          term0 v t1 -&gt;
+          term0 v t2
+  | Lam : #t1:typ -&gt; #t2:typ -&gt;
+          (v t1 -&gt; term0 v t2) -&gt;
+          term0 v (Arrow t1 t2)
+
+<span class="k">let</span> term (t:typ) = v:(typ -&gt; Type) -&gt; term0 v t
+
+<span class="k">let</span> <span class="k">rec</span> denote_typ (t:typ)
+  : Type
+  = <span class="k">match</span> t <span class="k">with</span>
+    | Bool -&gt; bool
+    | Arrow t1 t2 -&gt; (denote_typ t1 -&gt; denote_typ t2)
+
+<span class="k">let</span> <span class="k">rec</span> denote_term0 (#t:typ) (e:term0 denote_typ t)
+  : <span class="k">Tot</span> (denote_typ t)
+        (<span class="k">decreases</span> e)
+  = <span class="k">match</span> e <span class="k">with</span>
+    | Var x -&gt; x
+    | TT -&gt; <span class="k">true</span>
+    | FF -&gt; <span class="k">false</span>
+    | App f a -&gt; (denote_term0 f) (denote_term0 a)
+    | Lam f -&gt; <span class="k">fun</span> x -&gt; denote_term0 (f x)
+
+<span class="k">let</span> denote_term (t:typ) (e:term t)
+  : denote_typ t
+  = denote_term0 (e <span class="k">_</span>)
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="part2_stlc.html" class="btn btn-neutral float-left" title="Simply Typed Lambda Calculus" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="part2_well_founded.html" class="btn btn-neutral float-right" title="Well-founded Relations and Termination" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

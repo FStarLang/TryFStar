@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rubrics as Templates &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Stateful Services" href="agentic_state_machines.html" />
+    <link rel="prev" title="On Abstraction &amp; Rubrics" href="agentic_sorting_algorithms.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pulse/pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="agentic.html">Agentic Proof-Oriented Programming</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="agentic_getting_started.html">Getting Started</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agentic_rubrics_templates_audits.html">Rubrics, Templates, and Audits</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agentic_sorting_algorithms.html">On Abstraction &amp; Rubrics</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Rubrics as Templates</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#background-verifying-data-structures-with-functional-refinement">Background: Verifying Data Structures with Functional Refinement</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#complexity-aware-search-structures">Complexity Aware Search Structures</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#constraining-the-model">Constraining the Model</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#auditing-the-rubric-with-small-proof-oriented-tests">Auditing the Rubric with Small Proof-Oriented Tests</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#a-rubric-compliant-binary-search-tree">A Rubric-compliant Binary Search Tree</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#a-rubric-compliant-red-black-tree">A Rubric-compliant Red-Black Tree</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#auditing-red-black-trees">Auditing Red-Black Trees</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="agentic_state_machines.html">Stateful Services</a></li>
+<li class="toctree-l2"><a class="reference internal" href="agentic_tls.html">A Verified TLS-1.3 Client and Server</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="agentic.html">Agentic Proof-Oriented Programming</a></li>
+      <li class="breadcrumb-item active">Rubrics as Templates</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="rubrics-as-templates">
+<span id="agentic-search-trees"></span><h1>Rubrics as Templates<a class="headerlink" href="#rubrics-as-templates" title="Link to this heading"></a></h1>
+<p>In the previous chapter, we used our proof-engineering experience to define a
+fairly sophisticated parameteric typeclass as a rubric for complexity-aware
+sorting algorithms. But, now that we’ve defined one of these rubrics, we can use
+it as a template to have agents define other rubrics of a similar flavor.</p>
+<p>CLRS contains various implementations of search trees, including binary search
+trees, red-black trees, B-trees, etc. Each of these data structures has a
+different set of invariants, and offers different tradeoffs in terms of
+performance and complexity. An initial version of AutoCLRS included several
+separate search tree implementations, each with its own specification.</p>
+<p>In this chapter, we look at how to develop a rubric for search trees to
+abstractly capture the specifications of these various search tree
+implementations under a single abstraction.</p>
+<section id="background-verifying-data-structures-with-functional-refinement">
+<h2>Background: Verifying Data Structures with Functional Refinement<a class="headerlink" href="#background-verifying-data-structures-with-functional-refinement" title="Link to this heading"></a></h2>
+<p>A typical way to verify a data structure in separation logic is to prove that
+the in-memory representation of the data strcture is a refinement of some purely
+functional model.</p>
+<p>We saw this in a previous <a class="reference internal" href="../pulse/pulse_linked_list.html#pulse-linked-list"><span class="std std-ref">chapter on linked lists</span></a>
+where an in-memory linked data structure is related to a purely functional list.
+Let’s recall that here briefly.</p>
+<p>Here is an in-memory, pointer-based representation of a linked list in Pulse.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> node (t:Type0) = {
+    head : t;
+    tail : llist t;
+}
+
+<span class="k">and</span> node_ptr (t:Type0) = ref (node t)
+
+<span class="k">and</span> llist (t:Type0) = option (node_ptr t)
+</pre></div>
+</div>
+<p>And here is a separation logic predicate relating an <code class="docutils literal notranslate"><span class="pre">x:llist</span> <span class="pre">t</span></code> to a purely
+functional list <code class="docutils literal notranslate"><span class="pre">l:list</span> <span class="pre">t</span></code>:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> <span class="k">rec</span> is_list #t (x:llist t) (l:list t)
+: <span class="k">Tot</span> slprop (<span class="k">decreases</span> l)
+= <span class="k">match</span> l <span class="k">with</span>
+  | [] -&gt; pure (x == None)
+  | head::tl -&gt;
+    <span class="k">exists</span>* (p:node_ptr t) (tail:llist t).
+    pure (x == Some p) **
+    pts_to p { head; tail } **
+    is_list tail tl
+</pre></div>
+</div>
+<p>Sometimes we call the in-memory data structure the “representation” (or
+<code class="docutils literal notranslate"><span class="pre">repr</span></code>) and its purely functional counterpart the “model”. Imperative
+operations on the representation are specified by their action on the model.</p>
+<p>With this style in mind, let’s see how we can use our previous rubric for
+sorting algorithms to define a complexity aware rubric for search data
+structures.</p>
+<section id="complexity-aware-search-structures">
+<h3>Complexity Aware Search Structures<a class="headerlink" href="#complexity-aware-search-structures" title="Link to this heading"></a></h3>
+<p>Providing with our sorting rubric, and existing verified implementations of
+binary trees and red-black trees as templates, we asked an agent to develop a
+typeclass as a rubric for search data structures. Here’s what it produced; we’ll
+present it piece by piece.</p>
+<ul class="simple">
+<li><p>First, we have a typeclass <code class="docutils literal notranslate"><span class="pre">search_structure</span></code> indexed by representation type
+<code class="docutils literal notranslate"><span class="pre">repr</span></code> and <code class="docutils literal notranslate"><span class="pre">model</span></code> (both parameterized by the element type <code class="docutils literal notranslate"><span class="pre">a</span></code>).</p></li>
+<li><p>We have a predicate <code class="docutils literal notranslate"><span class="pre">owns</span></code> a separation logic predicate relating the
+representation and model</p></li>
+<li><p>And a predicate <code class="docutils literal notranslate"><span class="pre">valid</span></code> that defines some structural validity property of
+the model, e.g., some ordering property on the tree.</p></li>
+<li><p>Then we have model functions for the <code class="docutils literal notranslate"><span class="pre">empty_model</span></code>, <code class="docutils literal notranslate"><span class="pre">find_model</span></code>,
+<code class="docutils literal notranslate"><span class="pre">insert_model</span></code>, and <code class="docutils literal notranslate"><span class="pre">delete_model</span></code>, all ghost functions used to specify
+the behavior of the imperative operations on the representation.</p></li>
+<li><p>Two metrics on the model, the <code class="docutils literal notranslate"><span class="pre">height</span></code> and the <code class="docutils literal notranslate"><span class="pre">size</span></code> of the model, which
+are used to define complexity bounds on the imperative operations.</p></li>
+<li><p>And, finally, functions to characterize the complexity of the three main operations.</p></li>
+</ul>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> search_structure
+    (repr: Type0 -&gt; Type0)
+    (model: Type0 -&gt; Type0)
+    (owns: (a:Type0) -&gt; repr a -&gt; model a -&gt; slprop)
+    (valid: (a:Type0) -&gt; erased (TO.total_order a) -&gt; model a -&gt; <span class="k">GTot</span> prop)
+    (empty_model: (a:Type0) -&gt; <span class="k">GTot</span> (model a))
+    (find_model: (a:Type0) -&gt; erased (TO.total_order a) -&gt; model a -&gt; a -&gt; <span class="k">GTot</span> (option a))
+    (insert_model: (a:Type0) -&gt; erased (TO.total_order a) -&gt; model a -&gt; a -&gt; <span class="k">GTot</span> (model a))
+    (delete_model: (a:Type0) -&gt; erased (TO.total_order a) -&gt; model a -&gt; a -&gt; <span class="k">GTot</span> (model a))
+    (height: (a:Type0) -&gt; model a -&gt; nat)
+    (size: (a:Type0) -&gt; model a -&gt; nat)
+    (search_bound insert_bound delete_bound: nat -&gt; nat -&gt; nat)
+</pre></div>
+</div>
+<p>The class contains several fields, starting with a function to create an empty
+representation, with a postcondition stating that the representation refines the
+empty model.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span>create:
+    (<span class="k">fn</span> (a:Type0)
+        (#ord:erased (TO.total_order a))
+    <span class="k">requires</span> emp
+    <span class="k">returns</span> tree:repr a
+    <span class="k">ensures</span> owns a tree (empty_model a) ** pure (valid a ord (empty_model a)));
+</pre></div>
+</div>
+<p>Then, function to dispose the tree, reclaiming the memory associated with it.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span>dispose:
+    (<span class="k">fn</span> (a:Type0)
+        (tree:repr a)
+        (#m:erased (model a))
+    <span class="k">requires</span> owns a tree m
+    <span class="k">ensures</span> emp);
+</pre></div>
+</div>
+<p>Now to the interesting functions.</p>
+<p>We have <code class="docutils literal notranslate"><span class="pre">search</span></code>, which follows the pattern from our sorting rubric as a
+template. It is parametric in the type of elements and uses an instrumented
+total order <code class="docutils literal notranslate"><span class="pre">iord</span></code>, and proves that the result is consistent with the model,
+and that the number of ticks is bounded by the search bound.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span>search:
+    (<span class="k">fn</span> (a:Type0)
+        (tree:repr a)
+        (key:a)
+        (ctr:ticks_t)
+        (#ord:erased (TO.total_order a))
+        (iord:instrumented_total_order a ord ctr)
+        (#m:erased (model a))
+        (#i:erased nat)
+    preserves owns a tree m
+    <span class="k">requires</span> MR.pts_to ctr #1.0R i ** pure (valid a ord m)
+    <span class="k">returns</span> result:option a
+    <span class="k">ensures</span> <span class="k">exists</span>* ticks.
+        MR.pts_to ctr #1.0R ticks **
+        pure (
+        result == find_model a ord m key /\
+        ticks &lt;= i + search_bound (height a m) (size a m)));
+</pre></div>
+</div>
+<p>Insert and delete follow the same pattern, showing that modified tree
+is consistent with the model, and that the number of ticks is bounded by the
+insert and delete bounds, respectively.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span>insert:
+    (<span class="k">fn</span> (a:Type0)
+        (tree:repr a)
+        (key:a)
+        (ctr:ticks_t)
+        (#ord:erased (TO.total_order a))
+        (iord:instrumented_total_order a ord ctr)
+        (#m:erased (model a))
+        (#i:erased nat)
+    <span class="k">requires</span> owns a tree m ** MR.pts_to ctr #1.0R i ** pure (valid a ord m)
+    <span class="k">returns</span> tree&#39;:repr a
+    <span class="k">ensures</span> <span class="k">exists</span>* ticks.
+        owns a tree&#39; (insert_model a ord m key) **
+        MR.pts_to ctr #1.0R ticks **
+        pure (
+        valid a ord (insert_model a ord m key) /\
+        ticks &lt;= i + insert_bound (height a m) (size a m)));
+
+delete:
+    (<span class="k">fn</span> (a:Type0)
+        (tree:repr a)
+        (key:a)
+        (ctr:ticks_t)
+        (#ord:erased (TO.total_order a))
+        (iord:instrumented_total_order a ord ctr)
+        (#m:erased (model a))
+        (#i:erased nat)
+    <span class="k">requires</span> owns a tree m ** MR.pts_to ctr #1.0R i ** pure (valid a ord m)
+    <span class="k">returns</span> tree&#39;:repr a
+    <span class="k">ensures</span> <span class="k">exists</span>* ticks.
+        owns a tree&#39; (delete_model a ord m key) **
+        MR.pts_to ctr #1.0R ticks **
+        pure (
+        valid a ord (delete_model a ord m key) /\
+        ticks &lt;= i + delete_bound (height a m) (size a m)));
+</pre></div>
+</div>
+<p>Of course, this rubric only counts the comparison operations for complexity, not
+every read, write, or allocation. For that we’ll need a more powerful form of
+abstraction, that we’ll leave for later. But, using rubrics as templates
+demonstrates how agents can generalize from patterns in existing code to produce
+new specifications for other settings.</p>
+</section>
+<section id="constraining-the-model">
+<h3>Constraining the Model<a class="headerlink" href="#constraining-the-model" title="Link to this heading"></a></h3>
+<p>We have a class for a search structure showing that it refines a model type, but
+we haven’t yet constrained the model type, e.g., nothing would prevent an
+instance of <code class="docutils literal notranslate"><span class="pre">search_structure</span></code> above with a trivial model (e.g., <code class="docutils literal notranslate"><span class="pre">unit</span></code>).</p>
+<p>To constrain the model, we also asked the agent to write a class to prove that
+the model satsifies a few expected laws, e.g., that find after insert succeeds
+on the inserted key etc.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> search_model_laws
+    (model: Type0 -&gt; Type0)
+    (valid: (a:Type0) -&gt; erased (TO.total_order a) -&gt; model a -&gt; prop)
+    (empty_model: (a:Type0) -&gt; <span class="k">GTot</span> (model a))
+    (find_model: (a:Type0) -&gt; erased (TO.total_order a) -&gt; model a -&gt; a -&gt; <span class="k">GTot</span> (option a))
+    (insert_model: (a:Type0) -&gt; erased (TO.total_order a) -&gt; model a -&gt; a -&gt; <span class="k">GTot</span> (model a))
+    (delete_model: (a:Type0) -&gt; erased (TO.total_order a) -&gt; model a -&gt; a -&gt; <span class="k">GTot</span> (model a))
+= {
+    find_empty:
+        ((a:Type0) -&gt;
+        (ord:erased (TO.total_order a)) -&gt;
+        (key:a) -&gt;
+        <span class="k">Lemma</span>
+            (<span class="k">ensures</span> find_model a ord (empty_model a) key == None));
+
+    find_insert_hit:
+        ((a:Type0) -&gt;
+        (ord:erased (TO.total_order a)) -&gt;
+        (m:model a) -&gt;
+        (key:a) -&gt;
+        <span class="k">Lemma</span>
+            (<span class="k">requires</span> valid a ord m)
+            (<span class="k">ensures</span> find_model a ord (insert_model a ord m key) key == Some key));
+
+    find_insert_other:
+        ((a:Type0) -&gt;
+        (ord:erased (TO.total_order a)) -&gt;
+        (m:model a) -&gt;
+        (inserted:a) -&gt;
+        (key:a) -&gt;
+        <span class="k">Lemma</span>
+            (<span class="k">requires</span> valid a ord m /\ same_key a ord key inserted = <span class="k">false</span>)
+            (<span class="k">ensures</span> find_model a ord (insert_model a ord m inserted) key ==
+                    find_model a ord m key));
+
+    find_delete_hit:
+        ((a:Type0) -&gt;
+        (ord:erased (TO.total_order a)) -&gt;
+        (m:model a) -&gt;
+        (key:a) -&gt;
+        <span class="k">Lemma</span>
+            (<span class="k">requires</span> valid a ord m)
+            (<span class="k">ensures</span> find_model a ord (delete_model a ord m key) key == None));
+
+    find_delete_other:
+        ((a:Type0) -&gt;
+        (ord:erased (TO.total_order a)) -&gt;
+        (m:model a) -&gt;
+        (deleted:a) -&gt;
+        (key:a) -&gt;
+        <span class="k">Lemma</span>
+            (<span class="k">requires</span> valid a ord m /\ same_key a ord key deleted = <span class="k">false</span>)
+            (<span class="k">ensures</span> find_model a ord (delete_model a ord m deleted) key ==
+                    find_model a ord m key));
+    }
+</pre></div>
+</div>
+</section>
+<section id="auditing-the-rubric-with-small-proof-oriented-tests">
+<h3>Auditing the Rubric with Small Proof-Oriented Tests<a class="headerlink" href="#auditing-the-rubric-with-small-proof-oriented-tests" title="Link to this heading"></a></h3>
+<p>Whereas in the previous chapter, we wrote a rubric for sorting ourselves, here
+we had agents author a rubric for search structures. It would be prudent to
+check that the agent-authored specification is reasonable.</p>
+<p>In this <a class="reference external" href="https://risemsr.github.io/blog/2026-04-16-spotting-specs/">blog post</a>
+we wrote about the idea of “Small Proof-Oriented Tests” (SPOTs) to audit
+agent-generated specifications, a technique where one writes a few small tests
+against a specification to check that the specification is usable and precise.
+For example, could one prove that creating a search structure and inserting and
+deleting a few keys, and then searching for a key returns the expected result?
+Such tests shake out bugs in specifications by checking that they are precise
+enough to prove expected properties on small inputs.</p>
+<p>Here are some SPOTs for the search structure rubric:
+<a class="reference external" href="https://github.com/FStarLang/AlgoStar/blob/rubrics/autoclrs/common/CLRS.Common.SPOT.Search.fst">CLRS.Common.SPOT.Search.fst</a></p>
+</section>
+<section id="a-rubric-compliant-binary-search-tree">
+<h3>A Rubric-compliant Binary Search Tree<a class="headerlink" href="#a-rubric-compliant-binary-search-tree" title="Link to this heading"></a></h3>
+<p>Now, with our audited rubric in place, reviewing a 1000 line implementation of a
+binary search tree for rubric compliance amounts to checking these lines only:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">instance</span> bst_search_structure_instance : SC.search_structure
+    bst_ptr bst owns valid empty_model find_model insert_model delete_model
+    height size bst_search_bound bst_insert_bound bst_delete_bound
+
+<span class="k">instance</span> bst_search_model_laws_instance :
+    SC.search_model_laws bst valid empty_model find_model insert_model  delete_model
+</pre></div>
+</div>
+<p>where the complexity bounds are linear in the height of the tree.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> bst_search_bound (h:nat) (_n:nat) : nat = h
+<span class="k">let</span> bst_insert_bound (h:nat) (_n:nat) : nat = h
+<span class="k">let</span> bst_delete_bound (h:nat) (_n:nat) : nat = 4 * h + 1
+</pre></div>
+</div>
+<p>One should also review the definition of <code class="docutils literal notranslate"><span class="pre">height</span></code> to check that it is indeed
+the height of the tree, and not some other measure.</p>
+<p>Here is the full code for the binary search tree:
+<a class="reference external" href="https://github.com/FStarLang/AlgoStar/blob/rubrics/autoclrs/ch12-bst/CLRS.Ch12.BST.Rubric.fst">CLRS.Ch12.BST.Rubric.fst</a></p>
+</section>
+<section id="a-rubric-compliant-red-black-tree">
+<h3>A Rubric-compliant Red-Black Tree<a class="headerlink" href="#a-rubric-compliant-red-black-tree" title="Link to this heading"></a></h3>
+<p>The solution for a red-black tree is about 2000 lines of Pulse code, but its
+typeclass instantiation is also just a few lines of F*. The only thing to audit
+for rubric compliance is the complexity bound.</p>
+<p>For red-black trees, these are as follows. Since a red-black tree is balanced,
+the complexity bounds are logarithmic in the size of the tree.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> rb_search_bound (_h:nat) (n:nat) : nat =
+    <span class="k">if</span> n = 0 <span class="k">then</span> 1 <span class="k">else</span> 2 * log2_floor (n + 1) + 1
+
+<span class="k">let</span> rb_insert_bound (_h:nat) (n:nat) : nat =
+    <span class="k">if</span> n = 0 <span class="k">then</span> 2 <span class="k">else</span> 2 * log2_floor (n + 1) + 2
+
+<span class="k">let</span> rb_delete_bound (_h:nat) (n:nat) : nat =
+    <span class="k">if</span> n = 0 <span class="k">then</span> 2 <span class="k">else</span> 4 * log2_floor (n + 1) + 2
+</pre></div>
+</div>
+<p>One should also review the definition of <code class="docutils literal notranslate"><span class="pre">size</span></code> to check that it is indeed the
+size of the tree, and not some other measure.</p>
+</section>
+<section id="auditing-red-black-trees">
+<h3>Auditing Red-Black Trees<a class="headerlink" href="#auditing-red-black-trees" title="Link to this heading"></a></h3>
+<p>As before, rubric compliance is a big step towards checking a result, but it is
+not the full story. For instance, on closer inspection, we found that the
+agent’s first solution to this rubric implemented a version of red-black trees
+based on Chris Okasaki’s purely functional red-black trees. One can see this by
+inspecting the type of the model and the representation:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">noeq</span>
+<span class="k">type</span> rb_node (a:Type0) = {
+    key: a;
+    color: color;
+    left: rb_ptr a;
+    right: rb_ptr a;
+}
+<span class="k">and</span> rb_node_ptr (a:Type) = box (rb_node a)
+<span class="k">and</span> rb_ptr (a:Type) = option (rb_node_ptr a)
+</pre></div>
+</div>
+<p>In contrast, the CLRS red-black tree uses a tree with parent pointers at each
+node, to enable efficient insertion and deletion. As mentioned before, for
+algorithmic fidelity, audits via code inspection seem unavoidable.</p>
+<p>Noting this discrepancy, we asked the agent to rewrite the red-black tree
+implementation to use the CLRS representation with parent pointers, and it did
+so successfully, using this representation below and a rubric instance similar
+to the one shown above.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">type</span> rb_node (a:Type0) = {
+    key: a;
+    color: color;
+    left: rb_ptr a;
+    right: rb_ptr a;
+    p: rb_ptr a;
+}
+<span class="k">and</span> rb_node_ptr (a:Type) = box (rb_node a)
+<span class="k">and</span> rb_ptr (a:Type) = option (rb_node_ptr a)
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Here is the Okasaki-style tree: <a class="reference external" href="https://github.com/FStarLang/AlgoStar/blob/rubrics/autoclrs/ch12-bst/CLRS.Ch12.BST.Rubric.fst">CLRS.Ch12.BST.Rubric.fst</a></p></li>
+<li><p>And here is the CLRS-style tree: <a class="reference external" href="https://github.com/FStarLang/AlgoStar/blob/rubrics/autoclrs/ch13-rbtree/CLRS.Ch13.RBTree.CLRSRubric.fst">CLRS.Ch13.RBTree.CLRSRubric.fst</a></p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="agentic_sorting_algorithms.html" class="btn btn-neutral float-left" title="On Abstraction &amp; Rubrics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="agentic_state_machines.html" class="btn btn-neutral float-right" title="Stateful Services" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

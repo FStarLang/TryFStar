@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Extraction &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Agentic Proof-Oriented Programming" href="../agentic/agentic.html" />
+    <link rel="prev" title="Parallel Increment" href="pulse_parallel_increment.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pulse_getting_started.html">Getting up and running with Codespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ch1.html">Pulse Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ch2.html">Mutable References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_existentials.html">Existential Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_user_defined_predicates.html">User-defined Predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_conditionals.html">Conditionals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_loops.html">Loops &amp; Recursion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_arrays.html">Mutable Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ghost.html">Ghost Computations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_higher_order.html">Higher Order Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_implication_and_forall.html">Implication and Universal Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_linked_list.html">Linked Lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_atomics_and_invariants.html">Atomic Operations and Invariants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_spin_lock.html">Spin Locks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_parallel_increment.html">Parallel Increment</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Extraction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Boyer-Moore majority vote algorithm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rust-extraction">Rust extraction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#c-extraction">C extraction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ocaml-extraction">OCaml extraction</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+      <li class="breadcrumb-item active">Extraction</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="extraction">
+<span id="pulse-extraction"></span><h1>Extraction<a class="headerlink" href="#extraction" title="Link to this heading"></a></h1>
+<p>Pulse programs can be extracted to OCaml, C, and Rust. We illustrate the extraction capabilities
+with the help of the <a class="reference external" href="https://apps.dtic.mil/sti/pdfs/ADA131702.pdf">Boyer-Moore majority vote algorithm</a>
+implemented in Pulse.</p>
+<section id="id1">
+<h2>Boyer-Moore majority vote algorithm<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<p>The algorithm finds majority vote in an array of votes in linear time
+(2n comparisons, where n is the length of the array) and constant extra memory.</p>
+<p>We implement the algorithm in Pulse with the following specification:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> count (#a:eqtype) (x:a) (s:Seq.seq a) : <span class="k">GTot</span> nat = Seq.count x s
+
+<span class="k">noextract</span>
+<span class="k">let</span> has_majority_in (#a:eqtype) (x:a) (s:Seq.seq a) = Seq.length s &lt; 2 * count x s
+
+<span class="k">noextract</span>
+<span class="k">let</span> no_majority (#a:eqtype) (s:Seq.seq a) = <span class="k">forall</span> (x:a). ~(x `has_majority_in` s)
+
+
+<span class="k">fn</span> majority
+  (#[@@@ Rust_generics_bounds [&quot;Copy&quot;; &quot;PartialEq&quot;]] a:eqtype)
+  #p (#s:G.erased <span class="k">_</span>) (votes:array a) (len:SZ.t { SZ.v len == Seq.length s })
+  <span class="k">requires</span> pts_to votes #p s
+  <span class="k">requires</span> pure (0 &lt; SZ.v len /\ SZ.fits (2 * SZ.v len))
+  <span class="k">returns</span> x:option a
+  <span class="k">ensures</span> pts_to votes #p s **
+          pure ((x == None ==&gt; no_majority s) /\ (Some? x ==&gt; (Some?.v x) `has_majority_in` s))
+</pre></div>
+</div>
+<p>The precondition <code class="docutils literal notranslate"><span class="pre">SZ.fits</span> <span class="pre">(2</span> <span class="pre">*</span> <span class="pre">SZ.v</span> <span class="pre">len)</span></code> ensures safe arithmetic when counting
+for majority.</p>
+<p>The algorithm consists of two phases. The first phase, called the pairing phase,
+pairs off disagreeing votes (cancels them) until the remaining votes are all same.
+The main idea of the algorithm is to do this pairing with n comparisons. After the
+pairing phase, the remaining vote must be the majority, <em>if the majority exists</em>.
+The second phase, called the counting phase, checks if the remaining vote is indeed
+in majority with n more comparisons.</p>
+<p>For the first phase, the algorithm maintains three auxiliary variables, <code class="docutils literal notranslate"><span class="pre">i</span></code> for the
+loop counter, <code class="docutils literal notranslate"><span class="pre">cand</span></code> the current majority candidate, and a count <code class="docutils literal notranslate"><span class="pre">k</span></code>. It visits the
+votes in a loop, where for the <code class="docutils literal notranslate"><span class="pre">i-th</span></code>
+element of the array, if <code class="docutils literal notranslate"><span class="pre">k</span> <span class="pre">=</span> <span class="pre">0</span></code>, the algorithm assigns the <code class="docutils literal notranslate"><span class="pre">i-th</span></code> vote as the new
+majority candidate and assigns <code class="docutils literal notranslate"><span class="pre">k</span> <span class="pre">=</span> <span class="pre">1</span></code>. Otherwise, if the <code class="docutils literal notranslate"><span class="pre">i-th</span></code> vote is same as
+<code class="docutils literal notranslate"><span class="pre">cand</span></code>, it increments <code class="docutils literal notranslate"><span class="pre">k</span></code> by one, otherwise it decrements <code class="docutils literal notranslate"><span class="pre">k</span></code> by one.</p>
+<p>The second phase then is another while loop that counts the number of votes
+for the majority candidate from the first phase.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span>{
+  <span class="k">let</span> <span class="k">mut</span> i = 1sz;
+  <span class="k">let</span> <span class="k">mut</span> k = 1sz;
+  <span class="k">let</span> votes_0 = votes.(0sz);
+  <span class="k">let</span> <span class="k">mut</span> cand = votes_0;
+  <span class="k">assert</span> (pure (count_until votes_0 s 1 == 1));
+  <span class="c">// while loop for phase 1</span>
+  <span class="k">while</span> (
+    (!i &lt;^ len)
+  )
+  <span class="k">invariant</span> (
+    pts_to votes #p s **
+    (<span class="k">exists</span>* vi vk vcand.
+       R.pts_to i vi       **
+       R.pts_to k vk       **
+       R.pts_to cand vcand **
+       pure (
+         v vi &lt;= Seq.length s /\
+         <span class="c">// v is a spec function that returns nat representation of an FStar.SizeT</span>
+         0 &lt;= v vk /\ v vk &lt;= count_until vcand s (v vi) /\
+         <span class="c">// constraint for the current candidate,</span>
+         2 * (count_until vcand s (v vi) - v vk) &lt;= v vi - v vk /\
+         <span class="c">// constraint for the rest of the candidates</span>
+         (<span class="k">forall</span> (vcand&#39;:a). vcand&#39; =!= vcand ==&gt; 2 * count_until vcand&#39; s (v vi) &lt;= v vi - v vk)))
+    )
+  {
+    <span class="k">let</span> vi = !i;
+    <span class="k">let</span> vk = !k;
+    <span class="k">let</span> vcand = !cand;
+    <span class="k">let</span> votes_i = votes.(vi);
+    <span class="c">// count_until_next is a lemma that captures the behavior of</span>
+    <span class="c">// count when the sequence index is incremented</span>
+    count_until_next vcand s (SZ.v vi);
+    <span class="k">if</span> (vk = 0sz) {
+      cand := votes_i;
+      k := 1sz;
+      i := vi +^ 1sz
+    } <span class="k">else</span> <span class="k">if</span> (votes_i = vcand) {
+      k := vk +^ 1sz;
+      i := vi +^ 1sz
+    } <span class="k">else</span> {
+      k := vk -^ 1sz;
+      i := vi +^ 1sz
+    }
+  };
+  <span class="k">let</span> vk = !k;
+  <span class="k">let</span> vcand = !cand;
+  <span class="c">// a couple of optimizations</span>
+  <span class="k">if</span> (vk = 0sz) {
+    None
+  } <span class="k">else</span> <span class="k">if</span> (len &lt;^ 2sz *^ vk) {
+    Some vcand
+  } <span class="k">else</span> {
+    i := 0sz;
+    k := 0sz;
+    <span class="c">// while loop for phase 2</span>
+    <span class="k">while</span> (
+      (!i &lt;^ len)
+    )
+    <span class="k">invariant</span> (
+      pts_to votes #p s **
+      (<span class="k">exists</span>* vi vk.
+         R.pts_to i vi **
+         R.pts_to k vk **
+         pure (SZ.v vi &lt;= Seq.length s /\
+               SZ.v vk == count_until vcand s (SZ.v vi)))
+    )
+    {
+      <span class="k">let</span> vi = !i;
+      <span class="k">let</span> vk = !k;
+      <span class="k">let</span> votes_i = votes.(vi);
+      count_until_next vcand s (SZ.v vi);
+      <span class="k">if</span> (votes_i = vcand) {
+        k := vk +^ 1sz;
+        i := vi +^ 1sz
+      } <span class="k">else</span> {
+        i := vi +^ 1sz
+      }
+    };
+
+    <span class="k">let</span> vk = !k;
+    <span class="k">if</span> (len &lt;^ 2sz *^ vk) {
+      Some vcand
+    } <span class="k">else</span> {
+      None
+    }
+  }
+}
+</pre></div>
+</div>
+<p>The loop invariant for the first phase specifies majority constraints <em>within</em> the
+prefix of the array that the loop has visited so far. The second phase loop invariant
+is a simple counting invariant.</p>
+<p>Pulse automatically proves the program, with a hint for the behavior of the <code class="docutils literal notranslate"><span class="pre">count</span></code>
+function as we increment the loop counter, the following <code class="docutils literal notranslate"><span class="pre">count_until_next</span></code> lemma
+captures the behavior, and we invoke the lemma in both the while loops:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> count_until_next (#a:eqtype) (x:a) (s:Seq.seq a) (j:nat { j &lt; Seq.length s })
+  : <span class="k">Lemma</span>
+      (<span class="k">ensures</span> count_until (Seq.index s j) s (j + 1) == count_until (Seq.index s j) s j + 1 /\
+               (<span class="k">forall</span> (y:a). y =!= Seq.index s j ==&gt; count_until y s (j + 1) == count_until y s j))
+   
+</pre></div>
+</div>
+</section>
+<section id="rust-extraction">
+<h2>Rust extraction<a class="headerlink" href="#rust-extraction" title="Link to this heading"></a></h2>
+<p>Pulse toolchain is accompanied with a tool to extract Pulse programs to Rust.
+The extraction pipeline maps the Pulse syntactic constructs such as <code class="docutils literal notranslate"><span class="pre">let</span> <span class="pre">mut</span></code>,
+<code class="docutils literal notranslate"><span class="pre">while</span></code>, <code class="docutils literal notranslate"><span class="pre">if-then-else</span></code>, etc. to corresponding Rust constructs. Further,
+Pulse libraries are mapped to their Rust counterparts, e.g. <code class="docutils literal notranslate"><span class="pre">Pulse.Lib.Vec</span></code> to
+<code class="docutils literal notranslate"><span class="pre">std::vec</span></code>, <code class="docutils literal notranslate"><span class="pre">Pulse.Lib.Array</span></code> to Rust slices etc.</p>
+<p>To extract a Pulse file to Rust, we first invoke the F* extraction pipeline with
+the command line option <code class="docutils literal notranslate"><span class="pre">--codegen</span> <span class="pre">Extension</span></code>. This emits a <code class="docutils literal notranslate"><span class="pre">.ast</span></code> file containing
+an internal AST representation of the file. We then invoke the Rust extraction tool
+that takes as input the <code class="docutils literal notranslate"><span class="pre">.ast</span></code> files and outputs the extracted Rust code (by-default
+the output is written to <code class="docutils literal notranslate"><span class="pre">stdout</span></code>, if an <code class="docutils literal notranslate"><span class="pre">-o</span> <span class="pre">&lt;file&gt;</span></code> option is provided to the tool,
+the output is written to <code class="docutils literal notranslate"><span class="pre">file</span></code>). For example, the first command produces the <code class="docutils literal notranslate"><span class="pre">.ast</span></code>
+file from <code class="docutils literal notranslate"><span class="pre">PulseTutorial.Algorithms.fst</span></code> (which contains the Boyer-Moore algorithm implementation),
+and then the second command extracts the Rust code to <code class="docutils literal notranslate"><span class="pre">voting.rs</span></code>. (These commands are run in the
+<code class="docutils literal notranslate"><span class="pre">pulse</span></code> root directory, change the location of main.exe according to your setup.)</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>fstar.exe<span class="w"> </span>--include<span class="w"> </span>out/lib/pulse/
+<span class="w">  </span>--include<span class="w"> </span>share/pulse/examples/by-example/<span class="w"> </span>--include<span class="w"> </span>share/pulse/examples/_cache/
+<span class="w">  </span>--cmi<span class="w"> </span>--load_cmxs<span class="w"> </span>pulse<span class="w">  </span>--odir<span class="w"> </span>.<span class="w"> </span>PulseTutorial.Algorithms.fst
+<span class="w">  </span>--codegen<span class="w"> </span>Extension
+
+$<span class="w"> </span>./pulse2rust/main.exe<span class="w"> </span>PulseTutorial_Algorithms.ast<span class="w"> </span>-o<span class="w"> </span>voting.rs
+</pre></div>
+</div>
+<p>The output Rust code is as shown below:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span>pub <span class="k">fn</span> majority&lt;A: Clone + Copy + PartialEq&gt;(
+    p: (),
+    s: (),
+    votes: &amp;<span class="k">mut</span> [A],
+    len: usize,
+) -&gt; std::option::Option&lt;A&gt; {
+    <span class="k">let</span> <span class="k">mut</span> i = 1;
+    <span class="k">let</span> <span class="k">mut</span> k = 1;
+    <span class="k">let</span> votes_0 = votes[0];
+    <span class="k">let</span> <span class="k">mut</span> cand = votes_0;
+    <span class="k">while</span> {
+        <span class="k">let</span> vi = i;
+        vi &lt; len
+    } {
+        <span class="k">let</span> vi = i;
+        <span class="k">let</span> vk = k;
+        <span class="k">let</span> vcand = cand;
+        <span class="k">let</span> votes_i = votes[vi];
+        <span class="k">if</span> vk == 0 {
+            cand = votes_i;
+            k = 1;
+            i = vi + 1
+        } <span class="k">else</span> <span class="k">if</span> votes_i == vcand {
+            k = vk + 1;
+            i = vi + 1
+        } <span class="k">else</span> {
+            k = vk - 1;
+            i = vi + 1
+        };
+    }
+    <span class="k">let</span> vk = k;
+    <span class="k">let</span> vcand = cand;
+    <span class="k">let</span> _bind_c = <span class="k">if</span> vk == 0 {
+        None
+    } <span class="k">else</span> <span class="k">if</span> len &lt; 2 * vk {
+        Some(vcand)
+    } <span class="k">else</span> {
+        i = 0;
+        k = 0;
+        <span class="k">while</span> {
+            <span class="k">let</span> vi = i;
+            vi &lt; len
+        } {
+            <span class="k">let</span> vi = i;
+            <span class="k">let</span> vk1 = k;
+            <span class="k">let</span> votes_i = votes[vi];
+            <span class="k">if</span> votes_i == vcand {
+                k = vk1 + 1;
+                i = vi + 1
+            } <span class="k">else</span> {
+                i = vi + 1
+            };
+        }
+        <span class="k">let</span> vk1 = k;
+        <span class="k">if</span> len &lt; 2 * vk1 {
+            Some(vcand)
+        } <span class="k">else</span> {
+            None
+        }
+    };
+    <span class="k">let</span> cand1 = _bind_c;
+    <span class="k">let</span> k1 = cand1;
+    <span class="k">let</span> i1 = k1;
+    i1
+}
+</pre></div>
+</div>
+<p>We can test it by adding the following in <code class="docutils literal notranslate"><span class="pre">voting.rs</span></code> and running the tests
+(using <code class="docutils literal notranslate"><span class="pre">cargo</span> <span class="pre">test</span></code>, it requires a <code class="docutils literal notranslate"><span class="pre">Cargo.toml</span></code> file, we provide an example file
+in the repo that can be used):</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span>#[derive(Copy, Clone, PartialEq, Debug)]
+enum Candidate {
+    A,
+    B,
+    C,
+}
+
+#[test]
+<span class="k">fn</span> test() {
+    <span class="k">let</span> <span class="k">mut</span> votes = [0, 1, 0, 0, 0, 1];
+    <span class="k">let</span> winner = majority((), (), &amp;<span class="k">mut</span> votes, 6);
+    assert_eq!(winner, Some(0));
+
+    <span class="k">let</span> <span class="k">mut</span> str_votes = [&quot;a&quot;, &quot;b&quot;, &quot;a&quot;, &quot;a&quot;, &quot;c&quot;];
+    <span class="k">let</span> str_winner = majority((), (), &amp;<span class="k">mut</span> str_votes, 5);
+    assert_eq!(str_winner, Some(&quot;a&quot;));
+
+    <span class="k">let</span> <span class="k">mut</span> cand_votes = [Candidate::A, Candidate::B, Candidate::C, Candidate::B];
+    <span class="k">let</span> cand_winner = majority((), (), &amp;<span class="k">mut</span> cand_votes, 4);
+    assert_eq!(cand_winner, None);
+}
+</pre></div>
+</div>
+<p>A few notes about the extracted Rust code:</p>
+<ul class="simple">
+<li><p>The Pulse function and the Rust function are generic in the type of the votes. In Rust,
+the extracted code required the type argument to implement the <code class="docutils literal notranslate"><span class="pre">Clone</span></code>, <code class="docutils literal notranslate"><span class="pre">Copy</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">PartialEq</span></code> traits. Currently we hardcode these traits. We plan to specify these traits
+in Pulse through attribute mechanism</p></li>
+<li><p>The ghost arguments <code class="docutils literal notranslate"><span class="pre">p</span></code> and <code class="docutils literal notranslate"><span class="pre">s</span></code> appear in the Rust code as <code class="docutils literal notranslate"><span class="pre">unit</span></code> arguments, we plan
+to make it so that these arguments are completely erased.</p></li>
+<li><p>Whereas <code class="docutils literal notranslate"><span class="pre">majority</span></code> needs only read permission for the <code class="docutils literal notranslate"><span class="pre">votes</span></code> array in the Pulse
+signature, the extracted Rust code specifies the argument as <code class="docutils literal notranslate"><span class="pre">&amp;mut</span></code>. The Rust extraction
+pipeline currently passes all the references as <code class="docutils literal notranslate"><span class="pre">mut</span></code>, we plan to make
+it more precise by taking into account the permissions from the Pulse signature.</p></li>
+</ul>
+</section>
+<section id="c-extraction">
+<h2>C extraction<a class="headerlink" href="#c-extraction" title="Link to this heading"></a></h2>
+<p>Pulse programs can also be extracted to C. The extraction pipeline is based on the
+<a class="reference external" href="https://github.com/FStarLang/karamel">Karamel</a> tool. The process to extract Pulse
+programs to C is similar to that of extracting Low* to C, described in
+<a class="reference external" href="https://fstarlang.github.io/lowstar/html/">this tutorial</a>. In summary, we first generate
+<code class="docutils literal notranslate"><span class="pre">.krml</span></code> files from using the F* extraction command line option <code class="docutils literal notranslate"><span class="pre">--codegen</span> <span class="pre">krml</span></code>, and then
+run the Karamel tool on those files.</p>
+<p>One catch with extracting our Boyer-Moore implementation to C is that due to the lack
+of support of polymorphism in C, Karamel monomorphizes polymorphic functions based on
+their uses. So, we write a monomorphic version of the <code class="docutils literal notranslate"><span class="pre">majority</span></code> function for <code class="docutils literal notranslate"><span class="pre">u32</span></code>,
+that internally calls the polymorphic <code class="docutils literal notranslate"><span class="pre">majority</span></code> function:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> majority_mono #p (#s:G.erased <span class="k">_</span>) (votes:array u32_t) (len:SZ.t { SZ.v len == Seq.length s })
+  <span class="k">requires</span> pts_to votes #p s
+  <span class="k">requires</span> pure (0 &lt; SZ.v len /\ SZ.fits (2 * SZ.v len))
+  <span class="k">returns</span> x:option u32_t
+  <span class="k">ensures</span> pts_to votes #p s **
+          pure ((x == None ==&gt; no_majority s) /\ (Some? x ==&gt; (Some?.v x) `has_majority_in` s))
+{
+  majority #u32_t #p #s votes len
+}
+</pre></div>
+</div>
+<p>Then we extract it to C as follows (the commands are run in the <code class="docutils literal notranslate"><span class="pre">pulse</span></code> root directory as before):</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>fstar.exe<span class="w"> </span>--include<span class="w"> </span>out/lib/pulse/
+<span class="w">  </span>--include<span class="w"> </span>share/pulse/examples/by-example/<span class="w"> </span>--include<span class="w"> </span>share/pulse/examples/_cache/
+<span class="w">  </span>--cmi<span class="w"> </span>--load_cmxs<span class="w"> </span>pulse<span class="w">  </span>--odir<span class="w"> </span>.<span class="w"> </span>PulseTutorial.Algorithms.fst
+<span class="w">  </span>--extract<span class="w"> </span><span class="s1">&#39;FStar.Pervasives.Native PulseTutorial.Algorithms&#39;</span><span class="w"> </span>--codegen<span class="w"> </span>krml
+
+$<span class="w"> </span>../karamel/krml<span class="w"> </span>-skip-compilation<span class="w"> </span>out.krml
+</pre></div>
+</div>
+<p>This produces <code class="docutils literal notranslate"><span class="pre">PulseTutorial_Algorithms.h</span></code> and <code class="docutils literal notranslate"><span class="pre">PulseTutorial_Algorithms.c</span></code> files, with the following
+implementation of <code class="docutils literal notranslate"><span class="pre">majority</span></code>:</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="n">FStar_Pervasives_Native_option__uint32_t</span>
+<span class="nf">PulseTutorial_Algorithms_majority__uint32_t</span><span class="p">(</span><span class="kt">uint32_t</span><span class="w"> </span><span class="o">*</span><span class="n">votes</span><span class="p">,</span><span class="w"> </span><span class="kt">size_t</span><span class="w"> </span><span class="n">len</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">  </span><span class="kt">size_t</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="p">)</span><span class="mi">1U</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">size_t</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="p">)</span><span class="mi">1U</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">votes_0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">votes</span><span class="p">[</span><span class="mi">0U</span><span class="p">];</span>
+<span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">cand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">votes_0</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">size_t</span><span class="w"> </span><span class="n">vi0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">cond</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vi0</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">len</span><span class="p">;</span>
+<span class="w">  </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">cond</span><span class="p">)</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">vi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">vk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">vcand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cand</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">votes_i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">votes</span><span class="p">[</span><span class="n">vi</span><span class="p">];</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">vk</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="p">)</span><span class="mi">0U</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="n">cand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">votes_i</span><span class="p">;</span>
+<span class="w">      </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="p">)</span><span class="mi">1U</span><span class="p">;</span>
+<span class="w">      </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vi</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="p">)</span><span class="mi">1U</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">votes_i</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">vcand</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vk</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="p">)</span><span class="mi">1U</span><span class="p">;</span>
+<span class="w">      </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vi</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="p">)</span><span class="mi">1U</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vk</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="p">)</span><span class="mi">1U</span><span class="p">;</span>
+<span class="w">      </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vi</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="p">)</span><span class="mi">1U</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">vi0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="w">    </span><span class="n">cond</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vi0</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">len</span><span class="p">;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="kt">size_t</span><span class="w"> </span><span class="n">vk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k</span><span class="p">;</span>
+<span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">vcand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">cand</span><span class="p">;</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">vk</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="p">)</span><span class="mi">0U</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">((</span><span class="n">FStar_Pervasives_Native_option__uint32_t</span><span class="p">){</span><span class="w"> </span><span class="p">.</span><span class="n">tag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FStar_Pervasives_Native_None</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">len</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="p">)</span><span class="mi">2U</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">vk</span><span class="p">)</span>
+<span class="w">    </span><span class="k">return</span>
+<span class="w">      </span><span class="p">(</span>
+<span class="w">        </span><span class="p">(</span><span class="n">FStar_Pervasives_Native_option__uint32_t</span><span class="p">){</span>
+<span class="w">          </span><span class="p">.</span><span class="n">tag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FStar_Pervasives_Native_Some</span><span class="p">,</span>
+<span class="w">          </span><span class="p">.</span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vcand</span>
+<span class="w">        </span><span class="p">}</span>
+<span class="w">      </span><span class="p">);</span>
+<span class="w">  </span><span class="k">else</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="p">)</span><span class="mi">0U</span><span class="p">;</span>
+<span class="w">    </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="p">)</span><span class="mi">0U</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">vi0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="w">    </span><span class="kt">bool</span><span class="w"> </span><span class="n">cond</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vi0</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">len</span><span class="p">;</span>
+<span class="w">    </span><span class="k">while</span><span class="w"> </span><span class="p">(</span><span class="n">cond</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="kt">size_t</span><span class="w"> </span><span class="n">vi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="w">      </span><span class="kt">size_t</span><span class="w"> </span><span class="n">vk1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k</span><span class="p">;</span>
+<span class="w">      </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">votes_i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">votes</span><span class="p">[</span><span class="n">vi</span><span class="p">];</span>
+<span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">votes_i</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">vcand</span><span class="p">)</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vk1</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="p">)</span><span class="mi">1U</span><span class="p">;</span>
+<span class="w">        </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vi</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="p">)</span><span class="mi">1U</span><span class="p">;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">      </span><span class="k">else</span>
+<span class="w">        </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vi</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="p">)</span><span class="mi">1U</span><span class="p">;</span>
+<span class="w">      </span><span class="kt">size_t</span><span class="w"> </span><span class="n">vi0</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">i</span><span class="p">;</span>
+<span class="w">      </span><span class="n">cond</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vi0</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">len</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="kt">size_t</span><span class="w"> </span><span class="n">vk1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">k</span><span class="p">;</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">len</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="p">(</span><span class="kt">size_t</span><span class="p">)</span><span class="mi">2U</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">vk1</span><span class="p">)</span>
+<span class="w">      </span><span class="k">return</span>
+<span class="w">        </span><span class="p">(</span>
+<span class="w">          </span><span class="p">(</span><span class="n">FStar_Pervasives_Native_option__uint32_t</span><span class="p">){</span>
+<span class="w">            </span><span class="p">.</span><span class="n">tag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FStar_Pervasives_Native_Some</span><span class="p">,</span>
+<span class="w">            </span><span class="p">.</span><span class="n">v</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vcand</span>
+<span class="w">          </span><span class="p">}</span>
+<span class="w">        </span><span class="p">);</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="p">((</span><span class="n">FStar_Pervasives_Native_option__uint32_t</span><span class="p">){</span><span class="w"> </span><span class="p">.</span><span class="n">tag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">FStar_Pervasives_Native_None</span><span class="w"> </span><span class="p">});</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>We can now test it with a client like:</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;PulseTutorial_Algorithms.h&quot;</span>
+
+<span class="kt">int</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">argc</span><span class="p">,</span><span class="w"> </span><span class="kt">char</span><span class="w"> </span><span class="o">**</span><span class="n">argv</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="kt">uint32_t</span><span class="w"> </span><span class="n">votes</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">};</span>
+<span class="w">  </span><span class="n">FStar_Pervasives_Native_option__uint32_t</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PulseTutorial_Algorithms_majority__uint32_t</span><span class="p">(</span><span class="n">votes</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">);</span>
+<span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">tag</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">FStar_Pervasives_Native_None</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;No majority</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">printf</span><span class="p">(</span><span class="s">&quot;Majority: %d</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">v</span><span class="p">);</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>gcc<span class="w"> </span>PulseTutorial_Algorithms.c<span class="w"> </span>PulseTutorial_Algorithms_Client.c<span class="w"> </span>-I<span class="w"> </span>../karamel/include/
+<span class="w">  </span>-I<span class="w"> </span>../karamel/krmllib/c<span class="w"> </span>-I<span class="w"> </span>../karamel/krmllib/dist/minimal/
+
+$<span class="w"> </span>./a.out
+Majority:<span class="w"> </span><span class="m">1</span>
+
+$
+</pre></div>
+</div>
+</section>
+<section id="ocaml-extraction">
+<h2>OCaml extraction<a class="headerlink" href="#ocaml-extraction" title="Link to this heading"></a></h2>
+<p>As with all F* programs, Pulse programs can be extracted to OCaml. One caveat
+with using the OCaml backend for Pulse programs is that the explicit memory
+management from Pulse programs does not carry over to OCaml. For example, the
+extracted OCaml programs rely on the OCaml garbage collector for reclaiming unused
+heap memory, <code class="docutils literal notranslate"><span class="pre">let</span> <span class="pre">mut</span></code> variables are allocated on the heap, etc.</p>
+<p>For the Boyer-Moore example, we can extract the program to OCaml as follows:</p>
+<div class="highlight-shell notranslate"><div class="highlight"><pre><span></span>$<span class="w"> </span>fstar.exe<span class="w"> </span>--include<span class="w"> </span>out/lib/pulse/
+<span class="w">  </span>--include<span class="w"> </span>share/pulse/examples/by-example/<span class="w"> </span>--include<span class="w"> </span>share/pulse/examples/_cache/
+<span class="w">  </span>--cmi<span class="w"> </span>--load_cmxs<span class="w"> </span>pulse<span class="w">  </span>--odir<span class="w"> </span>.<span class="w"> </span>PulseTutorial.Algorithms.fst
+<span class="w">  </span>--codegen<span class="w"> </span>OCaml
+</pre></div>
+</div>
+<p>and the extracted <code class="docutils literal notranslate"><span class="pre">majority</span></code> function looks like:</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="n">let</span><span class="w"> </span><span class="n">majority</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="n">s</span><span class="w"> </span><span class="n">votes</span><span class="w"> </span><span class="n">len</span><span class="w"> </span><span class="o">=</span>
+<span class="w">  </span><span class="n">let</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Pulse_Lib_HigherReference</span><span class="p">.</span><span class="n">alloc</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="n">Stdint</span><span class="p">.</span><span class="n">Uint64</span><span class="p">.</span><span class="n">one</span><span class="w"> </span><span class="n">in</span>
+<span class="w">  </span><span class="n">let</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Pulse_Lib_HigherReference</span><span class="p">.</span><span class="n">alloc</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="n">Stdint</span><span class="p">.</span><span class="n">Uint64</span><span class="p">.</span><span class="n">one</span><span class="w"> </span><span class="n">in</span>
+<span class="w">  </span><span class="n">let</span><span class="w"> </span><span class="n">votes_0</span><span class="w"> </span><span class="o">=</span>
+<span class="w">    </span><span class="n">Pulse_Lib_HigherArray_Core</span><span class="p">.</span><span class="n">mask_read</span><span class="w"> </span><span class="n">votes</span><span class="w"> </span><span class="n">Stdint</span><span class="p">.</span><span class="n">Uint64</span><span class="p">.</span><span class="n">zero</span><span class="w"> </span><span class="p">()</span>
+<span class="w">      </span><span class="p">()</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="n">in</span>
+<span class="w">  </span><span class="n">let</span><span class="w"> </span><span class="n">cand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Pulse_Lib_HigherReference</span><span class="p">.</span><span class="n">alloc</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="n">votes_0</span><span class="w"> </span><span class="n">in</span>
+<span class="w">  </span><span class="n">Pulse_Lib_Dv</span><span class="p">.</span><span class="n">while_</span>
+<span class="w">    </span><span class="p">(</span><span class="n">fun</span><span class="w"> </span><span class="n">while_cond</span><span class="w"> </span><span class="o">-&gt;</span>
+<span class="w">        </span><span class="n">let</span><span class="w"> </span><span class="n">vi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Pulse_Lib_HigherReference</span><span class="p">.</span><span class="n">read</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="n">in</span>
+<span class="w">        </span><span class="n">FStar_SizeT</span><span class="p">.</span><span class="n">lt</span><span class="w"> </span><span class="n">vi</span><span class="w"> </span><span class="n">len</span><span class="p">)</span>
+<span class="w">    </span><span class="p">(</span><span class="n">fun</span><span class="w"> </span><span class="n">while_body</span><span class="w"> </span><span class="o">-&gt;</span>
+<span class="w">        </span><span class="n">let</span><span class="w"> </span><span class="n">vi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Pulse_Lib_HigherReference</span><span class="p">.</span><span class="n">read</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="n">in</span>
+<span class="w">        </span><span class="n">let</span><span class="w"> </span><span class="n">vk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Pulse_Lib_HigherReference</span><span class="p">.</span><span class="n">read</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="n">in</span>
+<span class="w">        </span><span class="n">let</span><span class="w"> </span><span class="n">vcand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Pulse_Lib_HigherReference</span><span class="p">.</span><span class="n">read</span><span class="w"> </span><span class="n">cand</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="n">in</span>
+<span class="w">        </span><span class="n">let</span><span class="w"> </span><span class="n">votes_i</span><span class="w"> </span><span class="o">=</span>
+<span class="w">          </span><span class="n">Pulse_Lib_HigherArray_Core</span><span class="p">.</span><span class="n">mask_read</span><span class="w"> </span><span class="n">votes</span><span class="w"> </span><span class="n">vi</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="n">in</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="n">vk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Stdint</span><span class="p">.</span><span class="n">Uint64</span><span class="p">.</span><span class="n">zero</span>
+<span class="w">        </span><span class="n">then</span>
+<span class="w">          </span><span class="p">(</span><span class="n">Pulse_Lib_HigherReference</span><span class="p">.</span><span class="n">write</span><span class="w"> </span><span class="n">cand</span><span class="w"> </span><span class="n">votes_i</span><span class="w"> </span><span class="p">();</span>
+<span class="w">          </span><span class="n">Pulse_Lib_HigherReference</span><span class="p">.</span><span class="n">write</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="n">Stdint</span><span class="p">.</span><span class="n">Uint64</span><span class="p">.</span><span class="n">one</span><span class="w"> </span><span class="p">();</span>
+<span class="w">          </span><span class="n">Pulse_Lib_HigherReference</span><span class="p">.</span><span class="n">write</span><span class="w"> </span><span class="n">i</span>
+<span class="w">            </span><span class="p">(</span><span class="n">FStar_SizeT</span><span class="p">.</span><span class="n">add</span><span class="w"> </span><span class="n">vi</span><span class="w"> </span><span class="n">Stdint</span><span class="p">.</span><span class="n">Uint64</span><span class="p">.</span><span class="n">one</span><span class="p">)</span><span class="w"> </span><span class="p">())</span>
+<span class="w">        </span><span class="k">else</span>
+<span class="w">          </span><span class="k">if</span><span class="w"> </span><span class="n">votes_i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vcand</span>
+<span class="w">          </span><span class="n">then</span>
+<span class="w">            </span><span class="p">(</span><span class="n">Pulse_Lib_HigherReference</span><span class="p">.</span><span class="n">write</span><span class="w"> </span><span class="n">k</span>
+<span class="w">              </span><span class="p">(</span><span class="n">FStar_SizeT</span><span class="p">.</span><span class="n">add</span><span class="w"> </span><span class="n">vk</span><span class="w"> </span><span class="n">Stdint</span><span class="p">.</span><span class="n">Uint64</span><span class="p">.</span><span class="n">one</span><span class="p">)</span><span class="w"> </span><span class="p">();</span>
+<span class="w">            </span><span class="n">Pulse_Lib_HigherReference</span><span class="p">.</span><span class="n">write</span><span class="w"> </span><span class="n">i</span>
+<span class="w">              </span><span class="p">(</span><span class="n">FStar_SizeT</span><span class="p">.</span><span class="n">add</span><span class="w"> </span><span class="n">vi</span><span class="w"> </span><span class="n">Stdint</span><span class="p">.</span><span class="n">Uint64</span><span class="p">.</span><span class="n">one</span><span class="p">)</span><span class="w"> </span><span class="p">())</span>
+<span class="w">          </span><span class="k">else</span>
+<span class="w">            </span><span class="p">(</span><span class="n">Pulse_Lib_HigherReference</span><span class="p">.</span><span class="n">write</span><span class="w"> </span><span class="n">k</span>
+<span class="w">              </span><span class="p">(</span><span class="n">FStar_SizeT</span><span class="p">.</span><span class="n">sub</span><span class="w"> </span><span class="n">vk</span><span class="w"> </span><span class="n">Stdint</span><span class="p">.</span><span class="n">Uint64</span><span class="p">.</span><span class="n">one</span><span class="p">)</span><span class="w"> </span><span class="p">();</span>
+<span class="w">            </span><span class="n">Pulse_Lib_HigherReference</span><span class="p">.</span><span class="n">write</span><span class="w"> </span><span class="n">i</span>
+<span class="w">              </span><span class="p">(</span><span class="n">FStar_SizeT</span><span class="p">.</span><span class="n">add</span><span class="w"> </span><span class="n">vi</span><span class="w"> </span><span class="n">Stdint</span><span class="p">.</span><span class="n">Uint64</span><span class="p">.</span><span class="n">one</span><span class="p">)</span><span class="w"> </span><span class="p">()));</span>
+<span class="w">  </span><span class="p">(</span><span class="n">let</span><span class="w"> </span><span class="n">vk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Pulse_Lib_HigherReference</span><span class="p">.</span><span class="n">read</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="n">in</span>
+<span class="w">    </span><span class="n">let</span><span class="w"> </span><span class="n">vcand</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Pulse_Lib_HigherReference</span><span class="p">.</span><span class="n">read</span><span class="w"> </span><span class="n">cand</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="n">in</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="n">vk</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Stdint</span><span class="p">.</span><span class="n">Uint64</span><span class="p">.</span><span class="n">zero</span>
+<span class="w">    </span><span class="n">then</span><span class="w"> </span><span class="n">FStar_Pervasives_Native</span><span class="p">.</span><span class="n">None</span>
+<span class="w">    </span><span class="k">else</span>
+<span class="w">      </span><span class="k">if</span>
+<span class="w">        </span><span class="n">FStar_SizeT</span><span class="p">.</span><span class="n">lt</span><span class="w"> </span><span class="n">len</span>
+<span class="w">          </span><span class="p">(</span><span class="n">FStar_SizeT</span><span class="p">.</span><span class="n">mul</span><span class="w"> </span><span class="p">(</span><span class="n">Stdint</span><span class="p">.</span><span class="n">Uint64</span><span class="p">.</span><span class="n">of_int</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="p">))</span><span class="w"> </span><span class="n">vk</span><span class="p">)</span>
+<span class="w">      </span><span class="n">then</span><span class="w"> </span><span class="n">FStar_Pervasives_Native</span><span class="p">.</span><span class="n">Some</span><span class="w"> </span><span class="n">vcand</span>
+<span class="w">      </span><span class="k">else</span>
+<span class="w">        </span><span class="p">(</span><span class="n">Pulse_Lib_HigherReference</span><span class="p">.</span><span class="n">write</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="n">Stdint</span><span class="p">.</span><span class="n">Uint64</span><span class="p">.</span><span class="n">zero</span><span class="w"> </span><span class="p">();</span>
+<span class="w">        </span><span class="n">Pulse_Lib_HigherReference</span><span class="p">.</span><span class="n">write</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="n">Stdint</span><span class="p">.</span><span class="n">Uint64</span><span class="p">.</span><span class="n">zero</span><span class="w"> </span><span class="p">();</span>
+<span class="w">        </span><span class="n">Pulse_Lib_Dv</span><span class="p">.</span><span class="n">while_</span>
+<span class="w">          </span><span class="p">(</span><span class="n">fun</span><span class="w"> </span><span class="n">while_cond</span><span class="w"> </span><span class="o">-&gt;</span>
+<span class="w">              </span><span class="n">let</span><span class="w"> </span><span class="n">vi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Pulse_Lib_HigherReference</span><span class="p">.</span><span class="n">read</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="n">in</span>
+<span class="w">              </span><span class="n">FStar_SizeT</span><span class="p">.</span><span class="n">lt</span><span class="w"> </span><span class="n">vi</span><span class="w"> </span><span class="n">len</span><span class="p">)</span>
+<span class="w">          </span><span class="p">(</span><span class="n">fun</span><span class="w"> </span><span class="n">while_body</span><span class="w"> </span><span class="o">-&gt;</span>
+<span class="w">              </span><span class="n">let</span><span class="w"> </span><span class="n">vi</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Pulse_Lib_HigherReference</span><span class="p">.</span><span class="n">read</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="n">in</span>
+<span class="w">              </span><span class="n">let</span><span class="w"> </span><span class="n">vk1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Pulse_Lib_HigherReference</span><span class="p">.</span><span class="n">read</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="n">in</span>
+<span class="w">              </span><span class="n">let</span><span class="w"> </span><span class="n">votes_i</span><span class="w"> </span><span class="o">=</span>
+<span class="w">                </span><span class="n">Pulse_Lib_HigherArray_Core</span><span class="p">.</span><span class="n">mask_read</span><span class="w"> </span><span class="n">votes</span><span class="w"> </span><span class="n">vi</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="n">in</span>
+<span class="w">              </span><span class="k">if</span><span class="w"> </span><span class="n">votes_i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">vcand</span>
+<span class="w">              </span><span class="n">then</span>
+<span class="w">                </span><span class="p">(</span><span class="n">Pulse_Lib_HigherReference</span><span class="p">.</span><span class="n">write</span><span class="w"> </span><span class="n">k</span>
+<span class="w">                  </span><span class="p">(</span><span class="n">FStar_SizeT</span><span class="p">.</span><span class="n">add</span><span class="w"> </span><span class="n">vk1</span><span class="w"> </span><span class="n">Stdint</span><span class="p">.</span><span class="n">Uint64</span><span class="p">.</span><span class="n">one</span><span class="p">)</span><span class="w"> </span><span class="p">();</span>
+<span class="w">                </span><span class="n">Pulse_Lib_HigherReference</span><span class="p">.</span><span class="n">write</span><span class="w"> </span><span class="n">i</span>
+<span class="w">                  </span><span class="p">(</span><span class="n">FStar_SizeT</span><span class="p">.</span><span class="n">add</span><span class="w"> </span><span class="n">vi</span><span class="w"> </span><span class="n">Stdint</span><span class="p">.</span><span class="n">Uint64</span><span class="p">.</span><span class="n">one</span><span class="p">)</span><span class="w"> </span><span class="p">())</span>
+<span class="w">              </span><span class="k">else</span>
+<span class="w">                </span><span class="n">Pulse_Lib_HigherReference</span><span class="p">.</span><span class="n">write</span><span class="w"> </span><span class="n">i</span>
+<span class="w">                  </span><span class="p">(</span><span class="n">FStar_SizeT</span><span class="p">.</span><span class="n">add</span><span class="w"> </span><span class="n">vi</span><span class="w"> </span><span class="n">Stdint</span><span class="p">.</span><span class="n">Uint64</span><span class="p">.</span><span class="n">one</span><span class="p">)</span><span class="w"> </span><span class="p">());</span>
+<span class="w">        </span><span class="p">(</span><span class="n">let</span><span class="w"> </span><span class="n">vk1</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Pulse_Lib_HigherReference</span><span class="p">.</span><span class="n">read</span><span class="w"> </span><span class="n">k</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="n">in</span>
+<span class="w">          </span><span class="k">if</span>
+<span class="w">            </span><span class="n">FStar_SizeT</span><span class="p">.</span><span class="n">lt</span><span class="w"> </span><span class="n">len</span>
+<span class="w">              </span><span class="p">(</span><span class="n">FStar_SizeT</span><span class="p">.</span><span class="n">mul</span><span class="w"> </span><span class="p">(</span><span class="n">Stdint</span><span class="p">.</span><span class="n">Uint64</span><span class="p">.</span><span class="n">of_int</span><span class="w"> </span><span class="p">(</span><span class="mi">2</span><span class="p">))</span><span class="w"> </span><span class="n">vk1</span><span class="p">)</span>
+<span class="w">          </span><span class="n">then</span><span class="w"> </span><span class="n">FStar_Pervasives_Native</span><span class="p">.</span><span class="n">Some</span><span class="w"> </span><span class="n">vcand</span>
+<span class="w">          </span><span class="k">else</span><span class="w"> </span><span class="n">FStar_Pervasives_Native</span><span class="p">.</span><span class="n">None</span><span class="p">)))</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pulse_parallel_increment.html" class="btn btn-neutral float-left" title="Parallel Increment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../agentic/agentic.html" class="btn btn-neutral float-right" title="Agentic Proof-Oriented Programming" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>

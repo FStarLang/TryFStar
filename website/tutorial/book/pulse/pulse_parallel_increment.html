@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Parallel Increment &mdash; Proof-Oriented Programming in F*  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../static/css/theme.css?v=86f27845" />
+      <link rel="stylesheet" type="text/css" href="../static/custom.css?v=24463673" />
+
+  
+  
+        <script src="../static/jquery.js?v=8dae8fb0"></script>
+        <script src="../static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../static/doctools.js?v=888ff710"></script>
+        <script src="../static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Extraction" href="pulse_extraction.html" />
+    <link rel="prev" title="Spin Locks" href="pulse_spin_lock.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Proof-Oriented Programming in F*
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../structure.html">Structure of this book</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../intro.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part1/part1.html">Programming and Proving with Total Functions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part2/part2.html">Representing Data, Proofs, and Computations with Inductive Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part3/part3.html">Modularity With Interfaces and Typeclasses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part4/part4.html">Computational Effects</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../part5/part5.html">Tactics and Metaprogramming with Meta-F*</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="pulse_getting_started.html">Getting up and running with Codespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ch1.html">Pulse Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ch2.html">Mutable References</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_existentials.html">Existential Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_user_defined_predicates.html">User-defined Predicates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_conditionals.html">Conditionals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_loops.html">Loops &amp; Recursion</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_arrays.html">Mutable Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_ghost.html">Ghost Computations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_higher_order.html">Higher Order Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_implication_and_forall.html">Implication and Universal Quantification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_linked_list.html">Linked Lists</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_atomics_and_invariants.html">Atomic Operations and Invariants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_spin_lock.html">Spin Locks</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Parallel Increment</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#parallel-blocks">Parallel Blocks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#a-first-take-with-locks">A First Take, with Locks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modularity-with-higher-order-ghost-code">Modularity with higher-order ghost code</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#exercise">Exercise</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#a-version-with-invariants">A version with invariants</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#cancellable-invariants">Cancellable Invariants</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#an-increment-operation">An increment operation</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#add2-v3"><code class="docutils literal notranslate"><span class="pre">add2_v3</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Exercise</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pulse_extraction.html">Extraction</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../agentic/agentic.html">Agentic Proof-Oriented Programming</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../under_the_hood/under_the_hood.html">Under the hood</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Proof-Oriented Programming in F*</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="pulse.html">Pulse: Proof-oriented Programming in Concurrent Separation Logic</a></li>
+      <li class="breadcrumb-item active">Parallel Increment</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+
+           <div itemprop="articleBody">
+             
+  <section id="parallel-increment">
+<span id="pulse-parallel-increment"></span><h1>Parallel Increment<a class="headerlink" href="#parallel-increment" title="Link to this heading"></a></h1>
+<p>In this chapter, we look at an example first studied by Susan Owicki
+and David Gries, in a classic paper titled <a class="reference external" href="https://dl.acm.org/doi/10.1145/360051.360224">Verifying properties of
+parallel programs: an axiomatic approach</a>. The problem involves
+proving that a program that atomically increments an integer reference
+<code class="docutils literal notranslate"><span class="pre">r</span></code> twice in parallel correctly adds 2 to <code class="docutils literal notranslate"><span class="pre">r</span></code>. There are many ways
+to do this—Owicki &amp; Gries’ approach, adapted to a modern separation
+logic, involves the use of additional ghost state and offers a modular
+way to structure the proof.</p>
+<p>While this is a very simple program, it captures the essence of some
+of the reasoning challenges posed by concurrency: two threads interact
+with a shared resource, contributing to it in an undetermined order,
+and one aims to reason about the overall behavior, ideally without
+resorting to directly analyzing each of the possible interleavings.</p>
+<section id="parallel-blocks">
+<h2>Parallel Blocks<a class="headerlink" href="#parallel-blocks" title="Link to this heading"></a></h2>
+<p>Pulse provides a few primitives for creating new threads. The most
+basic one is parallel composition, as shown below:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">parallel</span>
+<span class="k">requires</span> p1 <span class="k">and</span> p2
+<span class="k">ensures</span> q1 <span class="k">and</span> q2
+{ e1 }
+{ e2 }
+</pre></div>
+</div>
+<p>The typing rule for this construct requires:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">val</span> e1 : stt a p1 q1
+<span class="k">val</span> e2 : stt b p2 q2
+</pre></div>
+</div>
+<p>and the <code class="docutils literal notranslate"><span class="pre">parallel</span></code> block then has the type:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span>stt (a &amp; b) (p1 ** p2) (<span class="k">fun</span> (x, y) -&gt; q1 x ** q2 y)
+</pre></div>
+</div>
+<p>In other words, if the current context can be split into separate
+parts <code class="docutils literal notranslate"><span class="pre">p1</span></code> and <code class="docutils literal notranslate"><span class="pre">p2</span></code> satisfying the preconditions of <code class="docutils literal notranslate"><span class="pre">e1</span></code> and
+<code class="docutils literal notranslate"><span class="pre">e2</span></code>, then the parallel block executes <code class="docutils literal notranslate"><span class="pre">e1</span></code> and <code class="docutils literal notranslate"><span class="pre">e2</span></code> in
+parallel, waits for both of them to finish, and if they both do,
+returns their results as a pair, with their postconditions on each
+component.</p>
+<p>Using <code class="docutils literal notranslate"><span class="pre">parallel</span></code>, one can easily program the <code class="docutils literal notranslate"><span class="pre">par</span></code> combinator
+below:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> par (#pf #pg #qf #qg:<span class="k">_</span>)
+       {| is_send pf, is_send pg, is_send qf, is_send qg |}
+       (f: unit -&gt; stt unit pf (<span class="k">fun</span> <span class="k">_</span> -&gt; qf))
+       (g: unit -&gt; stt unit pg (<span class="k">fun</span> <span class="k">_</span> -&gt; qg))
+<span class="k">requires</span> pf
+<span class="k">requires</span> pg
+<span class="k">ensures</span> qf
+<span class="k">ensures</span> qg
+{
+  par f g
+}
+</pre></div>
+</div>
+<p>As we saw in the <a class="reference internal" href="pulse.html#partpulse"><span class="std std-ref">introduction to Pulse</span></a>, it’s easy
+to increment two separate references in parallel:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> par_incr (x y:ref int)
+<span class="k">requires</span> pts_to x &#39;i
+<span class="k">requires</span> pts_to y &#39;j
+<span class="k">ensures</span> pts_to x (&#39;i + 1)
+<span class="k">ensures</span> pts_to y (&#39;j + 1)
+{
+   par (<span class="k">fun</span> <span class="k">_</span> -&gt; incr x #&#39;i)
+       (<span class="k">fun</span> <span class="k">_</span> -&gt; incr y #&#39;j)
+}
+</pre></div>
+</div>
+<p>But, what if we wanted to increment the same reference in two separate
+threads? That is, we wanted to program something like this:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> add2 (x:ref int)
+<span class="k">requires</span> pts_to x &#39;i
+<span class="k">ensures</span> pts_to x (&#39;i + 2)
+{
+   par (<span class="k">fun</span> <span class="k">_</span> -&gt; incr x)
+       (<span class="k">fun</span> <span class="k">_</span> -&gt; incr x)
+}
+</pre></div>
+</div>
+<p>But, this program doesn’t check. The problem is that we have only a
+single <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">x</span> <span class="pre">'i</span></code>, and we can’t split it to share among the
+threads, since both threads require full permission to <code class="docutils literal notranslate"><span class="pre">x</span></code> to update
+it.</p>
+<p>Further, for the program to correctly add <code class="docutils literal notranslate"><span class="pre">2</span></code> to <code class="docutils literal notranslate"><span class="pre">x</span></code>, each
+increment operations must take place atomically, e.g., if the two
+fragments below were executed in parallel, then they may both read the
+initial value of <code class="docutils literal notranslate"><span class="pre">x</span></code> first, bind it to <code class="docutils literal notranslate"><span class="pre">`v</span></code>, and then both update
+it to <code class="docutils literal notranslate"><span class="pre">v</span> <span class="pre">+</span> <span class="pre">1</span></code>.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> v = !x;      ||    <span class="k">let</span> v = !x;
+x := v + 1;      ||    x := v + 1;
+</pre></div>
+</div>
+<p>Worse, without any synchronization, on modern processors with weak
+memory models, this program could exhibit a variety of other
+behaviors.</p>
+<p>To enforce synchronization, we could use a lock, e.g., shown below:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> attempt (x:ref int)
+<span class="k">requires</span> pts_to x &#39;i
+<span class="k">ensures</span> <span class="k">exists</span>* v. pts_to x v
+{
+  <span class="k">let</span> l = L.new_lock (<span class="k">exists</span>* (v: int). pts_to x v);
+  <span class="k">fn</span> incr ()
+  preserves L.lock_alive l #0.5R (<span class="k">exists</span>* v. pts_to x v)
+  {
+    L.acquire l;
+    <span class="k">let</span> v = !x;
+    x := v + 1;
+    L.release l
+  };
+  L.share l;
+  par incr incr;
+  L.gather l;
+  L.acquire l;
+  L.free l
+}
+</pre></div>
+</div>
+<p>This program is type correct and free from data races. But, since the
+lock holds the entire permission on <code class="docutils literal notranslate"><span class="pre">x</span></code>, there’s no way to give this
+function a precise postcondition.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>In this section, we use an implementation of spin locks from the
+Pulse library, Pulse.Lib.SpinLock. Unlike the version we developed
+in the previous chapter, these locks use a fraction-indexed
+permission, <code class="docutils literal notranslate"><span class="pre">lock_alive</span> <span class="pre">l</span> <span class="pre">#f</span> <span class="pre">p</span></code>. They also provide a predicate,
+<code class="docutils literal notranslate"><span class="pre">lock_acquired</span> <span class="pre">l</span></code>, that indicates when the lock has been
+taken. With full-permission to the lock, and <code class="docutils literal notranslate"><span class="pre">lock_acquired</span> <span class="pre">l</span></code>,
+the lock can be freed—reclaiming the underlying
+memory. Additionally, the <code class="docutils literal notranslate"><span class="pre">lock_acquired</span></code> predicate ensures that
+locks cannot be double freed. As such, <code class="docutils literal notranslate"><span class="pre">Pulse.Lib.SpinLock</span></code> fixes
+the problems with the spin locks we introduced in the previous
+chapter and also provides a solution to the exercises given there.</p>
+</div>
+</section>
+<section id="a-first-take-with-locks">
+<h2>A First Take, with Locks<a class="headerlink" href="#a-first-take-with-locks" title="Link to this heading"></a></h2>
+<p>Owicki and Gries’ idea was to augment the program with auxiliary
+variables, or ghost state, that are purely for specification
+purposes. Each thread gets its own piece of ghost state, and accounts
+for how much that thread has contributed to the current value of
+shared variable. Let’s see how this works in Pulse.</p>
+<p>The main idea is captured by <code class="docutils literal notranslate"><span class="pre">lock_inv</span></code>, the type of the predicate
+protected by the lock:</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">let</span> contributions (left right: GR.ref int) (i v:int) : timeless_slprop =
+  <span class="k">exists</span>* (vl vr:int).
+    GR.pts_to left #0.5R vl **
+    GR.pts_to right #0.5R vr **
+    pure (v == i + vl + vr)
+
+<span class="k">let</span> lock_inv (x:ref int) (init:int) (left right:GR.ref int) : timeless_slprop =
+  <span class="k">exists</span>* v. 
+    pts_to x v **
+    contributions left right init v
+</pre></div>
+</div>
+<p>Our strawman <code class="docutils literal notranslate"><span class="pre">lock</span></code> in the <code class="docutils literal notranslate"><span class="pre">attempt</span></code> shown before had type <code class="docutils literal notranslate"><span class="pre">lock</span>
+<span class="pre">(exists*</span> <span class="pre">v.</span> <span class="pre">pts_to</span> <span class="pre">x</span> <span class="pre">v)</span></code>. This time, we add a conjunct that refines
+the value <code class="docutils literal notranslate"><span class="pre">v</span></code>, i.e., the predicate <code class="docutils literal notranslate"><span class="pre">contributions</span> <span class="pre">l</span> <span class="pre">r</span> <span class="pre">init</span> <span class="pre">v</span></code> says
+that the current value of <code class="docutils literal notranslate"><span class="pre">x</span></code> protected by the lock (i.e., <code class="docutils literal notranslate"><span class="pre">v</span></code>) is
+equal to <code class="docutils literal notranslate"><span class="pre">init</span> <span class="pre">+</span> <span class="pre">vl</span> <span class="pre">+</span> <span class="pre">vr</span></code>, where <code class="docutils literal notranslate"><span class="pre">init</span></code> is the initial value of
+<code class="docutils literal notranslate"><span class="pre">x</span></code>; <code class="docutils literal notranslate"><span class="pre">vl</span></code> is the value of the ghost state owned by the “left”
+thread; and <code class="docutils literal notranslate"><span class="pre">vr</span></code> is the value of the ghost state owned by the
+“right” thread. In other words, the predicate <code class="docutils literal notranslate"><span class="pre">contributions</span> <span class="pre">l</span> <span class="pre">r</span> <span class="pre">init</span>
+<span class="pre">v</span></code> shows that <code class="docutils literal notranslate"><span class="pre">v</span></code> always reflects the values of the contributions
+made by each thread.</p>
+<p>Note, however, the <code class="docutils literal notranslate"><span class="pre">contributions</span></code> predicate only holds
+half-permission on the left and right ghost variables. The other half
+permission is held outside the lock and allows us to keep track of
+each threads contribution in our specifications.</p>
+<p>Here’s the code for the left thread, <code class="docutils literal notranslate"><span class="pre">incr_left</span></code>:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> incr_left (x:ref int)
+             (#p:perm)
+             (#left:GR.ref int)
+             (#right:GR.ref int)
+             (#i:erased int)
+             (lock:L.lock )
+preserves L.lock_alive lock #p (lock_inv x i left right)
+<span class="k">requires</span> GR.pts_to left #0.5R &#39;vl
+<span class="k">ensures</span> GR.pts_to left #0.5R (&#39;vl + 1)
+{
+  L.acquire lock;
+  <span class="k">unfold</span> lock_inv;
+  <span class="k">unfold</span> contributions;
+  <span class="k">let</span> v = !x;
+  x := v + 1;
+  GR.gather left;
+  GR.write left (&#39;vl + 1);
+  GR.share left;
+  <span class="k">fold</span> (contributions left right i (v + 1));
+  <span class="k">fold</span> lock_inv x i left right;
+  L.release lock
+}
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Its arguments include <code class="docutils literal notranslate"><span class="pre">x</span></code> and the <code class="docutils literal notranslate"><span class="pre">lock</span></code>, but also both pieces
+of ghost state, <code class="docutils literal notranslate"><span class="pre">left</span></code> and <code class="docutils literal notranslate"><span class="pre">right</span></code>, and an erased value <code class="docutils literal notranslate"><span class="pre">i</span></code>
+for the initial value of <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p></li>
+<li><p>Its precondition holds half permission on the ghost reference
+<code class="docutils literal notranslate"><span class="pre">left</span></code></p></li>
+<li><p>Its postcondition returns half-permission to <code class="docutils literal notranslate"><span class="pre">left</span></code>, but proves
+that it was incremented, i.e., the contribution of the left thread
+to the value of <code class="docutils literal notranslate"><span class="pre">x</span></code> increased by <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p></li>
+</ul>
+<p>Notice that even though we only had half permission to <code class="docutils literal notranslate"><span class="pre">left</span></code>, the
+specifications says we have updated <code class="docutils literal notranslate"><span class="pre">left</span></code>—that’s because we can
+get the other half permission we need by acquiring the lock.</p>
+<ul class="simple">
+<li><p>We acquire the lock and update increment the value stored in <code class="docutils literal notranslate"><span class="pre">x</span></code>.</p></li>
+<li><p>And then we follow the increment with several ghost steps:</p>
+<ul>
+<li><p>Gain full permission on <code class="docutils literal notranslate"><span class="pre">left</span></code> by combining the half permission
+from the precondition with the half permission gained from the
+lock.</p></li>
+<li><p>Increment <code class="docutils literal notranslate"><span class="pre">left</span></code>.</p></li>
+<li><p>Share it again, returning half permission to the lock when we
+release it.</p></li>
+</ul>
+</li>
+<li><p>Finally, we <code class="docutils literal notranslate"><span class="pre">GR.pts_to</span> <span class="pre">left</span> <span class="pre">#one_half</span> <span class="pre">(`vl</span> <span class="pre">+</span> <span class="pre">1)</span></code> left over to
+return to the caller in the postcondition.</p></li>
+</ul>
+<p>The code of the right thread is symmetrical, but in this, our first
+take, we have to essentially repeat the code—we’ll see how to remedy
+this shortly.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> incr_right (x:ref int)
+              (#p:perm)
+              (#left:GR.ref int)
+              (#right:GR.ref int)
+              (#i:erased int)
+              (lock:L.lock)
+preserves L.lock_alive lock #p (lock_inv x i left right)
+<span class="k">requires</span> GR.pts_to right #0.5R &#39;vl
+<span class="k">ensures</span> GR.pts_to right #0.5R (&#39;vl + 1)
+{
+  L.acquire lock;
+  <span class="k">unfold</span> lock_inv;
+  <span class="k">unfold</span> contributions;
+  <span class="k">let</span> v = !x;
+  x := v + 1;
+  GR.gather right;
+  GR.write right (&#39;vl + 1);
+  GR.share right;
+  <span class="k">fold</span> (contributions left right i (v + 1));
+  <span class="k">fold</span> (lock_inv x i left right);
+  L.release lock
+}
+</pre></div>
+</div>
+<p>Finally, we can implement <code class="docutils literal notranslate"><span class="pre">add2</span></code> with the specification we want:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> add2 (x:ref int)
+<span class="k">requires</span> pts_to x &#39;i
+<span class="k">ensures</span>  pts_to x (&#39;i + 2)
+{
+  <span class="k">let</span> left = GR.alloc 0;
+  <span class="k">let</span> right = GR.alloc 0;
+  GR.share left;
+  GR.share right;
+  <span class="k">fold</span> (contributions left right &#39;i &#39;i);
+  <span class="k">fold</span> (lock_inv x &#39;i left right);
+  <span class="k">let</span> lock = L.new_lock (lock_inv x &#39;i left right);
+  L.share lock;
+  par (<span class="k">fun</span> <span class="k">_</span> -&gt; incr_left x #0.5R #left #right #&#39;i lock #0)
+      (<span class="k">fun</span> <span class="k">_</span> -&gt; incr_right x #0.5R #left #right #&#39;i lock #0);
+  L.gather lock;
+  L.acquire lock;
+  L.free lock;
+  <span class="k">unfold</span> lock_inv;
+  <span class="k">unfold</span> contributions;
+  GR.gather left;
+  GR.gather right;
+  GR.free left;
+  GR.free right;
+}
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>We allocate <code class="docutils literal notranslate"><span class="pre">left</span></code> and <code class="docutils literal notranslate"><span class="pre">right</span></code> ghost references, initializing
+them to <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p></li>
+<li><p>Then we split them, putting half permission to both in the lock,
+retaining the other half.</p></li>
+<li><p>Then spawn two threads for <code class="docutils literal notranslate"><span class="pre">incr_left</span></code> and <code class="docutils literal notranslate"><span class="pre">incr_right</span></code>, and get
+as a postcondition that contributions of both threads and increased
+by one each.</p></li>
+<li><p>Finally, we acquire the lock, get <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">x</span> <span class="pre">v</span></code>, for some <code class="docutils literal notranslate"><span class="pre">v</span></code>,
+and <code class="docutils literal notranslate"><span class="pre">contributions</span> <span class="pre">left</span> <span class="pre">right</span> <span class="pre">i</span> <span class="pre">v</span></code>. Once we gather up the
+permission on <code class="docutils literal notranslate"><span class="pre">left</span></code> and <code class="docutils literal notranslate"><span class="pre">right</span></code>, and now the <code class="docutils literal notranslate"><span class="pre">contributions</span>
+<span class="pre">left</span> <span class="pre">right</span> <span class="pre">i</span> <span class="pre">v</span></code> tells us that <code class="docutils literal notranslate"><span class="pre">v</span> <span class="pre">==</span> <span class="pre">i</span> <span class="pre">+</span> <span class="pre">1</span> <span class="pre">+</span> <span class="pre">1</span></code>, which is what we
+need to conclude.</p></li>
+</ul>
+</section>
+<section id="modularity-with-higher-order-ghost-code">
+<h2>Modularity with higher-order ghost code<a class="headerlink" href="#modularity-with-higher-order-ghost-code" title="Link to this heading"></a></h2>
+<p>Our next attempt aims to write a single function <code class="docutils literal notranslate"><span class="pre">incr</span></code>, rather than
+<code class="docutils literal notranslate"><span class="pre">incr_left</span></code> and <code class="docutils literal notranslate"><span class="pre">incr_right</span></code>, and to give <code class="docutils literal notranslate"><span class="pre">incr</span></code> a more
+abstract, modular specification. The style we use here is based on an
+idea proposed by Bart Jacobs and Frank Piessens in a paper titled
+<a class="reference external" href="https://dl.acm.org/doi/10.1145/1926385.1926417">Expressive modular fine-grained concurrency specification</a>.</p>
+<p>The main idea is to observe that <code class="docutils literal notranslate"><span class="pre">incr_left</span></code> and <code class="docutils literal notranslate"><span class="pre">incr_right</span></code> only
+differ by the ghost code that they execute. But, Pulse is higher
+order: so, why not parameterize a single function by <code class="docutils literal notranslate"><span class="pre">incr</span></code> and let
+the caller instantiate <code class="docutils literal notranslate"><span class="pre">incr</span></code> twice, with different bits of ghost
+code. Also, while we’re at it, why not also generalize the
+specification of <code class="docutils literal notranslate"><span class="pre">incr</span></code> so that it works with any user-chosen
+abstract predicate, rather than <code class="docutils literal notranslate"><span class="pre">contributions</span></code> and <code class="docutils literal notranslate"><span class="pre">left/right</span></code>
+ghost state. Here’s how:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span>[@@erasable]
+<span class="k">let</span> incr_f (x: ref int) (refine aspec: int -&gt; slprop) =
+  v:int -&gt; vq:int -&gt; stt_ghost unit emp_inames
+    (refine v ** aspec vq ** pts_to x (v + 1))
+    (<span class="k">fun</span> <span class="k">_</span> -&gt; refine (v + 1) ** aspec (vq + 1) ** pts_to x (v + 1))
+<span class="k">fn</span> incr (x: ref int)
+        (#p:perm)
+        (#refine #aspec: int -&gt; slprop)
+        (l:L.lock)
+        (ghost_steps: incr_f x refine aspec)
+preserves L.lock_alive l #p (<span class="k">exists</span>* v. pts_to x v ** refine v)
+<span class="k">requires</span> aspec &#39;i
+<span class="k">ensures</span> aspec (&#39;i + 1)
+ {
+    L.acquire l;
+    <span class="k">let</span> vx = !x;
+    x := vx + 1;
+    ghost_steps vx &#39;i;
+    L.release l;
+}
+</pre></div>
+</div>
+<p>As before, <code class="docutils literal notranslate"><span class="pre">incr</span></code> requires <code class="docutils literal notranslate"><span class="pre">x</span></code> and the <code class="docutils literal notranslate"><span class="pre">lock</span></code>, but, this time,
+it is parameterized by:</p>
+<ul class="simple">
+<li><p>A predicate <code class="docutils literal notranslate"><span class="pre">refine</span></code>, which generalizes the <code class="docutils literal notranslate"><span class="pre">contributions</span></code>
+predicate from before, and refines the value that <code class="docutils literal notranslate"><span class="pre">x</span></code> points to.</p></li>
+<li><p>A predicate <code class="docutils literal notranslate"><span class="pre">aspec</span></code>, an abstract specification chosen by the
+caller, and serves as the main specification for <code class="docutils literal notranslate"><span class="pre">incr</span></code>, which
+transitions from <code class="docutils literal notranslate"><span class="pre">aspec</span> <span class="pre">'i</span></code> to <code class="docutils literal notranslate"><span class="pre">aspec</span> <span class="pre">('i</span> <span class="pre">+</span> <span class="pre">1)</span></code>.</p></li>
+<li><p>And, finally, the ghost function itself, <code class="docutils literal notranslate"><span class="pre">ghost_steps</span></code>, now
+specified abstractly in terms of the relationship between <code class="docutils literal notranslate"><span class="pre">refine</span></code>,
+<code class="docutils literal notranslate"><span class="pre">aspec</span></code> and <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">x</span></code>—it says, effectively, that once <code class="docutils literal notranslate"><span class="pre">x</span></code>
+has been updated, the abstract predicates <code class="docutils literal notranslate"><span class="pre">refine</span></code> and <code class="docutils literal notranslate"><span class="pre">aspec</span></code>
+can be updated too.</p></li>
+</ul>
+<p>Having generalized <code class="docutils literal notranslate"><span class="pre">incr</span></code>, we’ve now shifted the work to the
+caller. But, <code class="docutils literal notranslate"><span class="pre">incr</span></code>, now verified once and for all, can be used with
+many different callers just by instantiating it differently. For
+example, if we wanted to do a three-way parallel increment, we could
+reuse our <code class="docutils literal notranslate"><span class="pre">incr</span></code> as is. Whereas, our first take would have to be
+completely revised, since <code class="docutils literal notranslate"><span class="pre">incr_left</span></code> and <code class="docutils literal notranslate"><span class="pre">incr_right</span></code> assume that
+there are only two ghost references, not three.</p>
+<p>Here’s one way to instantiate <code class="docutils literal notranslate"><span class="pre">incr</span></code>, proving the same specification
+as <code class="docutils literal notranslate"><span class="pre">add2</span></code>.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> add2_v2 (x: ref int)
+<span class="k">requires</span> pts_to x &#39;i
+<span class="k">ensures</span> pts_to x (&#39;i + 2)
+{
+    <span class="k">let</span> left = GR.alloc 0;
+    <span class="k">let</span> right = GR.alloc 0;
+    GR.share left;
+    GR.share right;
+    <span class="k">fold</span> (contributions left right &#39;i &#39;i);
+    <span class="k">let</span> lock = L.new_lock (
+      <span class="k">exists</span>* (v:int).
+        pts_to x v ** contributions left right &#39;i v
+    );
+    <span class="k">ghost</span>
+    <span class="k">fn</span> step
+        (lr:GR.ref int)
+        (b:bool { <span class="k">if</span> b <span class="k">then</span> lr == left <span class="k">else</span> lr == right })
+      : incr_f x
+        (<span class="k">fun</span> v -&gt; contributions left right &#39;i v)
+        (<span class="k">fun</span> vq -&gt; GR.pts_to lr #0.5R vq)
+      = v vq
+    { 
+      <span class="k">unfold</span> contributions;
+      <span class="k">if</span> b
+      {
+        <span class="k">with</span> _p _v. <span class="k">rewrite</span> (GR.pts_to lr #_p _v) as (GR.pts_to left #_p _v);
+        GR.gather left;
+        GR.write left (vq + 1);
+        GR.share left;      
+        <span class="k">with</span> _p _v. <span class="k">rewrite</span> (GR.pts_to left #_p _v) as (GR.pts_to lr #_p _v);
+        <span class="k">fold</span> (contributions left right &#39;i (v + 1));
+      }
+      <span class="k">else</span>
+      {
+        <span class="k">with</span> _p _v. <span class="k">rewrite</span> (GR.pts_to lr #_p _v) as (GR.pts_to right #_p _v);
+        GR.gather right;
+        GR.write right (vq + 1);
+        GR.share right;      
+        <span class="k">with</span> _p _v. <span class="k">rewrite</span> (GR.pts_to right #_p _v) as (GR.pts_to lr #_p _v);
+        <span class="k">fold</span> (contributions left right &#39;i (v + 1));
+      }
+    };
+    L.share lock;
+    par (<span class="k">fun</span> <span class="k">_</span> -&gt; incr x #0.5R lock (step left <span class="k">true</span>) #0)
+        (<span class="k">fun</span> <span class="k">_</span> -&gt; incr x #0.5R lock (step right <span class="k">false</span>) #0);
+    L.gather lock;
+    L.acquire lock;
+    L.free lock;
+    <span class="k">unfold</span> (contributions left right &#39;i);
+    GR.gather left;
+    GR.gather right;
+    GR.free left;
+    GR.free right;
+}
+</pre></div>
+</div>
+<p>The code is just a rearrangement of what we had before, factoring the
+ghost code in <code class="docutils literal notranslate"><span class="pre">incr_left</span></code> and <code class="docutils literal notranslate"><span class="pre">incr_right</span></code> into a ghost function
+<code class="docutils literal notranslate"><span class="pre">step</span></code>. When we spawn our threads, we pass in the ghost code to
+either update the left or the right contribution.</p>
+<p>This code still has two issues:</p>
+<ul class="simple">
+<li><p>The ghost <code class="docutils literal notranslate"><span class="pre">step</span></code> function is a bloated: we have essentially the
+same code and proof twice, once in each branch of the
+conditional. We can improve this by defining a custom bit of ghost
+state using Pulse’s support for partial commutative monoids—but
+that’s for another chapter.</p></li>
+<li><p>We allocate and free memory for a lock, which is inefficient—could
+we instead do things with atomic operations? We’ll remedy that next.</p></li>
+</ul>
+<section id="exercise">
+<h3>Exercise<a class="headerlink" href="#exercise" title="Link to this heading"></a></h3>
+<p>Instead of explicitly passing a ghost function, use a quantified trade.</p>
+</section>
+</section>
+<section id="a-version-with-invariants">
+<h2>A version with invariants<a class="headerlink" href="#a-version-with-invariants" title="Link to this heading"></a></h2>
+<p>As a final example, in this section, we’ll see how to program <code class="docutils literal notranslate"><span class="pre">add2</span></code>
+using invariants and atomic operations, rather than locks.</p>
+<p>Doing this properly will require working with bounded, machine
+integers, e.g., <code class="docutils literal notranslate"><span class="pre">U32.t</span></code>, since these are the only types that support
+atomic operations. However, to illustrate the main ideas, we’ll assume
+two atomic operations on unbounded integers—this will allow us to
+not worry about possible integer overflow. We leave as an exercise the
+problem of adapting this to <code class="docutils literal notranslate"><span class="pre">U32.t</span></code>.</p>
+<div class="highlight-fstar notranslate"><div class="highlight"><pre><span></span><span class="k">assume</span>
+<span class="k">val</span> atomic_read (r:ref int) (#p:<span class="k">_</span>) (#i:erased int)
+  : stt_atomic int emp_inames 
+    (pts_to r #p i)
+    (<span class="k">fun</span> v -&gt; pts_to r #p i ** pure (reveal i == v))
+
+<span class="k">assume</span>
+<span class="k">val</span> cas (r:ref int) (u v:int) (#i:erased int)
+  : stt_atomic bool emp_inames 
+    (pts_to r i)
+    (<span class="k">fun</span> b -&gt;
+      cond b (pts_to r v ** pure (reveal i == u)) 
+             (pts_to r i))
+</pre></div>
+</div>
+<section id="cancellable-invariants">
+<h3>Cancellable Invariants<a class="headerlink" href="#cancellable-invariants" title="Link to this heading"></a></h3>
+<p>The main idea of doing the <code class="docutils literal notranslate"><span class="pre">add2</span></code> proof is to use an invariant
+instead of a lock. Just as in our previous code, <code class="docutils literal notranslate"><span class="pre">add2</span></code> starts with
+allocating an invariant, putting <code class="docutils literal notranslate"><span class="pre">exists*</span> <span class="pre">v.</span> <span class="pre">pts_to</span> <span class="pre">x</span> <span class="pre">v</span> <span class="pre">**</span>
+<span class="pre">contribution</span> <span class="pre">left</span> <span class="pre">right</span> <span class="pre">i</span> <span class="pre">v</span></code> in the invariant. Then call incr twice
+in different threads. However, finally, to recover <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">x</span> <span class="pre">(v</span> <span class="pre">+</span>
+<span class="pre">2)</span></code>, where previously we would acquire the lock, with a regular
+invariant, we’re stuck, since the <code class="docutils literal notranslate"><span class="pre">pts_to</span> <span class="pre">x</span> <span class="pre">v</span></code> permission is inside
+the invariant and we can’t take it out to return to the caller.</p>
+<p>An invariant <code class="docutils literal notranslate"><span class="pre">inv</span> <span class="pre">i</span> <span class="pre">p</span></code> guarantees that the property <code class="docutils literal notranslate"><span class="pre">p</span></code> is true
+and remains true for the rest of a program’s execution. But, what if
+we wanted to only enforce <code class="docutils literal notranslate"><span class="pre">p</span></code> as an invariant for some finite
+duration, and then to cancel it? This is what the library
+<code class="docutils literal notranslate"><span class="pre">Pulse.Lib.CancellableInvariant</span></code> provides. Here’s the relevant part
+of the API:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span>[@@ erasable]
+<span class="k">val</span> cinv : Type0
+<span class="k">val</span> iref_of (c:cinv) : <span class="k">GTot</span> iref
+</pre></div>
+</div>
+<p>The main type it offers is <code class="docutils literal notranslate"><span class="pre">cinv</span></code>, the name of a cancellable
+invariant.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span>
+<span class="k">fn</span> new_cancellable_invariant (v:boxable)
+<span class="k">requires</span> v
+<span class="k">returns</span> c:cinv
+<span class="k">ensures</span> inv (iref_of c) (cinv_vp c v) ** active c 1.0R
+</pre></div>
+</div>
+<p>Allocating a cancellable invariant is similar to allocating a regular
+invariant, except one gets an invariant for an abstract predicate
+<code class="docutils literal notranslate"><span class="pre">cinv_cp</span> <span class="pre">c</span> <span class="pre">v</span></code>, and a fraction-indexed predicate <code class="docutils literal notranslate"><span class="pre">active</span> <span class="pre">c</span> <span class="pre">1.0R</span></code>
+which allows the cancellable invariant to be shared and gathered
+between threads.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">cinv_cp</span> <span class="pre">c</span> <span class="pre">v</span></code> predicate can be used in conjunction with
+<code class="docutils literal notranslate"><span class="pre">active</span></code> to recover the underlying predicate <code class="docutils literal notranslate"><span class="pre">v</span></code>—but only when
+the invariant has not been cancelled yet—this is what
+<code class="docutils literal notranslate"><span class="pre">unpack_cinv_vp</span></code>, and its inverse, <code class="docutils literal notranslate"><span class="pre">pack_cinv_vp</span></code>, allow one to
+do.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span>
+<span class="k">fn</span> unpack_cinv_vp (#p:perm) (#v:slprop) (c:cinv)
+<span class="k">requires</span> cinv_vp c v ** active c p
+<span class="k">ensures</span> v ** unpacked c ** active c p
+
+<span class="k">ghost</span>
+<span class="k">fn</span> pack_cinv_vp (#v:slprop) (c:cinv)
+<span class="k">requires</span> v ** unpacked c
+<span class="k">ensures</span> cinv_vp c v
+</pre></div>
+</div>
+<p>Finally, if one has full permission to the invariant (<code class="docutils literal notranslate"><span class="pre">active</span> <span class="pre">c</span>
+<span class="pre">1.0R</span></code>) it can be cancelled and the underlying predicate <code class="docutils literal notranslate"><span class="pre">v</span></code> can be
+obtained as postcondition.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">ghost</span>
+<span class="k">fn</span> cancel (#v:slprop) (c:cinv)
+<span class="k">requires</span> inv (iref_of c) (cinv_vp c v) ** active c 1.0R
+<span class="k">ensures</span> v
+<span class="k">opens</span> add_inv emp_inames (iref_of c)
+</pre></div>
+</div>
+</section>
+<section id="an-increment-operation">
+<h3>An increment operation<a class="headerlink" href="#an-increment-operation" title="Link to this heading"></a></h3>
+<p>Our first step is to build an increment operation from an
+<code class="docutils literal notranslate"><span class="pre">atomic_read</span></code> and a <code class="docutils literal notranslate"><span class="pre">cas</span></code>. Here is its specification:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> incr_atomic
+        (x: ref int)
+        (#p:perm)
+        (#refine #aspec: int -&gt; slprop)
+        (c:C.cinv)
+        (f: incr_f x refine aspec)
+preserves inv (C.iname_of c) (C.cinv_vp c (<span class="k">exists</span>* v. pts_to x v ** refine v))
+<span class="k">requires</span> aspec &#39;i
+preserves C.active c p
+<span class="k">ensures</span> aspec (&#39;i + 1)
+</pre></div>
+</div>
+<p>The style of specification is similar to the generic style we used
+with <code class="docutils literal notranslate"><span class="pre">incr</span></code>, except now we use cancellable invariant instead of a
+lock.</p>
+<p>For its implementation, the main idea is to repeatedly read the
+current value of <code class="docutils literal notranslate"><span class="pre">x</span></code>, say <code class="docutils literal notranslate"><span class="pre">v</span></code>; and then to <code class="docutils literal notranslate"><span class="pre">cas</span></code> in <code class="docutils literal notranslate"><span class="pre">v+1</span></code> if
+the current value is still <code class="docutils literal notranslate"><span class="pre">v</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">read</span></code> function is relatively easy:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span>  <span class="k">atomic</span>
+  <span class="k">fn</span> read ()
+  preserves inv (C.iname_of c) (C.cinv_vp c (<span class="k">exists</span>* v. pts_to x v ** refine v))
+  preserves C.active c p
+  <span class="k">requires</span> later_credit 1
+  <span class="k">opens</span> [C.iname_of c]
+  <span class="k">returns</span> v:int
+  {
+    with_invariants_a int emp_inames (C.iname_of c) (C.cinv_vp c (<span class="k">exists</span>* v. pts_to x v ** refine v))
+      (C.active c p) (<span class="k">fun</span> <span class="k">_</span> -&gt; C.active c p) <span class="k">fn</span> <span class="k">_</span> {
+    <span class="c">// with_invariants (C.iname_of c) (C)</span>
+    <span class="c">// {</span>
+    <span class="c">//     later_elim _;</span>
+        C.unpack_cinv_vp #p c;
+        <span class="k">let</span> v = atomic_read x;
+        C.pack_cinv_vp #(<span class="k">exists</span>* v. pts_to x v ** refine v) c;
+        <span class="c">// later_intro (C.cinv_vp c (exists* v. pts_to x v ** refine v));</span>
+        v
+    }
+  };
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>We open the invariant <code class="docutils literal notranslate"><span class="pre">l</span></code>; then, knowing that the invariant is
+still active, we can unpack` it; then read the value <code class="docutils literal notranslate"><span class="pre">v</span></code>; pack it
+back; and return <code class="docutils literal notranslate"><span class="pre">v</span></code>.</p></li>
+</ul>
+<p>The main loop of <code class="docutils literal notranslate"><span class="pre">incr_atomic</span></code> is next, shown below:</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span>  <span class="k">while</span> (<span class="k">true</span>)
+    <span class="k">invariant</span> <span class="k">exists</span>* j. aspec j
+    <span class="k">requires</span> (observe aspec == &#39;i)
+    <span class="k">ensures</span> (observe aspec == &#39;i + 1)
+  {
+    <span class="k">with</span> j. <span class="k">rewrite</span> aspec j as aspec &#39;i;
+    later_credit_buy 1;
+    <span class="k">let</span> v = read ();
+    <span class="k">let</span> next =
+      <span class="k">with_invariants</span> bool emp_inames
+        (C.iname_of c) (C.cinv_vp c (<span class="k">exists</span>* v. pts_to x v ** refine v))
+        (C.active c p ** aspec &#39;i)
+        (<span class="k">fun</span> b1 -&gt; <span class="k">exists</span>* j. aspec j ** pure (j == (<span class="k">if</span> b1 <span class="k">then</span> reveal &#39;i <span class="k">else</span> &#39;i + 1))
+          ** C.active c p)
+      <span class="k">fn</span> <span class="k">_</span> {
+        C.unpack_cinv_vp c;
+        <span class="k">with</span> vv. <span class="k">assert</span> x |-&gt; vv;
+        <span class="k">let</span> b = cas x v (v + 1);
+        <span class="k">if</span> b
+        { 
+          <span class="k">unfold</span> cond;
+          f vv &#39;i;
+          C.pack_cinv_vp #(<span class="k">exists</span>* v. pts_to x v ** refine v) c;
+          <span class="k">false</span>
+        }
+        <span class="k">else</span>
+        {
+          <span class="k">unfold</span> cond;
+          C.pack_cinv_vp #(<span class="k">exists</span>* v. pts_to x v ** refine v) c;
+          <span class="k">true</span>
+        }
+      };
+    <span class="k">if</span> (not next) { break }
+  };
+</pre></div>
+</div>
+<p>The loop invariant says:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>the invariant remains active</p></li>
+<li><p>the local variable <code class="docutils literal notranslate"><span class="pre">continue</span></code> determines if the loop iteration
+continues</p></li>
+<li><p>and, so long as the loop continues, we still have <code class="docutils literal notranslate"><span class="pre">aspec</span> <span class="pre">'i</span></code>,
+but when the loop ends we have <code class="docutils literal notranslate"><span class="pre">aspec</span> <span class="pre">('i</span> <span class="pre">+</span> <span class="pre">1)</span></code></p></li>
+</ul>
+</div></blockquote>
+<p>The body of the loop is also interesting and consists of two atomic
+operations. We first <code class="docutils literal notranslate"><span class="pre">read</span></code> the value of <code class="docutils literal notranslate"><span class="pre">x</span></code> into <code class="docutils literal notranslate"><span class="pre">v</span></code>. Then we
+open the invariant again try to <code class="docutils literal notranslate"><span class="pre">cas</span></code> in <code class="docutils literal notranslate"><span class="pre">v+1</span></code>. If it succeeds, we
+return <code class="docutils literal notranslate"><span class="pre">false</span></code> from the <code class="docutils literal notranslate"><span class="pre">with_invariants</span></code> block; otherwise
+<code class="docutils literal notranslate"><span class="pre">true</span></code>. And, finally, outside the <code class="docutils literal notranslate"><span class="pre">with_invariants</span></code> block, we set
+the <code class="docutils literal notranslate"><span class="pre">continue</span></code> variable accordingly. Recall that <code class="docutils literal notranslate"><span class="pre">with_invariants</span></code>
+allows at most a single atomic operation, so we having done a <code class="docutils literal notranslate"><span class="pre">cas</span></code>,
+we are not allowed to also set <code class="docutils literal notranslate"><span class="pre">continue</span></code> inside the
+<code class="docutils literal notranslate"><span class="pre">with_invariants</span></code> block.</p>
+</section>
+<section id="add2-v3">
+<h3><code class="docutils literal notranslate"><span class="pre">add2_v3</span></code><a class="headerlink" href="#add2-v3" title="Link to this heading"></a></h3>
+<p>Finally, we implement our parallel increment again, <code class="docutils literal notranslate"><span class="pre">add2_v3</span></code>, this
+time using invariants, though it has the same specification as before.</p>
+<div class="highlight-pulse notranslate"><div class="highlight"><pre><span></span><span class="k">fn</span> add2_v3 (x: ref int)
+<span class="k">requires</span> pts_to x &#39;i
+<span class="k">ensures</span> pts_to x (&#39;i + 2)
+{
+    <span class="k">let</span> left = GR.alloc 0;
+    <span class="k">let</span> right = GR.alloc 0;
+    GR.share left;
+    GR.share right;
+    <span class="k">fold</span> (contributions left right &#39;i &#39;i);
+    <span class="k">let</span> c = C.new_cancellable_invariant (
+      <span class="k">exists</span>* (v:int).
+          pts_to x v **
+          contributions left right &#39;i v
+    );
+    <span class="k">ghost</span>
+    <span class="k">fn</span> step
+        (lr:GR.ref int)
+        (b:bool { <span class="k">if</span> b <span class="k">then</span> lr == left <span class="k">else</span> lr == right })
+      : incr_f x
+        (<span class="k">fun</span> v -&gt; contributions left right &#39;i v)
+        (<span class="k">fun</span> vq -&gt; GR.pts_to lr #0.5R vq)
+      = v vq
+    { 
+      <span class="k">unfold</span> contributions;
+      <span class="k">if</span> b
+      {
+        <span class="k">with</span> _p _v. <span class="k">rewrite</span> (GR.pts_to lr #_p _v) as (GR.pts_to left #_p _v);
+        GR.gather left;
+        GR.write left (vq + 1);
+        GR.share left;      
+        <span class="k">with</span> _p _v. <span class="k">rewrite</span> (GR.pts_to left #_p _v) as (GR.pts_to lr #_p _v);
+        <span class="k">fold</span> (contributions left right &#39;i (v + 1));
+      }
+      <span class="k">else</span>
+      {
+        <span class="k">with</span> _p _v. <span class="k">rewrite</span> (GR.pts_to lr #_p _v) as (GR.pts_to right #_p _v);
+        GR.gather right;
+        GR.write right (vq + 1);
+        GR.share right;      
+        <span class="k">with</span> _p _v. <span class="k">rewrite</span> (GR.pts_to right #_p _v) as (GR.pts_to lr #_p _v);
+        <span class="k">fold</span> (contributions left right &#39;i (v + 1));
+      }
+    };
+    C.share c;
+    <span class="k">with</span> pred. <span class="k">assert</span> (inv (C.iname_of c) (C.cinv_vp c (<span class="k">exists</span>* v. pts_to x v ** pred v)));
+    dup_inv (C.iname_of c) (C.cinv_vp c (<span class="k">exists</span>* v. pts_to x v ** pred v));
+    par (<span class="k">fun</span> <span class="k">_</span> -&gt; incr_atomic x #0.5R c (step left <span class="k">true</span>) #0)
+        (<span class="k">fun</span> <span class="k">_</span> -&gt; incr_atomic x #0.5R c (step right <span class="k">false</span>) #0);
+    
+    C.gather c;
+    later_credit_buy 1;
+    C.cancel c;
+    <span class="k">unfold</span> contributions;
+    GR.gather left;
+    GR.gather right;
+    GR.free left;
+    GR.free right;
+}
+</pre></div>
+</div>
+<p>The code too is very similar to <code class="docutils literal notranslate"><span class="pre">add2_v2</span></code>, except instead of
+allocating a lock, we allocate a cancellable invariant. And, at the
+end, instead of acquiring, and leaking, the lock, we simply cancel the
+invariant and we’re done.</p>
+</section>
+</section>
+<section id="id1">
+<h2>Exercise<a class="headerlink" href="#id1" title="Link to this heading"></a></h2>
+<p>Implement <code class="docutils literal notranslate"><span class="pre">add2</span></code> on a <code class="docutils literal notranslate"><span class="pre">ref</span> <span class="pre">U32.t</span></code>. You’ll need a precondition that
+<code class="docutils literal notranslate"><span class="pre">'i</span> <span class="pre">+</span> <span class="pre">2</span> <span class="pre">&lt;</span> <span class="pre">pow2</span> <span class="pre">32</span></code> and also to strengthen the invariant to prove
+that each increment doesn’t overflow.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+    <!-- <a href="https://github.com/FStarLang/fstar/"> -->
+    <!--     <img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"> -->
+    <!-- </a> -->
+
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pulse_spin_lock.html" class="btn btn-neutral float-left" title="Spin Locks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pulse_extraction.html" class="btn btn-neutral float-right" title="Extraction" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2020, Microsoft Research.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ <script type="text/javascript">
+    $(document).ready(function() {
+        $(".toggle > *").hide();
+        $(".toggle .header").show();
+        $(".toggle .header").click(function() {
+            $(this).parent().children().not(".header").toggle(400);
+            $(this).parent().children(".header").toggleClass("open");
+        })
+    });
+</script>
+
+
+</body>
+</html>
