@@ -67,9 +67,17 @@ small patch in `tutorial-compat/`: `par` and `par_incr` are explicitly
 `divergent`, matching this release's parallel-composition API. Their heap
 preconditions and postconditions are unchanged; these two parallel examples
 do not promise termination. Other tutorial files are copied verbatim.
-To read the tutorial, run `make serve`, open forwarded port **8000**,
-and visit `/tutorial/book/`. This serves the static book, not the legacy
-PHP-backed web verifier. Source verification happens in the editor or terminal.
+The bundled tutorial starts automatically on every container start. Port **8000**
+opens the book in an editor preview beside your code; the server's root URL
+redirects straight to `/tutorial/book/`. Open the corresponding editable sources
+under `tutorials/` in the other editor group. To reopen the book, right-click
+port **8000** in the **Ports** panel and select **Preview in Editor**.
+Outside the devcontainer, `make serve` starts the same server; if it is already
+running, the command reports that rather than starting a duplicate.
+Startup errors are reported by the lifecycle command, with the server log
+under `/tmp/tryfstar-tutorial-*.log`.
+This serves the static book, not the legacy PHP-backed web verifier.
+Source verification happens in the editor or terminal.
 
 ## Toolchain pins
 

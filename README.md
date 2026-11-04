@@ -18,6 +18,12 @@ The browser opens VS Code in `website/playground/`, with:
 - Extraction to C, OCaml, and F#, with native compilation and execution.
 - F* and Pulse tutorial sources, exercises, solutions, and the static book.
 
+The tutorial server starts automatically, and port **8000** opens the rendered
+book in an editor preview beside your code. Edit the matching files under
+`tutorials/`, such as `Part1.GettingOffTheGround.fst` or
+`pulse/PulseTutorial.Intro.fst`. If you close the preview, right-click port
+**8000** in the **Ports** panel and choose **Preview in Editor**.
+
 The image's examples are verified during its build. Startup copies editable
 sources, checks tool availability, and preserves existing edits; it does not
 repeat the full verification and compilation matrix.
@@ -29,12 +35,14 @@ make -C functional check     # F*: list append to C, OCaml, and F#
 make -C pulse check          # Pulse: multiplication to C, OCaml, and F#
 make -C pal check            # Translate and verify annotated C; run the C
 make -C pal-csharp check     # Prove C# insertion sort; run the C#
-make serve                   # Open forwarded port 8000 for the tutorial
+make serve                   # Start the tutorial manually if needed
 ```
 
 Copied editable sources initially appear as untracked files. Commit the
 sources and solutions you want to retain before deleting a Codespace.
 Tutorial exercises intentionally include holes and expected errors.
+Existing Codespaces need the latest `main` and **Codespaces: Rebuild Container**
+to pick up the automatic preview configuration; the prebuilt image is unchanged.
 
 For local use, clone this repository in VS Code and select
 **Dev Containers: Reopen in Container**. Docker is required; the image targets

@@ -9,12 +9,13 @@
     "storage": "32gb"
   },
   "postCreateCommand": "sh post-create.sh",
+  "postStartCommand": "python3 preview.py --background",
   "waitFor": "postCreateCommand",
   "forwardPorts": [8000],
   "portsAttributes": {
     "8000": {
-      "label": "F* website and tutorial",
-      "onAutoForward": "notify"
+      "label": "F* and Pulse tutorial",
+      "onAutoForward": "openPreview"
     }
   },
   "customizations": {
@@ -26,6 +27,7 @@
         "Ionide.Ionide-fsharp"
       ],
       "settings": {
+        "remote.autoForwardPortsSource": "process",
         "fstarVSCodeAssistant.verifyOnSave": true,
         "files.watcherExclude": {
           "**/_build/**": true

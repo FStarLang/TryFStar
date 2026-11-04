@@ -36,7 +36,7 @@ def main():
         tutorials = Path("/opt/playground-seed/tutorials")
     if not tutorials.is_dir():
         raise FileNotFoundError(f"Tutorial source directory is missing: {tutorials}")
-    for name in ("Makefile", "setup.py", "test_setup.py", "README.md"):
+    for name in ("Makefile", "setup.py", "test_setup.py", "preview.py", "test_preview.py", "README.md"):
         copy_new(HERE / name, workspace / name)
     copy_new(HERE / ".vscode/tasks.json", workspace / ".vscode/tasks.json")
     copy_new(HERE / "tutorial-compat/pulse-intro.patch",

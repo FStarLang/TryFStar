@@ -10,7 +10,7 @@ help:
 	  'make -C pal check   Translate, verify, compile, and run annotated C' \
 	  'make -C pal-csharp check  Translate, verify, and run annotated C#' \
 	  'make tutorial-check Verify introductory F* and Pulse tutorial files' \
-	  'make serve          Open the website/tutorial on forwarded port 8000'
+	  'make serve          Start the tutorial if needed; preview port 8000'
 
 setup:
 	python3 setup.py
@@ -29,7 +29,7 @@ extract:
 	$(MAKE) -C pulse extract
 
 check: doctor
-	python3 -m unittest -q test_setup.py
+	python3 -m unittest -q test_setup.py test_preview.py
 	@set -e; for project in $(PROJECTS); do $(MAKE) -C "$$project" check; done
 	$(MAKE) tutorial-check
 
@@ -41,4 +41,4 @@ tutorial-check:
 	  --include tutorials/pulse tutorials/pulse/PulseTutorial.Intro.fst
 
 serve:
-	python3 -m http.server 8000 --bind 0.0.0.0 --directory ..
+	python3 preview.py
